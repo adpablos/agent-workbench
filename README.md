@@ -14,7 +14,7 @@ and on existing approved tools.
 |---|---|
 | [OPERATING.md](OPERATING.md) | Operating contract that every agent reads |
 | [docs/VALIDATION.md](docs/VALIDATION.md) | Capability probes and acceptance procedure |
-| [templates/](templates/) | Starting points for the workbench entrypoint and private files |
+| [templates/](templates/) | Starting points for the workbench's `AGENTS.md` and private files |
 
 ## Set up a workbench
 
@@ -22,17 +22,26 @@ and on existing approved tools.
    keep deep build trees within Windows path limits.
 2. Place this repository at `core/` at a pinned revision, through the import route your
    organization approves.
-3. Copy `core/templates/workbench-entrypoint.md` to `AGENTS.md` at the workbench root.
-4. Create `private/` and copy `POLICY.md`, `workspace.json`, and `INDEX.md` into it. Create
-   `private/tasks/` and `work/`.
-5. Fill in `private/workspace.json` (approved sources, writable paths, pins) and
-   `private/POLICY.md`. Both take effect only after the requester approves their exact content.
-6. Open the workbench folder in VS Code and run the preflight probes in
-   [docs/VALIDATION.md](docs/VALIDATION.md) that decide your next step.
+3. Open the workbench folder in VS Code and ask the agent: "Set up this workbench by following
+   `core/README.md`." It reads `core/OPERATING.md` and performs the remaining steps with you; you
+   can also perform them by hand.
+4. Copy `core/templates/workbench-entrypoint.md` to `AGENTS.md` at the workbench root. This is the
+   workbench's entrypoint: the host loads it, and it points every agent to the rules. Create
+   `private/`, copy `POLICY.md`, `workspace.json`, and `INDEX.md` into it, and create
+   `private/tasks/` and `work/`. Create only what is missing; never overwrite an existing file.
+5. Complete `private/POLICY.md` (review pairing, approved models, local preferences),
+   `private/workspace.json` (approved sources, writable paths, pins), and one task record per
+   initial priority, linked from `private/INDEX.md`. Read what the environment shows without
+   changing it, such as tool versions. Ask the requester only for the rest, in one short list, and
+   use any answers they have already prepared. Do not ask again for what `OPERATING.md` covers.
+6. Show the exact content of `POLICY.md` and `workspace.json`. They take effect only after the
+   requester approves that content; then record the approval date in each.
+7. Run the preflight probes in [docs/VALIDATION.md](docs/VALIDATION.md) that decide your next step.
+   The first one, in a new chat, shows whether `AGENTS.md` is loaded.
 
 ```text
 wb/                      # not a Git repository
-  AGENTS.md              # entrypoint
+  AGENTS.md              # entrypoint, from core/templates/workbench-entrypoint.md
   core/                  # this repository, pinned
   private/
     POLICY.md            # approved rules and preferences
