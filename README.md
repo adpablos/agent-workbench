@@ -96,4 +96,4 @@ The separation of coordination, execution, and review draws on concepts from
 
 ## License
 
-Not chosen yet; to be decided before publication.
+[MIT](LICENSE).
