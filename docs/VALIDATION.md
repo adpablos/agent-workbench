@@ -30,18 +30,26 @@ Remove the probe lines afterwards and confirm they are gone.
 ## Reference baselines
 
 Before and after work that must not touch a reference repository, record its state by running
-these commands in Git Bash inside it. They do not write to the repository:
+this block in Git Bash at the repository's top level. It only reads: it runs no Git filters,
+external diff drivers, or hooks, and it hashes file bytes exactly as they are on disk.
 
 ```bash
-git --no-optional-locks rev-parse HEAD
-git --no-optional-locks status --porcelain=v1 --untracked-files=all
-git --no-optional-locks diff --binary HEAD | git hash-object --stdin
-git --no-optional-locks ls-files --others --exclude-standard | git hash-object --stdin-paths
+(
+  set -eo pipefail
+  git rev-parse HEAD
+  git ls-files --stage | sha256sum
+  find . -name .git -prune -o -type f -print0 | LC_ALL=C sort -z | xargs -0 sha256sum -b | sha256sum
+  echo "capture complete"
+)
 ```
 
-Equal output means that the commit, tracked content, the untracked file list, and untracked file
-contents are unchanged. It does not cover ignored files or Git internals. Pre-existing changes stay
-as they are; never clean or reset a repository to make a comparison pass.
+A capture counts only if the block exits with status 0 and its last line is `capture complete`;
+otherwise fix the cause and capture again. Equal captures mean that the checked-out commit, the
+index entries (staged paths, modes, and object IDs), and the path and exact bytes of every regular
+file outside `.git` (tracked, untracked, or ignored) are unchanged. They do not cover other Git
+internals such as branches, stashes, or configuration, nor symbolic links, empty directories,
+permissions, or timestamps. Hashing every file can take a while in large trees. Pre-existing
+changes stay as they are; never clean or reset a repository to make a comparison pass.
 
 ## Acceptance stages
 
