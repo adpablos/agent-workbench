@@ -21,7 +21,10 @@ and on existing approved tools.
 1. Create a folder with a short path outside any Git repository, for example `C:/wb`. Short paths
    keep deep build trees within Windows path limits.
 2. Place this repository at `core/` at a pinned revision, through the import route your
-   organization approves.
+   organization approves. With Git, from the workbench folder: `git clone <repository URL> core`
+   (without `core`, the folder takes the repository's name), note the revision that
+   `git -C core rev-parse HEAD` prints, and disable pushing from the workbench:
+   `git -C core remote set-url --push origin DISABLED`.
 3. Open the workbench folder in VS Code and ask the agent: "Set up this workbench by following
    `core/README.md`." It reads `core/OPERATING.md` and performs the remaining steps with you; you
    can also perform them by hand.
@@ -32,10 +35,11 @@ and on existing approved tools.
 5. Complete `private/POLICY.md` (review pairing, approved models, local preferences),
    `private/workspace.json` (approved sources, writable paths, pins), and one task record per
    initial priority, linked from `private/INDEX.md`. Read what the environment shows without
-   changing it, such as tool versions. Ask the requester only for the rest, in one short list, and
-   use any answers they have already prepared. Do not ask again for what `OPERATING.md` covers.
+   changing it, such as tool versions. Ask the requester only for the rest, in one short list that
+   includes the name or role to record as approver, and use any answers they have already
+   prepared. Do not ask again for what `OPERATING.md` covers.
 6. Show the exact content of `POLICY.md` and `workspace.json`. They take effect only after the
-   requester approves that content; then record the approval date in each.
+   requester approves that content; then record the approval date and approver in each.
 7. Run the preflight probes in [docs/VALIDATION.md](docs/VALIDATION.md) that decide your next step.
    The first one, in a new chat, shows whether `AGENTS.md` is loaded.
 
