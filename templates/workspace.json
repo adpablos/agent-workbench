@@ -1,0 +1,31 @@
+{
+  "description": "Approved scope and pins for this workbench. Change only after the requester approves the exact content.",
+  "approved": "YYYY-MM-DD",
+  "core": {
+    "path": "core",
+    "revision": "<commit SHA>"
+  },
+  "sources": [
+    {
+      "name": "example-service",
+      "kind": "repository",
+      "location": "C:/src/example-service",
+      "access": "read"
+    },
+    {
+      "name": "team-wiki",
+      "kind": "documentation",
+      "location": "https://wiki.example.com/display/TEAM",
+      "access": "read"
+    }
+  ],
+  "writable": ["private", "work"],
+  "tools": [
+    {
+      "name": "example-cli",
+      "revision": "<tag or commit SHA>",
+      "location": "C:/tools/example-cli",
+      "status": "pending approval"
+    }
+  ]
+}
