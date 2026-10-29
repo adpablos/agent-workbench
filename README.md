@@ -68,12 +68,23 @@ substitute for that separation.
 
 ## Update the core
 
-Ask the agent: "Update the core by following `core/README.md`." It fetches without changing files
-and shows the changelog entries and changed files between the revision pinned in
-`private/workspace.json` and the remote default branch. After you approve, it runs
-`git -C core pull --ff-only`, records the new revision, and its release tag if it has one, in
-`private/workspace.json` with the previous revision as the rollback point, and reruns the preflight
-probes that the changes affect. Nobody edits the pin by hand.
+Ask the agent: "Update the core by following `core/README.md`." From the workbench folder, it:
+
+1. Runs `git -C core fetch` and takes the tip of the remote default branch, by its full SHA, as
+   the candidate.
+2. Checks the candidate out apart from the active core:
+   `git -C core worktree add --detach ../work/core-update <SHA>`.
+3. Validates it there: changelog entries and changed files since the revision pinned in
+   `private/workspace.json`, the core paths that the entrypoint and private files rely on, and new
+   template fields or probes. It shows you the SHA, the changes, and the result, and waits.
+4. After your approval, activates exactly that commit with `git -C core merge --ff-only <SHA>`;
+   `git pull` could add commits you did not see. It records the SHA, and its release tag if it has
+   one, in `private/workspace.json` with the previous revision as the rollback point, and removes
+   the candidate with `git -C core worktree remove ../work/core-update`.
+5. Reruns the preflight probes that the changes affect. If one fails, it moves the core back to
+   the previous revision and reports.
+
+A different candidate needs its own validation and approval. Nobody edits the pin by hand.
 
 ## Where information lives
 
