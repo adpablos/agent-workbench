@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "repository": "adpablos/agent-workbench",
+  "profile": "standard",
+  "default_branch": "main",
+  "allowed_actions": [],
+  "required_checks": [
+    {
+      "context": "GitGuardian Security Checks",
+      "integration_id": 46505
+    },
+    {
+      "context": "docs",
+      "integration_id": 15368
+    }
+  ],
+  "continuous_delivery": {
+    "mode": "none",
+    "reason": "The core is Markdown documentation and templates with no deployed runtime."
+  },
+  "dependabot": {
+    "alerts": true,
+    "security_updates": true,
+    "version_updates": true,
+    "automerge": false
+  },
+  "exceptions": []
+}
