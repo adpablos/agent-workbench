@@ -7,6 +7,9 @@ pin a release tag together with its commit.
 
 ## Unreleased
 
+- Reference clones and tool checkouts can live inside the workbench, in `repos/<project>/<repo>`
+  and `tools/`, once a preflight probe shows that the host does not load instruction files from
+  subfolders; until then they stay outside the opened root.
 - Changes reach `main` only through reviewed pull requests that pass a documentation check of
   line width and relative links.
 - First Markdown core: the operating contract, the validation procedure, templates for the
