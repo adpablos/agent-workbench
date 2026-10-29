@@ -66,6 +66,15 @@ reference. Use `repos/` and `tools/` only once the subfolder probe in
 workbench root. Keep `private/` and `work/` out of this repository; a `.gitignore` is not a
 substitute for that separation.
 
+## Update the core
+
+Ask the agent: "Update the core by following `core/README.md`." It fetches without changing files
+and shows the changelog entries and changed files between the revision pinned in
+`private/workspace.json` and the remote default branch. After you approve, it runs
+`git -C core pull --ff-only`, records the new revision, and its release tag if it has one, in
+`private/workspace.json` with the previous revision as the rollback point, and reruns the preflight
+probes that the changes affect. Nobody edits the pin by hand.
+
 ## Where information lives
 
 | Information | Owner |
