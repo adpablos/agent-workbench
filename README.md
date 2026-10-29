@@ -53,11 +53,18 @@ wb/                      # not a Git repository
     INDEX.md             # links to priorities, tasks, decisions, and sources
     tasks/               # one record per recoverable task
     dossiers/            # optional, from an adopted mapping tool
+  repos/                 # read-only reference clones, as <project>/<repo>
+  tools/                 # pinned checkouts of tools you run
   work/                  # isolated writable copies, per task
 ```
 
-Reference repositories stay where they are. Keep `private/` and `work/` out of this repository;
-a `.gitignore` is not a substitute for that separation.
+Existing reference repositories may stay where they are. Clone new ones into `repos/` only when a
+task needs them, mirroring the remote: a service map, not the folder layout, records how they
+relate. If a tool writes to the repositories it finds, point it at `work/<task>/`, never at a
+reference. Before cloning into `repos/` or `tools/`, run the subfolder probe in
+[docs/VALIDATION.md](docs/VALIDATION.md): if the host loads instruction files from subfolders and
+cannot be set not to, keep both folders outside the workbench root instead. Keep `private/` and
+`work/` out of this repository; a `.gitignore` is not a substitute for that separation.
 
 ## Where information lives
 
@@ -76,9 +83,9 @@ a `.gitignore` is not a substitute for that separation.
 ## Optional integrations
 
 [Toil](https://github.com/imagile-dev/toil) can provide service maps (dossiers), work-item
-normalization, and briefings through its CLI. If you adopt it, keep its checkout outside the
-workbench root, pin a revision, check its runtime requirement and your software approval first,
-and declare its local side effects. Its UI is not required.
+normalization, and briefings through its CLI. If you adopt it, keep a pinned checkout in `tools/`,
+check its runtime requirement and your software approval first, and declare its local side
+effects. Its UI is not required.
 
 ## Contributing to the core
 
