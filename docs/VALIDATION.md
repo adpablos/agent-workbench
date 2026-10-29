@@ -22,7 +22,7 @@ not imported candidates, and they are removed afterwards.
 | Which confirmations appear? | Count the prompts during the probes above | Count and type of each prompt |
 | Which model ran a delegated task? | Delegate with an explicitly selected model and note what the host shows | Reported or configured evidence, as defined in `OPERATING.md` (Review) |
 | Do delegated tasks run in parallel? | Two independent tasks that each wait 20 seconds and report start and end times | Overlapping times; otherwise sequence the work |
-| Are instruction files in subfolders loaded? | In a temporary subfolder such as `work/probe/`, add one instruction file per name the host recognizes, each asking for a different word. Open a new Director chat and only say hello | Any word that appears; then delete the subfolder |
+| Are instruction files in subfolders loaded? | In a temporary subfolder such as `work/probe/`, add an instruction file in each location and under each name the host recognizes, each asking for a different word, plus a short `notes.md`. Open a new Director chat, say hello, then ask for a one-line summary of `work/probe/notes.md` | Any word in either reply; then delete the subfolder. The probe passes only if both replies show none |
 | Can agents read outside the opened root? | Ask for the first line of an approved file outside the root | Result and any prompt shown |
 | What isolation do experiments have? | Inspect host sandbox and permission settings without changing them | Observed settings; record limits as procedural if none apply |
 

@@ -192,8 +192,8 @@ use ordinary prose. During work, report meaningful progress and blockers, not an
 - Pin exact revisions of the core and of tools. Prepare upgrades separately, show changes and
   validation, keep private configuration, record the previous revision for rollback, and activate
   only after approval. Opening a session never upgrades anything.
-- Keep reference clones in `repos/` and tool checkouts in `tools/`, unless the host loads
-  instruction files from subfolders; then keep them outside the opened root. Their instructions
+- Keep reference clones in `repos/` and tool checkouts in `tools/` once the subfolder probe in
+  `docs/VALIDATION.md` passes; until then, keep them outside the opened root. Their instructions
   bind only work inside them. Reference their approved paths. Read pinned skill references
   directly; upstream defaults, such as ticket-first conventions, do not become local rules.
 - Declare a tool's local side effects, such as audit logs, caches, or written files, before using

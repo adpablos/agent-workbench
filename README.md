@@ -61,10 +61,10 @@ wb/                      # not a Git repository
 Existing reference repositories may stay where they are. Clone new ones into `repos/` only when a
 task needs them, mirroring the remote: a service map, not the folder layout, records how they
 relate. If a tool writes to the repositories it finds, point it at `work/<task>/`, never at a
-reference. Before cloning into `repos/` or `tools/`, run the subfolder probe in
-[docs/VALIDATION.md](docs/VALIDATION.md): if the host loads instruction files from subfolders and
-cannot be set not to, keep both folders outside the workbench root instead. Keep `private/` and
-`work/` out of this repository; a `.gitignore` is not a substitute for that separation.
+reference. Use `repos/` and `tools/` only once the subfolder probe in
+[docs/VALIDATION.md](docs/VALIDATION.md) passes; until then, keep both folders outside the
+workbench root. Keep `private/` and `work/` out of this repository; a `.gitignore` is not a
+substitute for that separation.
 
 ## Where information lives
 
