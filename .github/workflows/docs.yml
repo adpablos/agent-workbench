@@ -1,0 +1,47 @@
+name: Docs
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+# A new push to a pull request replaces its unfinished run.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  docs:
+    name: docs
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # Tables and fenced code are exempt: their rows cannot be wrapped.
+      - name: Markdown lines within 100 characters
+        run: |
+          find . -name '*.md' -not -path './.git/*' -print0 | xargs -0 perl -CSD -ne '
+            chomp;
+            if (/^\s*```/) { $fence = !$fence }
+            elsif (!$fence && !/^\s*\|/ && length > 100) {
+              print "$ARGV:$.: ", length, " characters\n"; $bad = 1;
+            }
+            if (eof) { close ARGV; $fence = 0 }
+            END { exit $bad }'
+      - name: Relative links resolve
+        run: |
+          find . -name '*.md' -not -path './.git/*' -print0 | xargs -0 perl -CSD -ne '
+            while (/\]\(([^)\s#]+)/g) {
+              my $target = $1;
+              next if $target =~ /^[a-z][a-z0-9+.-]*:/i;
+              (my $dir = $ARGV) =~ s{/[^/]*$}{};
+              unless (-e "$dir/$target") { print "$ARGV:$.: missing $target\n"; $bad = 1 }
+            }
+            close ARGV if eof;
+            END { exit $bad }'

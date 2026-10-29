@@ -88,8 +88,10 @@ and declare its local side effects. Its UI is not required.
 - This repository has no `AGENTS.md` on purpose: inside a workbench, a nested `AGENTS.md` could be
   discovered as runtime instructions. For the same reason, the entrypoint template is named
   `workbench-entrypoint.md`. Contributor guidance lives here.
-- Changes follow the Review section of `OPERATING.md`: a local commit, cross-family review of that
-  exact SHA, and at most two correction rounds.
+- Changes reach `main` only through pull requests. The `docs` check must pass, and a reviewer
+  from the other model family reviews the exact head, as in the Review section of `OPERATING.md`,
+  with at most two correction rounds.
+- Note each user-visible change under Unreleased in [CHANGELOG.md](CHANGELOG.md).
 - Add an executable only for a demonstrated, repeated need, using built-in modules, portable
   paths, and tests of real failure modes on native Windows.
 
