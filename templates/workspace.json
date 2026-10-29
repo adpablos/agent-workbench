@@ -3,7 +3,8 @@
   "approved": "YYYY-MM-DD",
   "core": {
     "path": "core",
-    "revision": "<commit SHA>"
+    "revision": "<commit SHA>",
+    "previous_revision": "<commit SHA before the last update>"
   },
   "sources": [
     {
