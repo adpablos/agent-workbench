@@ -82,7 +82,8 @@ Ask the agent: "Update the core by following `core/README.md`." From the workben
    one, in `private/workspace.json` with the previous revision as the rollback point, and removes
    the candidate with `git -C core worktree remove ../work/core-update`.
 5. Reruns the preflight probes that the changes affect. If one fails, it moves the core back to
-   the previous revision and reports.
+   the previous revision, restores that revision as the pin in `private/workspace.json`, and
+   reports.
 
 A different candidate needs its own validation and approval. Nobody edits the pin by hand.
 
