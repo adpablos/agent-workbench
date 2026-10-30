@@ -46,9 +46,9 @@ evidence. Severity and materiality are separate. A style preference is at most a
 ## Verdicts
 
 A verdict counts only when the configured reviewer gives it after the request, for the current head,
-with no blocking finding open. Under `re-review: delta`, a finding outside the diff is recorded as a
-follow-up and does not block, unless it is P0, P1, or a real security risk. A review tool that gives
-no verdict line counts as clean only through a submitted review of that head with no findings.
+with no blocking finding open. Under `re-review: delta`, a new finding outside the diff is recorded
+as a follow-up and does not block, unless it is P0, P1, or a real security risk. A review tool that
+gives no verdict line counts as clean only through a submitted review of that head with no findings.
 
 These are not verdicts: an acknowledgement, a reaction, a started workflow, a partial review, a
 timeout, silence, passing checks, or approval of an earlier head.
@@ -70,8 +70,9 @@ setting decides what a round covers. Under the default, `delta`:
 - The reviewer gets the earlier findings and the diff since the reviewed commit, and checks only
   that the findings are resolved and that the fix broke nothing. Where the host allows it, resume
   the same reviewer session with the model set explicitly.
-- Anything outside that diff does not block, unless it is P0, P1, or a real security risk. It goes
-  to a follow-up list or another pull request.
+- Anything new outside that diff does not block, unless it is P0, P1, or a real security risk. It
+  goes to a follow-up list or another pull request. An earlier finding stays open until it is fixed
+  or rejected with evidence, wherever it is.
 - `review-rounds` still applies: if the rounds run out, stop, and people decide.
 
 A delta round can miss what a new look at everything would find. Save a full review from scratch for
