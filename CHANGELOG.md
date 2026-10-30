@@ -7,6 +7,9 @@ pin a release tag together with its commit.
 
 ## Unreleased
 
+- `docs/PULL-REQUESTS.md` defines what a pull request contains, the review request, what counts as
+  a material finding and a verdict, how to answer findings, what later rounds cover, and what
+  happens when the base moves.
 - `docs/DEFAULTS.md` lists what the core does by default, with one-line settings in
   `private/POLICY.md` or a project's agent instructions, and a five-rule safety floor that takes a
   recorded waiver to change. Project practices such as the changelog and versioning apply according
