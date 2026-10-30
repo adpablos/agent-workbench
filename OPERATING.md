@@ -35,8 +35,9 @@ and `private/POLICY.md` before acting.
 
 Each assignment states its role, outcome, acceptance criteria, reference sources, instruction
 paths, workspace, writable scope, authority, dependencies, expected evidence, and return route.
-Give the smallest sufficient context. Do not assume a delegated agent discovers this workbench's
-instructions: pass their paths.
+Give the smallest sufficient context. Hosts differ in which instruction files a delegated agent
+discovers, so pass their paths: this workbench's, and the instruction files of each repository it
+works in. `docs/HOSTS.md` records known differences between hosts.
 
 - **Subagent:** short, bounded work. Capture its result in the task record before your turn ends;
   its handle may not outlive you.
@@ -52,7 +53,8 @@ instructions: pass their paths.
 
 Choose approved models by task: economical ones for bounded, verifiable work, stronger reasoning
 for ambiguous analysis and difficult review. Select models explicitly for implementation and
-review (see Review). A model change is not a harness change.
+review (see Review), also when resuming a session: a resume can fall back to the host's default.
+A model change is not a harness change.
 
 ## Copies and references
 
@@ -62,8 +64,9 @@ review (see Review). A model change is not a harness change.
   several copies; one integration owner combines results. Do not split coupled work only to add
   agents.
 - Prefer an independent clone to a Git worktree when the reference must stay untouched: worktrees
-  share its Git metadata. A local clone's `origin` is the reference itself, so disable pushing to
-  it right after cloning: `git -C work/<task>/<repo> remote set-url --push origin DISABLED`.
+  share its Git metadata. Clone from the remote when the task will publish a branch. A clone of a
+  local reference has it as `origin`, so disable pushing to it right after cloning:
+  `git -C work/<task>/<repo> remote set-url --push origin DISABLED`.
 - Never clean, reset, or stash user work in a reference, including to make a check pass.
 - Local experiments use isolated copies, approved dependencies, synthetic data, and mocks; they
   never call real services. Approved documentary or API reads are separate from experiments.
@@ -105,11 +108,12 @@ references, not credentials, and stay private.
    that exact SHA and confirm that no relevant uncommitted changes remain.
 4. Get independent review from a different model family, using the pairing in
    `private/POLICY.md`. Model evidence, for the implementing and the reviewing session alike, is a
-   host-reported execution model or an explicit selection the host shows for that session. Record
-   its source and label it *reported* or *configured*; neither is backend verification. A prompt
-   claim, an unacknowledged delegation parameter, unidentified automatic routing, or missing
-   attribution is not evidence. If a subagent cannot be attributed, use an explicitly bound review
-   session where possible; otherwise the review stays pending.
+   host-reported execution model or an explicit selection the host shows for that session, read
+   from the turn that did the work; `docs/HOSTS.md` says where each host shows it. Record its
+   source and label it *reported* or *configured*; neither is backend verification. A prompt claim,
+   an unacknowledged delegation parameter, unidentified automatic routing, or missing attribution
+   is not evidence. If a subagent cannot be attributed, use an explicitly bound review session where
+   possible; otherwise the review stays pending.
 5. Resolve findings with evidence, rerun affected checks, and review the new SHA. Allow an initial
    review plus at most two autonomous correction rounds.
 6. If substantial blockers or disagreements remain, report the blocker, evidence, and your

@@ -24,4 +24,4 @@ linked file; a mapping tool's dossiers replace it once adopted.
 
 | Locator | What it is | Provenance | Checked |
 |---|---|---|---|
-| `C:/src/example-service` | Example service repository | `workspace.json` | YYYY-MM-DD |
+| `/path/to/example-service` | Example service repository | `workspace.json` | YYYY-MM-DD |

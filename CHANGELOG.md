@@ -7,6 +7,14 @@ pin a release tag together with its commit.
 
 ## Unreleased
 
+- The core no longer assumes one host or operating system. `docs/HOSTS.md` records where Claude
+  Code, Codex, and other hosts differ in instruction loading, delegation, and model evidence.
+- A Claude Code workbench excludes `repos/` and `tools/` in `.claude/settings.json`, so that the
+  instructions of reference repositories do not reach the Director. The subfolder probe now targets
+  those folders, and it no longer accepts a clean reply as proof: an agent may ignore a file the
+  host loaded.
+- Assignments name the instruction files of each repository, and model evidence comes from the
+  turn that did the work.
 - The agent updates the core on request: it validates the candidate commit apart from the active
   core, activates exactly that commit after approval, and records the new and previous revisions
   in `workspace.json`.

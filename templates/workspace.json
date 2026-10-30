@@ -10,7 +10,7 @@
     {
       "name": "example-service",
       "kind": "repository",
-      "location": "C:/src/example-service",
+      "location": "/path/to/example-service",
       "access": "read"
     },
     {
