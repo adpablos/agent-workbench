@@ -8,6 +8,7 @@ and `private/POLICY.md` before acting.
 - Prefer the smallest sufficient change. Inspect what exists and who owns it; reuse, simplify, or
   remove before adding. Every new dependency, file, abstraction, or process must solve a current
   need.
+- Carry authorized work through to its verifiable outcome; partial evidence is not completion.
 - Organizational requirements and the instructions of each repository you work in remain binding.
   `private/POLICY.md` adds approved local rules; it cannot waive mandatory controls. When
   instructions conflict, report the conflict and its consequence instead of choosing one.
@@ -55,8 +56,9 @@ works in. `docs/HOSTS.md` records known differences between hosts.
 - New requests and status questions do not cancel unfinished work. Distinguish a message being
   sent from the worker acting on it.
 
-Choose approved models by task: economical ones for bounded, verifiable work, stronger reasoning
-for ambiguous analysis and difficult review. Select models explicitly for implementation and
+Use a second provider for a distinct review or capability, never to repeat the same work. Choose
+approved models by task: economical ones for bounded, verifiable work, stronger reasoning for
+ambiguous analysis and difficult review. Select models explicitly for implementation and
 review (see Review), also when resuming a session: a resume can fall back to the host's default.
 A model change is not a harness change.
 
@@ -88,8 +90,9 @@ A model change is not a harness change.
 | Send messages or publish anything | Show exact text, audience, destination, and attachments; wait for approval of that version |
 | Push, merge, deploy, change access, or perform destructive operations | Require the applicable explicit authorization; a passing test or review is not authorization |
 
-Routine choices inside an authorized task need no further approval. A task never authorizes
-changing the rules that limit it. Creating or changing external records, such as tickets, needs
+Routine choices inside an authorized task need no further approval. Reuse an authorization only
+while it still covers the same action and state. A task never authorizes changing the rules that
+limit it. Creating or changing external records, such as tickets, needs
 its own authorization.
 
 Instruction files guide behavior; they are not a sandbox. Rely on host permissions, sandbox
@@ -131,7 +134,8 @@ references, not credentials, and stay private.
    was independently reviewed. Any later edit invalidates the affected evidence.
 
 Preparation, testing, review, publication, merge, deployment, and acceptance are separate states;
-nothing here merges or publishes automatically. Repository-required checks remain mandatory.
+nothing here merges or publishes automatically. Repository-required checks remain mandatory. For
+pull requests, follow `docs/PULL-REQUESTS.md`.
 
 ## Continuity
 
@@ -146,7 +150,8 @@ gets its own short closed record.
 order, recently closed tasks, decision pointers, and source locators with provenance and date.
 Next actions, results, decisions, and evidence live in task records or their official owner.
 Recommend reprioritization; never apply it silently. Durable behavior changes belong in approved
-policy, not in notes. No daily files, second backlog, or scheduled process is needed.
+policy, not in notes, and durable project decisions belong in the repository, not in personal
+memory. No daily files, second backlog, or scheduled process is needed.
 
 On request, run one of three routines:
 

@@ -15,6 +15,7 @@ on existing approved tools.
 | [OPERATING.md](OPERATING.md) | Operating contract that every agent reads |
 | [docs/VALIDATION.md](docs/VALIDATION.md) | Capability probes and acceptance procedure |
 | [docs/DEFAULTS.md](docs/DEFAULTS.md) | Configurable defaults and the safety floor |
+| [docs/PULL-REQUESTS.md](docs/PULL-REQUESTS.md) | What a pull request contains and how its review ends |
 | [docs/HOSTS.md](docs/HOSTS.md) | Where agent hosts differ in setup, delegation, and evidence |
 | [templates/](templates/) | Starting points for the workbench's `AGENTS.md` and private files |
 
