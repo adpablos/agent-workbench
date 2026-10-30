@@ -1,11 +1,14 @@
 # Changelog
 
-User-visible changes to the core. Versions follow [Semantic Versioning](https://semver.org/). The
-first release, `v0.1.0`, is tagged once a workbench passes base acceptance in
-[docs/VALIDATION.md](docs/VALIDATION.md); until then, changes stay under Unreleased. Workbenches
-pin a release tag together with its commit.
+User-visible changes to the core. Versions follow [Semantic Versioning](https://semver.org/), and
+each one is tagged on `main` after a workbench passes base acceptance in
+[docs/VALIDATION.md](docs/VALIDATION.md). Workbenches pin a release tag together with its commit.
 
 ## Unreleased
+
+None.
+
+## 0.1.0 - 2026-10-30
 
 - `docs/PULL-REQUESTS.md` defines what a pull request contains, the review request, what counts as
   a material finding and a verdict, how to answer findings, what later rounds cover, and what
