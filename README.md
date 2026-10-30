@@ -14,6 +14,7 @@ on existing approved tools.
 |---|---|
 | [OPERATING.md](OPERATING.md) | Operating contract that every agent reads |
 | [docs/VALIDATION.md](docs/VALIDATION.md) | Capability probes and acceptance procedure |
+| [docs/DEFAULTS.md](docs/DEFAULTS.md) | Configurable defaults and the safety floor |
 | [docs/HOSTS.md](docs/HOSTS.md) | Where agent hosts differ in setup, delegation, and evidence |
 | [templates/](templates/) | Starting points for the workbench's `AGENTS.md` and private files |
 
@@ -97,29 +98,53 @@ git clone <repository URL> work/<task>/<repo>
 
 Ask the agent: "Update the core by following `core/README.md`." From the workbench folder, it:
 
-1. Runs `git -C core fetch` and takes the tip of the remote default branch, by its full SHA, as
-   the candidate.
+1. Runs `git -C core fetch --tags` and takes, by its full SHA, the revision in the project's
+   `core-version` setting, otherwise the latest release tag, otherwise the tip of the remote default
+   branch, as the candidate. `main` means `origin/main`, never a local branch. If two projects
+   require different versions, it reports the conflict: each workbench has one core, so use one
+   workbench per version.
 2. Checks the candidate out apart from the active core:
    `git -C core worktree add --detach ../work/core-update <SHA>`.
 3. Validates it there: changelog entries and changed files since the revision pinned in
    `private/workspace.json`, the core paths that the entrypoint and private files rely on, and new
    template fields or probes. It shows you the SHA, the changes, and the result, and waits.
-4. After your approval, activates exactly that commit with `git -C core merge --ff-only <SHA>`;
-   `git pull` could add commits you did not see. It records the SHA, and its release tag if it has
-   one, in `private/workspace.json` with the previous revision as the rollback point, and removes
-   the candidate with `git -C core worktree remove ../work/core-update`.
+4. After your approval, activates exactly that commit with `git -C core checkout --detach <SHA>`,
+   which also works for a tag older than the active core, and confirms that
+   `git -C core rev-parse HEAD` prints that SHA; `git pull` could add commits you did not see. It
+   records the SHA, and its release tag if it has one, in `private/workspace.json` with the previous
+   revision as the rollback point, and removes the candidate with
+   `git -C core worktree remove ../work/core-update`.
 5. Reruns the preflight probes that the changes affect. If one fails, it moves the core back to
    the previous revision, restores that revision as the pin in `private/workspace.json`, and
    reports.
 
-A different candidate needs its own validation and approval. Nobody edits the pin by hand.
+A different candidate needs its own validation and approval. Prefer this procedure to editing the
+pin by hand.
+
+`main` stays usable, so a project can follow it before a release exists. People on the same project
+may then sit on different commits; a release tag in `core-version` keeps them identical.
+
+## Change the defaults
+
+The core ships with defaults you can change with one line: report format, changelog, versioning,
+review, and more. [docs/DEFAULTS.md](docs/DEFAULTS.md) lists them, says when each applies, and
+describes the small safety floor that takes a recorded decision to change. Ask the agent to "show
+the settings" to see what applies now.
+
+## Work with others
+
+Each person keeps their own workbench; `private/` is never shared. Shared rules live in the
+project's repository, as settings in its agent instructions, and shared work lives in that
+repository and its pull requests. The repository must make sense without a workbench.
 
 ## Where information lives
 
 | Information | Owner |
 |---|---|
 | Common behavior and role contracts | `core/OPERATING.md` |
-| Approved personal or team rules and preferences | `private/POLICY.md` |
+| Defaults, settings, and the safety floor | `core/docs/DEFAULTS.md` |
+| Settings that change what a project delivers | That project's agent instructions |
+| Approved personal rules and preferences | `private/POLICY.md` |
 | Permitted scope, entrypoints, and pins | `private/workspace.json` |
 | Priorities and links to tasks, decisions, and sources | `private/INDEX.md` |
 | Coordination decisions, authorization, results, and next action | One record per task in `private/tasks/` |
@@ -137,14 +162,19 @@ effects. Its UI is not required.
 
 ## Contributing to the core
 
+Anyone can contribute, and you need neither a workbench nor a particular agent. Open an issue to
+discuss a larger change, or fork the repository and open a pull request against `main`. The
+`docs` check must pass; the maintainer arranges the independent review of your final commit, and
+you answer any findings.
+
 - Keep everything generic and in English, with synthetic examples only: no organization names,
   internal addresses or paths, account identifiers, conversations, or operational records.
 - Keep `OPERATING.md` short, about 2,500 words at most; move detail into documents read on demand.
 - This repository has no `AGENTS.md` or `CLAUDE.md` on purpose: inside a workbench, a nested
   instruction file could be discovered as runtime instructions. For the same reason, the
   entrypoint template is named `workbench-entrypoint.md`. Contributor guidance lives here.
-- Changes reach `main` only through pull requests. The `docs` check must pass, and a reviewer
-  from the other model family reviews the exact head, as in the Review section of `OPERATING.md`,
+- Changes reach `main` only through pull requests, and each one leaves `main` usable. A reviewer
+  from another model family reviews the exact head, as in the Review section of `OPERATING.md`,
   with at most two correction rounds.
 - Note each user-visible change under Unreleased in [CHANGELOG.md](CHANGELOG.md).
 - Add an executable only for a demonstrated, repeated need, using built-in modules, portable
