@@ -6,9 +6,16 @@ requester approves the exact text.
 
 Approved: YYYY-MM-DD by <requester>
 
+## Agent Workbench settings
+
+Personal settings from `core/docs/DEFAULTS.md`, one per line. Settings that change what a project
+delivers go in that project's agent instructions instead.
+
+report: blocks
+
 ## Review pairing
 
-Implementation and review use different model families:
+For repositories without a `review` setting, implementation and review use different model families:
 
 - <Family A> implementation is reviewed by <Family B>.
 - <Family B> implementation is reviewed by <Family A>.

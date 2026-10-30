@@ -62,10 +62,10 @@ changes stay as they are; never clean or reset a repository to make a comparison
 | Environment preflight | The probes above that decide the next step | Yes |
 | Deterministic checks, if any | Synthetic tests of observable properties and real failure modes, on each platform the check supports | Only if a check ships |
 | Synthetic delegation | Two independent bounded tasks with explicit roles and separate handles; parallel if supported, otherwise sequenced | Yes |
-| Synthetic code change | Small change in an isolated copy, meaningful checks, cross-family review of the final SHA, reference baseline unchanged | Yes |
+| Synthetic code change | Small change in an isolated copy, meaningful checks, independent review of the final SHA, reference baseline unchanged | Yes |
 | Review stop behavior | Missing or unattributed reviewer, stale revision, and exhausted rounds all leave readiness pending | Yes |
 | Recovery and continuity | Resume, Check in, and Wrap up across sessions: ownership reconciled, an unresolved commitment kept, no duplicate dispatch or competing writers | Yes |
-| Boundary behavior | Writable destinations, preserved reference content, permitted reads, mock-only experiments, approval stops, English persistent outputs | Yes |
+| Boundary behavior | Writable destinations, preserved reference content, permitted reads, mock-only experiments, approval stops, persistent outputs in the configured language | Yes |
 | First integration | One read-only integration: provenance, coverage gaps, declared local side effects | No; it has its own gate |
 
 The synthetic code change uses a small fixture that is built after the preflight, once the
@@ -75,7 +75,7 @@ target environment's toolchain is known.
 
 1. Open the workbench and establish capabilities with the probes that matter.
 2. Delegate two independent tasks.
-3. Complete a small verified code change with cross-family review of its final SHA.
+3. Complete a small verified code change with independent review of its final SHA.
 4. Recover from another session with Resume, then run Check in and Wrap up.
 
 Record elapsed time, visible usage, and requester interventions once during this journey; no

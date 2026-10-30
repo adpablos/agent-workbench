@@ -25,7 +25,7 @@ and limits under Results and evidence. -->
 
 ## Review
 
-| SHA | Implementer model (source; reported or configured) | Reviewer model (source; reported or configured) | Round | Result |
+| SHA | Implementer (model with source and label, or person) | Reviewer (model with source and label, or person and where) | Round | Result |
 |---|---|---|---|---|
 
 ## Blockers

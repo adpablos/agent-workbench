@@ -7,6 +7,16 @@ pin a release tag together with its commit.
 
 ## Unreleased
 
+- `docs/DEFAULTS.md` lists what the core does by default, with one-line settings in
+  `private/POLICY.md` or a project's agent instructions, and a five-rule safety floor that takes a
+  recorded waiver to change. Project practices such as the changelog and versioning apply according
+  to what a project is, or is meant to be.
+- Independent review is the floor; a different model family is the default way to get it. Rounds
+  after the first review cover the earlier findings and the new diff, unless a project sets
+  `re-review: full`. The report labels follow the conversation's language and can be turned off.
+- Updating the core takes a project's `core-version`, then the latest tag, then the tip of `main`.
+- The README explains how anyone can contribute, how to work with others, and that `main` stays
+  usable.
 - The core no longer assumes one host or operating system. `docs/HOSTS.md` records where Claude
   Code, Codex, and other hosts differ in instruction loading, delegation, and model evidence.
 - A Claude Code workbench excludes `repos/` and `tools/` in `.claude/settings.json`, so that the
