@@ -5,8 +5,8 @@ information sources: one Director that delegates bounded work, independent cross
 code changes, and private records that let work resume from another session.
 
 It adds no runtime, scheduler, background service, database, dashboard, or installer. It relies
-on the agent host you already have (first target: VS Code with GitHub Copilot on native Windows)
-and on existing approved tools.
+on the agent host you already have, such as Claude Code, Codex, or GitHub Copilot in VS Code, and
+on existing approved tools.
 
 ## Contents
 
@@ -14,24 +14,33 @@ and on existing approved tools.
 |---|---|
 | [OPERATING.md](OPERATING.md) | Operating contract that every agent reads |
 | [docs/VALIDATION.md](docs/VALIDATION.md) | Capability probes and acceptance procedure |
+| [docs/HOSTS.md](docs/HOSTS.md) | Where agent hosts differ in setup, delegation, and evidence |
 | [templates/](templates/) | Starting points for the workbench's `AGENTS.md` and private files |
 
 ## Set up a workbench
 
-1. Create a folder with a short path outside any Git repository, for example `C:/wb`. Short paths
-   keep deep build trees within Windows path limits.
-2. Place this repository at `core/` at a pinned revision, through the import route your
-   organization approves. With Git, from the workbench folder: `git clone <repository URL> core`
-   (without `core`, the folder takes the repository's name), note the revision that
-   `git -C core rev-parse HEAD` prints, and disable pushing from the workbench:
-   `git -C core remote set-url --push origin DISABLED`.
-3. Open the workbench folder in VS Code and ask the agent: "Set up this workbench by following
-   `core/README.md`." It reads `core/OPERATING.md` and performs the remaining steps with you; you
-   can also perform them by hand.
+You need Git, a login that can clone the repositories you will work on, and an agent host. Claude
+Code must be 2.1.281 or later.
+
+1. Create a folder with a short path, for example `~/wb` or `C:/wb`, outside any Git repository and
+   below no folder with its own agent instructions. On Windows, a short path also keeps deep build
+   trees within path limits.
+2. Place this repository at `core/` at a pinned revision. With Git, from the workbench folder:
+   `git clone https://github.com/adpablos/agent-workbench.git core` (without `core`, the folder
+   takes the repository's name), note the revision that `git -C core rev-parse HEAD` prints, and
+   disable pushing from the workbench: `git -C core remote set-url --push origin DISABLED`. If your
+   organization restricts imports, use its approved route.
+3. Open the workbench folder in your agent host, accept its prompt to trust the folder if it shows
+   one, and ask the agent: "Set up this workbench by following `core/README.md`." It reads
+   `core/OPERATING.md` and performs the remaining steps with you; you can also perform them by
+   hand.
 4. Copy `core/templates/workbench-entrypoint.md` to `AGENTS.md` at the workbench root. This is the
-   workbench's entrypoint: the host loads it, and it points every agent to the rules. Create
-   `private/`, copy `POLICY.md`, `workspace.json`, and `INDEX.md` into it, and create
-   `private/tasks/` and `work/`. Create only what is missing; never overwrite an existing file.
+   workbench's entrypoint: the host loads it, and it points every agent to the rules. Add no other
+   instruction file at the root. Create `private/`, copy `POLICY.md`, `workspace.json`, and
+   `INDEX.md` into it, and create `private/tasks/` and `work/`. If you may use Claude Code here,
+   also create `.claude/settings.json` as
+   [docs/HOSTS.md](docs/HOSTS.md#claude-code-references-inside-the-workbench) describes. Create
+   only what is missing; never overwrite an existing file.
 5. Complete `private/POLICY.md` (review pairing, approved models, local preferences),
    `private/workspace.json` (approved sources, writable paths, pins), and one task record per
    initial priority, linked from `private/INDEX.md`. Read what the environment shows without
@@ -40,12 +49,13 @@ and on existing approved tools.
    prepared. Do not ask again for what `OPERATING.md` covers.
 6. Show the exact content of `POLICY.md` and `workspace.json`. They take effect only after the
    requester approves that content; then record the approval date and approver in each.
-7. Run the preflight probes in [docs/VALIDATION.md](docs/VALIDATION.md) that decide your next step.
-   The first one, in a new chat, shows whether `AGENTS.md` is loaded.
+7. Run the preflight probes in [docs/VALIDATION.md](docs/VALIDATION.md) that decide your next step,
+   on each host you use. The first one, in a new chat, shows whether `AGENTS.md` is loaded.
 
 ```text
 wb/                      # not a Git repository
   AGENTS.md              # entrypoint, from core/templates/workbench-entrypoint.md
+  .claude/settings.json  # Claude Code only, see docs/HOSTS.md
   core/                  # this repository, pinned
   private/
     POLICY.md            # approved rules and preferences
@@ -65,6 +75,23 @@ reference. Use `repos/` and `tools/` only once the subfolder probe in
 [docs/VALIDATION.md](docs/VALIDATION.md) passes; until then, keep both folders outside the
 workbench root. Keep `private/` and `work/` out of this repository; a `.gitignore` is not a
 substitute for that separation.
+
+### Add a repository
+
+From the workbench folder, clone a read-only reference into `repos/`, and add it to the sources in
+`private/workspace.json` with the requester's approval:
+
+```bash
+git clone <repository URL> repos/<project>/<repo>
+git -C repos/<project>/<repo> remote set-url --push origin DISABLED
+```
+
+For each task that changes it, clone a writable copy from the same URL into `work/`. Its `origin`
+stays the remote, so it can publish a branch once that is authorized:
+
+```bash
+git clone <repository URL> work/<task>/<repo>
+```
 
 ## Update the core
 
@@ -113,15 +140,17 @@ effects. Its UI is not required.
 - Keep everything generic and in English, with synthetic examples only: no organization names,
   internal addresses or paths, account identifiers, conversations, or operational records.
 - Keep `OPERATING.md` short, about 2,500 words at most; move detail into documents read on demand.
-- This repository has no `AGENTS.md` on purpose: inside a workbench, a nested `AGENTS.md` could be
-  discovered as runtime instructions. For the same reason, the entrypoint template is named
-  `workbench-entrypoint.md`. Contributor guidance lives here.
+- This repository has no `AGENTS.md` or `CLAUDE.md` on purpose: inside a workbench, a nested
+  instruction file could be discovered as runtime instructions. For the same reason, the
+  entrypoint template is named `workbench-entrypoint.md`. Contributor guidance lives here.
 - Changes reach `main` only through pull requests. The `docs` check must pass, and a reviewer
   from the other model family reviews the exact head, as in the Review section of `OPERATING.md`,
   with at most two correction rounds.
 - Note each user-visible change under Unreleased in [CHANGELOG.md](CHANGELOG.md).
 - Add an executable only for a demonstrated, repeated need, using built-in modules, portable
-  paths, and tests of real failure modes on native Windows.
+  paths, and tests of real failure modes on each platform it supports.
+- Keep [docs/HOSTS.md](docs/HOSTS.md) to differences that change what a user does, each with the
+  host version where it was observed.
 
 ## Acknowledgements
 
