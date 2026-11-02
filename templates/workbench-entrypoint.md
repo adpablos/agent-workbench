@@ -8,6 +8,9 @@ Before acting, read these files in full; do not rely on an earlier reading:
 1. `core/OPERATING.md`: the operating contract.
 2. `private/POLICY.md`: approved local rules and preferences.
 
+A read counts only when the tool returned the whole file. A refused, truncated, or partial read, or
+one issued together with the first operation, does not: finish reading before you act.
+
 Read `private/workspace.json` before accessing any source or path, and `private/INDEX.md` when
 resuming work. If `core/OPERATING.md` cannot be read, report that and do nothing else. If
 `private/POLICY.md` or `private/workspace.json` is missing or still shows a placeholder approval

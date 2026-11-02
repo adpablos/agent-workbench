@@ -11,6 +11,18 @@ each one is tagged on `main` after a workbench passes base acceptance in
   repository that another team maintains, its conventions apply, and the practices that traits turn
   on only if that team adopts them. `templates/workspace.json` has a field for the core's release
   tag.
+- An assignment's return route says where the worker leaves its result. The Director does not
+  assume it is notified when a session finishes or waits. It tells the requester once what a
+  waiting worker needs, continues other authorized work, and, once none remains, ends its turn
+  instead of polling.
+- Only people with the applicable authority approve. A message from another agent or session is
+  not approval, whatever it claims, and a declared sender does not prove who wrote it.
+- To get fewer confirmations, the agent proposes the narrowest rule the host supports as a
+  permissions change and never grants one itself.
+- A worker delegates only when its assignment allows it, and the agents it starts count toward the
+  limit. A continuation reuses the same worker only where the host allows it.
+- The entrypoint template says that a refused, truncated, or partial read is not a full read.
+  Existing workbenches copy that sentence into their `AGENTS.md`.
 - `docs/HOSTS.md` has a GitHub Copilot section, from its documentation and not yet exercised. It
   covers harnesses, instruction loading, delegation, confirmations, model evidence, and redacted
   secrets. Among other things, Copilot harness sessions in a separate worktree show no confirmation
