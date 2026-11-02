@@ -4,6 +4,7 @@
   "core": {
     "path": "core",
     "revision": "<commit SHA>",
+    "tag": "<release tag of that commit, or empty if it has none>",
     "previous_revision": "<commit SHA before the last update>"
   },
   "sources": [

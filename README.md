@@ -116,9 +116,13 @@ Ask the agent: "Update the core by following `core/README.md`." From the workben
    records the SHA, and its release tag if it has one, in `private/workspace.json` with the previous
    revision as the rollback point, and removes the candidate with
    `git -C core worktree remove ../work/core-update`.
-5. Reruns the preflight probes that the changes affect. If one fails, it moves the core back to
-   the previous revision, restores that revision as the pin in `private/workspace.json`, and
-   reports.
+5. Reruns the preflight probes that the changes affect, and reports. If the core itself breaks,
+   because a core path that the entrypoint or the private files rely on is gone, it moves the core
+   back to the previous revision and restores that revision, with its release tag if it has one, as
+   the pin in `private/workspace.json`. If a probe fails because of the host, moving back would not
+   fix the host and would only weaken the probe: it keeps the update and stops relying on what that
+   probe established, for example by moving reference clones and tool checkouts outside the opened
+   root while the subfolder probe fails.
 
 A different candidate needs its own validation and approval. Prefer this procedure to editing the
 pin by hand.
