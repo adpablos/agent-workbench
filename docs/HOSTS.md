@@ -103,11 +103,77 @@ Observed with the same versions.
 | Codex subagent | Its own rollout, with `parent_thread_id` | *reported* |
 | Review bot on a pull request | What the integration documents or pins for that run. An account name alone proves nothing | *configured*, otherwise pending |
 
+## GitHub Copilot
+
+From documentation read on 2026-11-02, not exercised: the VS Code pages are dated 2026-10-28, and
+GitHub's Copilot CLI pages carry no date. They are newer than VS Code 1.137.0, so older versions may
+lack some settings, harnesses, or commands. Installed behavior takes precedence: run the probes
+before relying on a line, then replace it with what you observed and the version.
+
+VS Code runs each session in a harness: Local, Copilot, Claude, or Codex. A Copilot CLI session in
+VS Code uses the Copilot harness, which shares its runtime with Copilot CLI. Instruction loading,
+delegation, and permissions depend on the harness, so probe each harness you use as Director as a
+separate host.
+
+### Copilot: instruction loading
+
+- The Copilot harness loads `AGENTS.md`, `.github/copilot-instructions.md`, and
+  `.github/instructions/*.instructions.md`. Copilot CLI also loads `CLAUDE.md` and `GEMINI.md`, and
+  combines all of them with no stated precedence. Keep one instruction file per folder.
+- Both discover `AGENTS.md` in the folders from the repository root to the working directory, and
+  Copilot CLI also in the folders on the path of the file it works on. No documented setting
+  excludes a folder as `claudeMdExcludes` does: in Copilot CLI, `/instructions` turns single files
+  off and `--no-custom-instructions` turns all of them off. Keep `repos/` and `tools/` outside the
+  opened root until the subfolder probe passes.
+- `chat.useNestedAgentsMdFiles` does not control the Copilot harness.
+- In Copilot CLI, `--add-dir` also loads that folder's `.github/skills` and `.github/agents` as
+  trusted configuration, so it does not give neutral access to a reference.
+- Evidence of a load: in VS Code, the system prompt in the Chat Debug view or the discovery events
+  in Agent Debug Logs; the customizations editor shows only what was discovered. In Copilot CLI,
+  `/env` and `/instructions`.
+
+### Copilot: delegation and sessions
+
+- A Local subagent inherits the main agent's instructions and tools, unless it runs a custom agent,
+  but not the conversation, and it takes no follow-up messages. It cannot start subagents unless
+  `chat.subagents.allowInvocationsFromSubagents` is on.
+- A Copilot CLI subagent that runs a custom agent loads `AGENTS.md` and other instruction files
+  only with `include-custom-instructions: true`; the default is `false`. Copilot CLI allows nested
+  subagents. Name the instruction paths in every assignment, and say whether the worker may
+  delegate.
+- No page describes a notice to another session when a session finishes or waits for a
+  confirmation. The session list shows its state; in Copilot CLI, so does `/tasks`.
+- In VS Code, Copilot harness sessions in a separate worktree run with Allow all and show no
+  confirmation prompts. There, only technical limits, such as disabled pushing or the sandbox, stop
+  an action.
+
+### Copilot: confirmations
+
+- VS Code: `chat.tools.terminal.autoApprove` takes commands or `/regular expressions/`. A `false`
+  rule wins over `true`, but it asks for approval rather than blocking. A compound command is
+  approved only when every subcommand matches, and the parser may miss subcommands. Which settings
+  scope wins is not documented. **Chat: Manage Tool Approval** reviews saved approvals and **Chat:
+  Reset Tool Confirmations** clears them.
+- Copilot CLI: `--allow-tool` and `--deny-tool` take patterns such as `shell(git status)`, and deny
+  wins, also over `--allow-all`. `shell(git:*)` also matches `git push`. Approvals for a repository
+  or folder persist in `~/.copilot/permissions-config.json`. `/permissions reset` clears the
+  session's approvals, and `/reset-allowed-tools` also clears those saved for the current location.
+- Hooks are in preview in VS Code. In Copilot CLI, a `preToolUse` hook that times out lets the call
+  through, and the documentation says hooks do not replace permissions or sandboxing: do not use
+  them as a control or to approve.
+
+### Copilot: model and secrets
+
+- VS Code shows the model of a response when you hover over it: *reported*. A custom agent's
+  `model` is a preference list, so it is at most *configured*. Copilot CLI `/usage` gives per-model
+  totals for the whole session, which attribute a turn only when one model ran the session.
+- Copilot CLI redacts `GITHUB_TOKEN` and `COPILOT_GITHUB_TOKEN` from its output, and
+  `--secret-env-vars` names more variables to redact. A redacted value in a trace is not evidence
+  of what ran; do not reveal it to check.
+
 ## Other hosts
 
 From their documentation, not exercised.
 
-- **GitHub Copilot in VS Code:** the root `AGENTS.md` is on by default. Discovery in subfolders
-  depends on the session type and on the experimental `chat.useNestedAgentsMdFiles` setting.
 - **Gemini CLI:** it reads `GEMINI.md` by default. List `AGENTS.md` in `context.fileName` so it
   loads the entrypoint.

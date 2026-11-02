@@ -23,6 +23,10 @@ each one is tagged on `main` after a workbench passes base acceptance in
   limit. A continuation reuses the same worker only where the host allows it.
 - The entrypoint template says that a refused, truncated, or partial read is not a full read.
   Existing workbenches copy that sentence into their `AGENTS.md`.
+- `docs/HOSTS.md` has a GitHub Copilot section, from its documentation and not yet exercised. It
+  covers harnesses, instruction loading, delegation, confirmations, model evidence, and redacted
+  secrets. Among other things, Copilot harness sessions in a separate worktree show no confirmation
+  prompts, and a hook that times out does not stop a tool call.
 
 ## 0.1.0 - 2026-10-30
 
