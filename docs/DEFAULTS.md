@@ -59,6 +59,13 @@ Set these in the project's agent instructions.
 | `branches` | `feat/`, `fix/`, `docs/`, `chore/` | Branch name prefixes |
 | `core-version` | Latest release tag, otherwise the tip of `main` | Core revision for everyone on the project; takes a tag or `main` |
 
+## Repositories that others maintain
+
+In a repository that another team maintains, follow its conventions. The project settings above
+apply there only if that team adopts them, for example with these lines in its agent instructions;
+its traits never turn them on. If you are not sure who maintains a repository, treat it as
+maintained by others. Your personal settings and the safety floor still apply to your own work.
+
 ## Personal settings
 
 Set these in `private/POLICY.md`.
