@@ -11,6 +11,10 @@ each one is tagged on `main` after a workbench passes base acceptance in
   repository that another team maintains, its conventions apply, and the practices that traits turn
   on only if that team adopts them. `templates/workspace.json` has a field for the core's release
   tag.
+- `docs/HOSTS.md` has a GitHub Copilot section, from its documentation and not yet exercised. It
+  covers harnesses, instruction loading, delegation, confirmations, model evidence, and redacted
+  secrets. Among other things, Copilot harness sessions in a separate worktree show no confirmation
+  prompts, and a hook that times out does not stop a tool call.
 
 ## 0.1.0 - 2026-10-30
 
