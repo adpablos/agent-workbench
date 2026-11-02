@@ -61,10 +61,11 @@ Set these in the project's agent instructions.
 
 ## Repositories that others maintain
 
-In a repository that another team maintains, follow its conventions. The project settings above
-apply there only if that team adopts them, for example with these lines in its agent instructions;
-its traits never turn them on. If you are not sure who maintains a repository, treat it as
-maintained by others. Your personal settings and the safety floor still apply to your own work.
+In a repository that another team maintains, follow its conventions. The settings that traits turn
+on, `changelog`, `versioning`, `security-policy`, and `repository-baseline`, apply there only if
+that team adopts them, for example with these lines in its agent instructions. The other settings
+still guide your own work where its conventions say nothing, and the safety floor always holds. If
+you are not sure who maintains a repository, treat it as maintained by others.
 
 ## Personal settings
 

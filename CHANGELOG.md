@@ -8,8 +8,9 @@ each one is tagged on `main` after a workbench passes base acceptance in
 
 - Updating the core moves it back only when the core itself breaks. When a probe fails because of
   the host, the workbench keeps the update and stops relying on what that probe established. In a
-  repository that another team maintains, its conventions apply, and the project settings only if
-  that team adopts them. `templates/workspace.json` has a field for the core's release tag.
+  repository that another team maintains, its conventions apply, and the practices that traits turn
+  on only if that team adopts them. `templates/workspace.json` has a field for the core's release
+  tag.
 
 ## 0.1.0 - 2026-10-30
 
