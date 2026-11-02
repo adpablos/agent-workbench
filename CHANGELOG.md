@@ -31,7 +31,7 @@ should receive, propose that release. Workbenches pin a release tag together wit
   prompts, and a hook that times out does not stop a tool call.
 - Merging a pull request does not make a release. Once a merge leaves changes in Unreleased that
   consumers should receive, the agent proposes the release. A later core release reruns only the
-  validation probes and acceptance stages that its changes affect.
+  validation probes and base acceptance stages that its changes affect.
 
 ## 0.1.0 - 2026-10-30
 
