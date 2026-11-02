@@ -76,24 +76,29 @@ target environment's toolchain is known.
 
 ## Release checks
 
-Every release passes Core payload. For each part that a release changes, run the checks of each row
-it matches, on the host whose acceptance the release extends. Combine checks in one session where
-they do not interfere, reuse the workbench and fixtures of the earlier acceptance, and record what
-was not rerun. A change that fits no row, or that changes the contract's structure, such as adding
-a role, takes the base journey.
+Every release passes Core payload. For each behavior that a release changes, wherever it is
+written, run the checks of its row on the host whose acceptance the release extends. A change of
+wording that leaves every behavior as it was needs only Core payload. Combine checks in one session
+where they do not interfere, reuse the workbench and fixtures of the earlier acceptance, and record
+what was not rerun. A change that fits no row, or that changes the contract's structure, such as
+adding a role, takes the base journey.
 
-| Part changed | Checks |
+| Behavior changed | Checks |
 |---|---|
-| `templates/workbench-entrypoint.md`, or the opening of `OPERATING.md` | The probe of whether `core/OPERATING.md` and `private/POLICY.md` are read before acting |
-| `OPERATING.md`: Roles or Delegation | One delegation with explicit roles, separate handles, and its return route |
-| `OPERATING.md`: Review, or `docs/PULL-REQUESTS.md` | Synthetic code change and review stop behavior |
-| `OPERATING.md`: Continuity | Recovery and continuity |
-| `OPERATING.md`: Principles and precedence, Authority, Copies and references, or Reporting; the safety floor in `docs/DEFAULTS.md` | Boundary behavior, for the rule that changed |
-| `OPERATING.md`: Tools and versions, or "Update the core" in `README.md` | One core update from the previous release to the candidate |
-| "Set up a workbench" in `README.md`, or other files in `templates/` | The setup or core update step that the change affects |
-| `docs/DEFAULTS.md` outside the safety floor | A Director lists the settings; the changed ones show their new defaults |
-| A probe in this file, or the `docs/HOSTS.md` section of that host | The probes whose answer the change affects |
-| Wording that does not change what an agent does, other hosts' sections, the rest of this file, `CHANGELOG.md`, and CI | None beyond Core payload |
+| What is read before acting, and when a read counts | The probe of whether `core/OPERATING.md` and `private/POLICY.md` are read before acting |
+| Roles, delegation, or how results return | One delegation with explicit roles, separate handles, and its return route |
+| Review, readiness, or pull requests, including review settings | Synthetic code change and review stop behavior |
+| Ownership, resuming, or handover | Recovery and continuity |
+| Access to sources, writable destinations, approval, references, executables and their local side effects, precedence, or the language of outputs | Boundary behavior, for the rule that changed |
+| Updating the core or a pinned tool | One core update from the previous release to the candidate |
+| Setup, or a template that setup or an update writes | The setup or core update step that writes it |
+| A default's value, with its behavior unchanged | A Director lists the settings and shows the new value |
+| When a project's release is proposed, closed, or tagged | In a synthetic consumed repository, a merged change leads the Director to propose a release that closes Unreleased before any tag |
+| The reference baseline block | Two captures of an unchanged fixture match; captures before and after a change to a tracked and to an ignored file differ |
+| A probe | That probe |
+| How the core itself is released or accepted | The release that ships the change follows the new rule |
+| A host's behavior, in its section of `docs/HOSTS.md` | On that host, the probes whose answer the change affects; none on other hosts |
+| A check in CI | The changed check, run once on input it must reject and once on input it must accept |
 
 ## Base journey
 
