@@ -52,7 +52,8 @@ works in. `docs/HOSTS.md` records known differences between hosts.
 - **Return:** the return route says where the worker leaves its result and how the Director learns
   of it: a subagent's final message, or a file the assignment gives a session to write. Do not
   assume the Director is notified when a session finishes or stops to wait. When a worker waits for
-  the requester, tell the requester once what it needs and where to answer, then end your turn
+  the requester, tell the requester once what it needs and where to answer, and stop checking on
+  it. Continue other authorized work; when none remains, capture subagent results and end your turn
   instead of polling.
 - Pass an explicit workspace when the tool requires one. Do not assume a new session excludes the
   parent's text or attachments; check before delegating across information boundaries.
