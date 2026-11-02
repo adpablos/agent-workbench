@@ -90,7 +90,7 @@ a role, takes the base journey.
 | `OPERATING.md`: Continuity | Recovery and continuity |
 | `OPERATING.md`: Principles and precedence, Authority, Copies and references, or Reporting; the safety floor in `docs/DEFAULTS.md` | Boundary behavior, for the rule that changed |
 | `OPERATING.md`: Tools and versions, or "Update the core" in `README.md` | One core update from the previous release to the candidate |
-| Other files in `templates/` | The setup or core update step that writes the changed file |
+| "Set up a workbench" in `README.md`, or other files in `templates/` | The setup or core update step that the change affects |
 | `docs/DEFAULTS.md` outside the safety floor | A Director lists the settings; the changed ones show their new defaults |
 | A probe in this file, or the `docs/HOSTS.md` section of that host | The probes whose answer the change affects |
 | Wording that does not change what an agent does, other hosts' sections, the rest of this file, `CHANGELOG.md`, and CI | None beyond Core payload |
