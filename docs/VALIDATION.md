@@ -2,9 +2,9 @@
 
 How to establish what a workbench can actually do, and how to accept a release. Results are
 private: record each one as a task record in `private/tasks/`, never in this repository. The first
-release passes every stage that gates base acceptance. A later release reruns the probes and those
-stages that its changes affect, and relies on earlier results for the rest. An integration keeps its
-own gate.
+release accepted on a host passes every stage that gates base acceptance there. A later release
+runs only what [Release checks](#release-checks) selects for its changes, and relies on earlier
+results for the rest. An integration keeps its own gate.
 
 Each result records date, environment, core revision, action, observed outcome, and limits.
 Synthetic success does not show live-service access or enforced isolation. Missing capability is
@@ -73,6 +73,32 @@ changes stay as they are; never clean or reset a repository to make a comparison
 
 The synthetic code change uses a small fixture that is built after the preflight, once the
 target environment's toolchain is known.
+
+## Release checks
+
+Every release passes Core payload. For each behavior that a release changes, wherever it is
+written, run the checks of its row on the host whose acceptance the release extends. A change of
+wording that leaves every behavior as it was needs only Core payload. Combine checks in one session
+where they do not interfere, reuse the workbench and fixtures of the earlier acceptance, and record
+what was not rerun. A change that fits no row, or that changes the contract's structure, such as
+adding a role, takes the base journey.
+
+| Behavior changed | Checks |
+|---|---|
+| What is read before acting, and when a read counts | The probe of whether `core/OPERATING.md` and `private/POLICY.md` are read before acting |
+| Roles, delegation, or how results return | One delegation with explicit roles, separate handles, and its return route |
+| Review, readiness, or pull requests, including review settings | Synthetic code change and review stop behavior |
+| Ownership, resuming, or handover | Recovery and continuity |
+| Access to sources, writable destinations, approval, references, executables and their local side effects, precedence, or the language of outputs | Boundary behavior, for the rule that changed |
+| Updating the core or a pinned tool | One core update from the previous release to the candidate |
+| Setup, or a template that setup or an update writes | The setup or core update step that writes it |
+| A default's value, with its behavior unchanged | A Director lists the settings and shows the new value |
+| When a project's release is proposed, closed, or tagged | In a synthetic consumed repository, a merged change leads the Director to propose a release that closes Unreleased before any tag |
+| The reference baseline block | Two captures of an unchanged fixture match; captures before and after a change to a tracked and to an ignored file differ |
+| A probe | That probe |
+| How the core itself is released or accepted | The release that ships the change follows the new rule |
+| A host's behavior, in its section of `docs/HOSTS.md` | On that host, the probes whose answer the change affects; none on other hosts |
+| A check in CI | The changed check, run once on input it must reject and once on input it must accept |
 
 ## Base journey
 
