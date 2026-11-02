@@ -2,9 +2,9 @@
 
 How to establish what a workbench can actually do, and how to accept a release. Results are
 private: record each one as a task record in `private/tasks/`, never in this repository. The first
-release passes every stage that gates base acceptance. A later release reruns the probes and those
-stages that its changes affect, and relies on earlier results for the rest. An integration keeps its
-own gate.
+release accepted on a host passes every stage that gates base acceptance there. A later release
+runs only what [Release checks](#release-checks) selects for its changes, and relies on earlier
+results for the rest. An integration keeps its own gate.
 
 Each result records date, environment, core revision, action, observed outcome, and limits.
 Synthetic success does not show live-service access or enforced isolation. Missing capability is
@@ -73,6 +73,27 @@ changes stay as they are; never clean or reset a repository to make a comparison
 
 The synthetic code change uses a small fixture that is built after the preflight, once the
 target environment's toolchain is known.
+
+## Release checks
+
+Every release passes Core payload. For each part that a release changes, run the checks of each row
+it matches, on the host whose acceptance the release extends. Combine checks in one session where
+they do not interfere, reuse the workbench and fixtures of the earlier acceptance, and record what
+was not rerun. A change that fits no row, or that changes the contract's structure, such as adding
+a role, takes the base journey.
+
+| Part changed | Checks |
+|---|---|
+| `templates/workbench-entrypoint.md`, or the opening of `OPERATING.md` | The probe of whether `core/OPERATING.md` and `private/POLICY.md` are read before acting |
+| `OPERATING.md`: Roles or Delegation | One delegation with explicit roles, separate handles, and its return route |
+| `OPERATING.md`: Review, or `docs/PULL-REQUESTS.md` | Synthetic code change and review stop behavior |
+| `OPERATING.md`: Continuity | Recovery and continuity |
+| `OPERATING.md`: Principles and precedence, Authority, Copies and references, or Reporting; the safety floor in `docs/DEFAULTS.md` | Boundary behavior, for the rule that changed |
+| `OPERATING.md`: Tools and versions, or "Update the core" in `README.md` | One core update from the previous release to the candidate |
+| Other files in `templates/` | The setup or core update step that writes the changed file |
+| `docs/DEFAULTS.md` outside the safety floor | A Director lists the settings; the changed ones show their new defaults |
+| A probe in this file, or the `docs/HOSTS.md` section of that host | The probes whose answer the change affects |
+| Wording that does not change what an agent does, other hosts' sections, the rest of this file, `CHANGELOG.md`, and CI | None beyond Core payload |
 
 ## Base journey
 
