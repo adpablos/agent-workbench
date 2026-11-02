@@ -1,7 +1,9 @@
 # Validation
 
-How to establish what a workbench can actually do, and how to accept a first release. Results are
-private: record each one as a task record in `private/tasks/`, never in this repository.
+How to establish what a workbench can actually do, and how to accept a release. Results are
+private: record each one as a task record in `private/tasks/`, never in this repository. The first
+release passes every acceptance stage. A later release reruns the probes and stages that its changes
+affect, and relies on earlier results for the rest.
 
 Each result records date, environment, core revision, action, observed outcome, and limits.
 Synthetic success does not show live-service access or enforced isolation. Missing capability is

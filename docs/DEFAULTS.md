@@ -48,7 +48,7 @@ Set these in the project's agent instructions.
 | Setting | Default | What it does |
 |---|---|---|
 | `changelog` | `on` if consumed, otherwise `off` | Keeps `CHANGELOG.md` with an Unreleased section of user-visible changes |
-| `versioning` | `on` if consumed, otherwise `off` | Uses Semantic Versioning: closes Unreleased through a pull request, then tags that commit on the default branch |
+| `versioning` | `on` if consumed, otherwise `off` | Uses Semantic Versioning: closes Unreleased through a pull request, then tags that commit on the default branch. Once a merge leaves changes in Unreleased that consumers should receive, the agent proposes that release |
 | `security-policy` | `on` if public with runnable code, otherwise `off` | Keeps `SECURITY.md` with a private way to report a vulnerability |
 | `repository-baseline` | `on` if several people maintain it or it is deployed, otherwise `off` | Protects the default branch, requires pull requests and at least one required check that really runs, pins Actions to full commit SHAs, and enables Dependabot |
 | `review` | `other model family` | Who reviews a change; also accepts `fresh session` or `human` |

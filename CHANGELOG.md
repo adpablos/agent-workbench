@@ -1,8 +1,10 @@
 # Changelog
 
-User-visible changes to the core. Versions follow [Semantic Versioning](https://semver.org/), and
-each one is tagged on `main` after a workbench passes base acceptance in
-[docs/VALIDATION.md](docs/VALIDATION.md). Workbenches pin a release tag together with its commit.
+User-visible changes to the core. Versions follow [Semantic Versioning](https://semver.org/).
+Merging a pull request only adds to Unreleased. A release is its own pull request that closes
+Unreleased, and its commit is tagged on `main` once a workbench passes acceptance in
+[docs/VALIDATION.md](docs/VALIDATION.md). Once a merge leaves changes in Unreleased that workbenches
+should receive, propose that release. Workbenches pin a release tag together with its commit.
 
 ## Unreleased
 
@@ -27,6 +29,9 @@ each one is tagged on `main` after a workbench passes base acceptance in
   covers harnesses, instruction loading, delegation, confirmations, model evidence, and redacted
   secrets. Among other things, Copilot harness sessions in a separate worktree show no confirmation
   prompts, and a hook that times out does not stop a tool call.
+- Merging a pull request does not make a release. Once a merge leaves changes in Unreleased that
+  consumers should receive, the agent proposes the release. A later core release reruns only the
+  validation probes and acceptance stages that its changes affect.
 
 ## 0.1.0 - 2026-10-30
 
