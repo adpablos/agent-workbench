@@ -96,6 +96,9 @@ stays the remote, so it can publish a branch once that is authorized:
 git clone <repository URL> work/<task>/<repo>
 ```
 
+Record the copy under Resources in the task record, and settle it when the task closes, as
+`OPERATING.md` (Copies and references) says.
+
 ## Update the core
 
 Ask the agent: "Update the core by following `core/README.md`." From the workbench folder, it:
