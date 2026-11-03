@@ -8,7 +8,10 @@ should receive, propose that release. Workbenches pin a release tag together wit
 
 ## Unreleased
 
-None.
+- `docs/HOSTS.md` records what Claude Code 2.1.316 showed. `AGENTS.md` appears in the transcript as
+  an `instructions` attachment, so a load is confirmed by searching for the probe word.
+  `claude agents` does not list sessions started with `claude -p`; a new Director reaches one
+  through its transcript and `--resume`.
 
 ## 0.2.0 - 2026-11-02
 
