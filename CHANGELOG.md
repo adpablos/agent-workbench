@@ -19,8 +19,8 @@ should receive, propose that release. Workbenches pin a release tag together wit
 - A copy is made only when the task needs one. The task record lists every copy, worktree, cache,
   kept output, and branch with its purpose and lifetime, and gives each a disposition before the
   task closes: kept with a reason, or removed with authorization. `docs/PULL-REQUESTS.md` says how
-  to prepare and verify cleanup after a merge; merge approval never authorizes it. Task records no
-  longer need a date prefix.
+  to prepare and verify cleanup after a merge; merge approval never authorizes it, and the README's
+  step for adding a repository says to record the copy. Task records no longer need a date prefix.
 - An assignment names where delivery ends, and when the next step needs an approval the agent does
   not have, it prepares that exact request instead of reporting the step it reached. For one task
   and one named repository, the requester can record in the task record that the agent pushes the
