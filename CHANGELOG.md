@@ -8,16 +8,24 @@ should receive, propose that release. Workbenches pin a release tag together wit
 
 ## Unreleased
 
-- An assignment names where delivery ends, and when the next step needs an approval the agent does
-  not have, it prepares that exact request instead of reporting the step it reached. For one task
-  and one named repository, the requester can record in the task record that the agent pushes the
-  reviewed branch and opens its pull request with text the agent writes. That never covers merging,
-  releasing, tagging, force pushes, or skipping checks or review, and a person still merges.
+- A complete read of the files the entrypoint lists stays valid while it is visible in the current
+  context and the file is unchanged. Agents read again at the start of a session or worker, after
+  compaction or another context reset, when the earlier read is no longer visible, before taking
+  over ownership, and after a file changed, but not on every request in the same context. The
+  entrypoint itself needs no separate read while its text is in context. Existing workbenches apply
+  every change to the entrypoint template to their `AGENTS.md`, keeping their local additions: the
+  removed "do not rely on an earlier reading" would otherwise contradict the new paragraph. The read
+  probe checks a second request and a compaction.
 - A copy is made only when the task needs one. The task record lists every copy, worktree, cache,
   kept output, and branch with its purpose and lifetime, and gives each a disposition before the
   task closes: kept with a reason, or removed with authorization. `docs/PULL-REQUESTS.md` says how
   to prepare and verify cleanup after a merge; merge approval never authorizes it. Task records no
   longer need a date prefix.
+- An assignment names where delivery ends, and when the next step needs an approval the agent does
+  not have, it prepares that exact request instead of reporting the step it reached. For one task
+  and one named repository, the requester can record in the task record that the agent pushes the
+  reviewed branch and opens its pull request with text the agent writes. That never covers merging,
+  releasing, tagging, force pushes, or skipping checks or review, and a person still merges.
 - `docs/HOSTS.md` records what Claude Code 2.1.316 showed. `AGENTS.md` appears in the transcript as
   an `instructions` attachment, so a load is confirmed by searching for the probe word.
   `claude agents` does not list sessions started with `claude -p`; a new Director reaches one
