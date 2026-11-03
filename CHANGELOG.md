@@ -8,6 +8,14 @@ should receive, propose that release. Workbenches pin a release tag together wit
 
 ## Unreleased
 
+- A complete read of the files the entrypoint lists stays valid while it is visible in the current
+  context and the file is unchanged. Agents read again at the start of a session or worker, after
+  compaction or another context reset, when the earlier read is no longer visible, before taking
+  over ownership, and after a file changed, but not on every request in the same context. The
+  entrypoint itself needs no separate read while its text is in context. Existing workbenches apply
+  every change to the entrypoint template to their `AGENTS.md`, keeping their local additions: the
+  removed "do not rely on an earlier reading" would otherwise contradict the new paragraph. The read
+  probe checks a second request and a compaction.
 - A copy is made only when the task needs one. The task record lists every copy, worktree, cache,
   kept output, and branch with its purpose and lifetime, and gives each a disposition before the
   task closes: kept with a reason, or removed with authorization. `docs/PULL-REQUESTS.md` says how
