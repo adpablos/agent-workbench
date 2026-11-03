@@ -84,6 +84,9 @@ A model change is not a harness change.
   local reference has it as `origin`, so disable pushing to it right after cloning:
   `git -C work/<task>/<repo> remote set-url --push origin DISABLED`.
 - Never clean, reset, or stash user work in a reference, including to make a check pass.
+- Copy only what the task needs; a reference or a bounded read often suffices. Record each copy,
+  cache, and branch in the task record with its purpose and lifetime, and settle each before
+  closing.
 - Local experiments use isolated copies, approved dependencies, synthetic data, and mocks; they
   never call real services. Approved documentary or API reads are separate from experiments.
 

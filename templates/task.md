@@ -1,8 +1,8 @@
 # <Task title>
 
-<!-- One record per recoverable task: private/tasks/YYYY-MM-DD-short-name.md. One owner writes it.
-Validation runs use this record too: put environment, core revision, action, observed outcome,
-and limits under Results and evidence. -->
+<!-- One record per recoverable task: private/tasks/<short-name>.md, the same name as its folder in
+work/; a date prefix is optional. One owner writes it. Validation runs use this record too: put
+environment, core revision, action, observed outcome, and limits under Results and evidence. -->
 
 | Field | Value |
 |---|---|
@@ -30,6 +30,14 @@ activation or release where it applies, its verification, and the rollback point
 ## Review
 
 | SHA | Implementer (model with source and label, or person) | Reviewer (model with source and label, or person and where) | Round | Result |
+|---|---|---|---|---|
+
+## Resources
+
+Every copy, worktree, cache, kept output, and local or remote branch this task created or adopted.
+Before closing, give each one a disposition: keep with a reason, or remove with its authorization.
+
+| Path or ref | Purpose | Lifetime | Expected tip | Disposition (reason or authorization, date) |
 |---|---|---|---|---|
 
 ## Blockers
