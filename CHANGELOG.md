@@ -8,6 +8,10 @@ should receive, propose that release. Workbenches pin a release tag together wit
 
 ## Unreleased
 
+None.
+
+## 0.2.0 - 2026-11-02
+
 - Updating the core moves it back only when the core itself breaks. When a probe fails because of
   the host, the workbench keeps the update and stops relying on what that probe established. In a
   repository that another team maintains, its conventions apply, and the practices that traits turn
