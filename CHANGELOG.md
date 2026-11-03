@@ -12,9 +12,10 @@ should receive, propose that release. Workbenches pin a release tag together wit
   context and the file is unchanged. Agents read again at the start of a session or worker, after
   compaction or another context reset, when the earlier read is no longer visible, before taking
   over ownership, and after a file changed, but not on every request in the same context. The
-  entrypoint itself needs no separate read while its text is in context. Existing workbenches copy
-  the new paragraph into their `AGENTS.md`, and the read probe checks a second request and a
-  compaction.
+  entrypoint itself needs no separate read while its text is in context. Existing workbenches apply
+  every change to the entrypoint template to their `AGENTS.md`, keeping their local additions: the
+  removed "do not rely on an earlier reading" would otherwise contradict the new paragraph. The read
+  probe checks a second request and a compaction.
 - `docs/HOSTS.md` records what Claude Code 2.1.316 showed. `AGENTS.md` appears in the transcript as
   an `instructions` attachment, so a load is confirmed by searching for the probe word.
   `claude agents` does not list sessions started with `claude -p`; a new Director reaches one
