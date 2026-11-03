@@ -28,7 +28,7 @@ Code must be 2.1.281 or later.
    below no folder with its own agent instructions. On Windows, a short path also keeps deep build
    trees within path limits.
 2. Place this repository at `core/` at a pinned revision. With Git, from the workbench folder:
-   `git clone --branch v0.2.0 https://github.com/adpablos/agent-workbench.git core` (without
+   `git clone --branch v0.1.0 https://github.com/adpablos/agent-workbench.git core` (without
    `core`, the folder takes the repository's name), note the revision that
    `git -C core rev-parse HEAD` prints, and disable pushing from the workbench:
    `git -C core remote set-url --push origin DISABLED`. If your organization restricts imports, use
