@@ -86,6 +86,21 @@ depend on, update the branch and rerun the checks: the review stands, and you re
 If they touch either, if the update needed a manual merge, or if you cannot tell, review the
 integration on the new head.
 
+## After merge
+
+A merge leaves branches, worktrees, and copies behind. Keeping them can be right, but only as a
+recorded decision:
+
+- List them in the task record (Resources): repository, local and remote refs with their expected
+  tips, and worktree paths. Present the exact cleanup plan together with the merge approval request.
+  Approval to merge never authorizes cleanup, which is a destructive operation.
+- Before removing anything, verify that the pull request merged into its target, and that the
+  branch tip is the head it merged. After a squash or rebase merge an ancestry check fails; that is
+  never a reason to force a deletion. Check also for uncommitted or untracked files, stashes, other
+  worktrees, and active writers. Stop and report any surprise.
+- Never force, reset, or clean. Keep the persistent clone, user work, rollback refs, and tool pins.
+- Record each removal and each retention with its reason before closing the task.
+
 ## Mixed authorship
 
 If two model families wrote parts of a change, each part is reviewed by the other family.
