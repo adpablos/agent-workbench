@@ -149,7 +149,9 @@ references, not credentials, and stay private.
 
 Preparation, testing, review, publication, merge, deployment, and acceptance are separate states;
 nothing here merges or publishes automatically. Repository-required checks remain mandatory. For
-pull requests, follow `docs/PULL-REQUESTS.md`.
+pull requests, follow `docs/PULL-REQUESTS.md`. After a merge in a project with `versioning` on, if
+Unreleased holds changes that consumers should receive, propose the release that closes it, and keep
+that proposal as the task's next action until the requester decides.
 
 ## Continuity
 

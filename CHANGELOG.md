@@ -30,10 +30,10 @@ should receive, propose that release. Workbenches pin a release tag together wit
   secrets. Among other things, Copilot harness sessions in a separate worktree show no confirmation
   prompts, and a hook that times out does not stop a tool call.
 - Merging a pull request does not make a release. Once a merge leaves changes in Unreleased that
-  consumers should receive, the agent proposes the release. Full base acceptance runs once per
-  host, for the first release accepted there. A later release runs only the checks that a table in
-  `docs/VALIDATION.md` selects for the behaviors it changes; a change of wording alone needs only
-  Core payload.
+  consumers should receive, the agent proposes the release, and that proposal stays as the task's
+  next action until the requester decides. Full base acceptance runs once per host, for the first
+  release accepted there. A later release runs only the checks that a table in `docs/VALIDATION.md`
+  selects for the behaviors it changes; a change of wording alone needs only Core payload.
 
 ## 0.1.0 - 2026-10-30
 
