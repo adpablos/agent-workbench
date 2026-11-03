@@ -8,6 +8,9 @@ should receive, propose that release. Workbenches pin a release tag together wit
 
 ## Unreleased
 
+- The subfolder probe also covers skills and agents: each folder a host recognizes for them gets one
+  whose description asks for its own word. `docs/HOSTS.md` lists those folders from documentation,
+  not yet exercised.
 - `docs/HOSTS.md` records what Claude Code 2.1.316 showed. `AGENTS.md` appears in the transcript as
   an `instructions` attachment, so a load is confirmed by searching for the probe word.
   `claude agents` does not list sessions started with `claude -p`; a new Director reaches one
