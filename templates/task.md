@@ -8,7 +8,7 @@ and limits under Results and evidence. -->
 |---|---|
 | Status | open, blocked, or closed; observed YYYY-MM-DD HH:MM (how) |
 | Ticket | <optional link> |
-| Owner | <Director session or person> |
+| Owner | <Director session handle or person, never a role> |
 | Execution handle | <native session or subagent reference, or none> |
 | Workspace | `work/<task>/<repo>` at base revision <SHA> |
 | Authorized scope | <what may be read and what may be changed> |

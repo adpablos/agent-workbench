@@ -29,6 +29,8 @@ should receive, propose that release. Workbenches pin a release tag together wit
   covers harnesses, instruction loading, delegation, confirmations, model evidence, and redacted
   secrets. Among other things, Copilot harness sessions in a separate worktree show no confirmation
   prompts, and a hook that times out does not stop a tool call.
+- A task record's owner is a session, named by its handle, or a person. A role such as "Director"
+  leaves ownership uncertain, so a resuming Director reconciles it before writing.
 - Merging a pull request does not make a release. Once a merge leaves changes in Unreleased that
   consumers should receive, the agent proposes the release, and that proposal stays as the task's
   next action until the requester decides. Full base acceptance runs once per host, for the first
