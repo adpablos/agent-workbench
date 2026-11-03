@@ -72,8 +72,10 @@ Windows, as in `C:/wb/repos/**`: other characters can break the JSON or the patt
 bind that work. Because Codex does not load them on demand, name them in every assignment.
 
 The alternative is to keep `repos/` and `tools/` outside the workbench and grant access with
-`--add-dir`. Claude Code then loads no instructions from them, unless
-`CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD` is set.
+`--add-dir`. Claude Code then loads no `CLAUDE.md` files from them, unless
+`CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD` is set. Its documentation says that `--add-dir`
+still loads skills, commands, and agents from an added folder, as in Copilot CLI, so this is not
+neutral access either: probe it the same way before relying on it.
 
 ## Delegation
 
