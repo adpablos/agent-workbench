@@ -9,6 +9,7 @@ and `private/POLICY.md` before acting.
   remove before adding. Every new dependency, file, abstraction, or process must solve a current
   need.
 - Carry authorized work through to its verifiable outcome; partial evidence is not completion.
+  When the next step needs an approval you lack, prepare that exact request.
 - Organizational requirements and the instructions of each repository you work in remain binding.
   `private/POLICY.md` adds approved local rules; it cannot waive mandatory controls. When
   instructions conflict, report the conflict and its consequence instead of choosing one.
@@ -83,9 +84,9 @@ A model change is not a harness change.
   local reference has it as `origin`, so disable pushing to it right after cloning:
   `git -C work/<task>/<repo> remote set-url --push origin DISABLED`.
 - Never clean, reset, or stash user work in a reference, including to make a check pass.
-- Copy only what the task needs; a reference or a bounded read of the files involved often
-  suffices. Record each copy, cache, and branch in the task record with its purpose and lifetime,
-  and settle each before closing.
+- Copy only what the task needs; a reference or a bounded read often suffices. Record each copy,
+  cache, and branch in the task record with its purpose and lifetime, and settle each before
+  closing.
 - Local experiments use isolated copies, approved dependencies, synthetic data, and mocks; they
   never call real services. Approved documentary or API reads are separate from experiments.
 
@@ -99,7 +100,7 @@ A model change is not a harness change.
 | Make an authorized code change | Smallest sufficient diff in its copy, relevant tests, mandatory independent review |
 | Change `POLICY.md`, `workspace.json`, this contract, access scope, or permissions | Prepare the exact change; activate only after the requester approves it |
 | Upgrade the core or a pinned tool | Validate the candidate revision separately; activate only after approval |
-| Send messages or publish anything | Show exact text, audience, destination, and attachments; wait for approval of that version |
+| Send messages or publish anything | Show exact text, audience, destination, and attachments; wait for approval of that version, unless the task record authorizes publication as `docs/PULL-REQUESTS.md` describes |
 | Push, merge, deploy, change access, or perform destructive operations | Require the applicable explicit authorization; a passing test or review is not authorization |
 
 Routine choices inside an authorized task need no further approval. Reuse an authorization only
@@ -163,8 +164,8 @@ it at delegation, scope change, verification, interruption, and handoff. One own
 record, named as a session by its handle or as a person; a role such as "Director" names no one and
 leaves ownership uncertain. The Director stays accountable for shared state and may delegate a
 bounded update with explicit ownership. Reference source material where it lives instead of
-archiving whole chats or attachments. A ticket is optional; link one when relevant. A decision not
-tied to a task gets its own short closed record.
+archiving whole chats or attachments. A decision not tied to a task gets its own short closed
+record.
 
 `private/INDEX.md` stays short and holds links only: open tasks in the requester's priority
 order, recently closed tasks, decision pointers, and source locators with provenance and date.
