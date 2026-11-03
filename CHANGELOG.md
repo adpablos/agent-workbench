@@ -21,6 +21,11 @@ should receive, propose that release. Workbenches pin a release tag together wit
   task closes: kept with a reason, or removed with authorization. `docs/PULL-REQUESTS.md` says how
   to prepare and verify cleanup after a merge; merge approval never authorizes it. Task records no
   longer need a date prefix.
+- An assignment names where delivery ends, and when the next step needs an approval the agent does
+  not have, it prepares that exact request instead of reporting the step it reached. For one task
+  and one named repository, the requester can record in the task record that the agent pushes the
+  reviewed branch and opens its pull request with text the agent writes. That never covers merging,
+  releasing, tagging, force pushes, or skipping checks or review, and a person still merges.
 - `docs/HOSTS.md` records what Claude Code 2.1.316 showed. `AGENTS.md` appears in the transcript as
   an `instructions` attachment, so a load is confirmed by searching for the probe word.
   `claude agents` does not list sessions started with `claude -p`; a new Director reaches one
