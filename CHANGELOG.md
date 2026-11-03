@@ -16,6 +16,11 @@ should receive, propose that release. Workbenches pin a release tag together wit
   every change to the entrypoint template to their `AGENTS.md`, keeping their local additions: the
   removed "do not rely on an earlier reading" would otherwise contradict the new paragraph. The read
   probe checks a second request and a compaction.
+- A copy is made only when the task needs one. The task record lists every copy, worktree, cache,
+  kept output, and branch with its purpose and lifetime, and gives each a disposition before the
+  task closes: kept with a reason, or removed with authorization. `docs/PULL-REQUESTS.md` says how
+  to prepare and verify cleanup after a merge; merge approval never authorizes it. Task records no
+  longer need a date prefix.
 - `docs/HOSTS.md` records what Claude Code 2.1.316 showed. `AGENTS.md` appears in the transcript as
   an `instructions` attachment, so a load is confirmed by searching for the probe word.
   `claude agents` does not list sessions started with `claude -p`; a new Director reaches one
