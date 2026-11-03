@@ -7,7 +7,7 @@ live in task records or their official owner. Use relative links to records in `
 
 Order set by the requester. Recommend changes; never reorder silently.
 
-1. <task title>: `tasks/YYYY-MM-DD-short-name.md`, owner <Director session or person>
+1. <task title>: `tasks/YYYY-MM-DD-short-name.md`, owner <Director session handle or person>
 
 ## Recently closed
 

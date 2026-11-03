@@ -155,12 +155,13 @@ that proposal as the task's next action until the requester decides.
 
 ## Continuity
 
-`private/tasks/` holds one short record per recoverable task, from `core/templates/task.md`.
-Update it at delegation, scope change, verification, interruption, and handoff. One owner writes
-each record; the Director stays accountable for shared state and may delegate a bounded update
-with explicit ownership. Reference source material where it lives instead of archiving whole
-chats or attachments. A ticket is optional; link one when relevant. A decision not tied to a task
-gets its own short closed record.
+`private/tasks/` holds one short record per recoverable task, from `core/templates/task.md`. Update
+it at delegation, scope change, verification, interruption, and handoff. One owner writes each
+record, named as a session by its handle or as a person; a role such as "Director" names no one and
+leaves ownership uncertain. The Director stays accountable for shared state and may delegate a
+bounded update with explicit ownership. Reference source material where it lives instead of
+archiving whole chats or attachments. A ticket is optional; link one when relevant. A decision not
+tied to a task gets its own short closed record.
 
 `private/INDEX.md` stays short and holds links only: open tasks in the requester's priority
 order, recently closed tasks, decision pointers, and source locators with provenance and date.
