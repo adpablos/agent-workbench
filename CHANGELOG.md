@@ -8,6 +8,10 @@ should receive, propose that release. Workbenches pin a release tag together wit
 
 ## Unreleased
 
+None.
+
+## 0.2.0 - 2026-11-02
+
 - Updating the core moves it back only when the core itself breaks. When a probe fails because of
   the host, the workbench keeps the update and stops relying on what that probe established. In a
   repository that another team maintains, its conventions apply, and the practices that traits turn
@@ -29,6 +33,8 @@ should receive, propose that release. Workbenches pin a release tag together wit
   covers harnesses, instruction loading, delegation, confirmations, model evidence, and redacted
   secrets. Among other things, Copilot harness sessions in a separate worktree show no confirmation
   prompts, and a hook that times out does not stop a tool call.
+- The documentation check no longer counts a CRLF line ending, so a 100-character line passes on a
+  Windows checkout as it does elsewhere.
 - A task record's owner is a session, named by its handle, or a person. A role such as "Director"
   leaves ownership uncertain, so a resuming Director reconciles it before writing.
 - Merging a pull request does not make a release. Once a merge leaves changes in Unreleased that
