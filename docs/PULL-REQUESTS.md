@@ -24,6 +24,22 @@ State the problem, the approach, the impact, the scope with its deliberate non-c
 validation that ran on the final head, and what was not verified. After the last push, reconcile the
 title and body with the complete diff and remove anything that no longer holds.
 
+## Delivery and publication
+
+- At assignment, name where delivery ends: for example a reviewed pull request, the requester's
+  merge, activation or release where it applies, and its verification. Checks, review, publication,
+  merge, and acceptance stay separate states; finishing one is not delivery.
+- When the next step needs an approval you do not have, prepare the exact request, with action,
+  target, and head, instead of reporting the step you reached as the result.
+- By default, the requester approves the exact branch, title, and body before anything is published.
+  For one task and one named repository, the requester may instead record in the task record
+  (Publication) that the agent pushes the reviewed branch and opens its pull request with text the
+  agent writes, following Description.
+- That authorization covers only a head that passed the repository's local checks and independent
+  review, pushed to a branch other than the default one, and that pull request's title and body. It
+  never covers merging, releasing, tagging, a force push, another repository, broader host
+  permissions, or skipping a check or review, and it ends when the task closes. A person merges.
+
 ## Review request
 
 Keep one request active at a time. Give the reviewer the exact head, base head, and merge base, and

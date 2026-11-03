@@ -12,8 +12,12 @@ and limits under Results and evidence. -->
 | Execution handle | <native session or subagent reference, or none> |
 | Workspace | `work/<task>/<repo>` at base revision <SHA> |
 | Authorized scope | <what may be read and what may be changed> |
+| Publication | <none, or: push the reviewed branch and open its pull request with agent-written text in <repository>; approved by <person>, YYYY-MM-DD> |
 
 ## Outcome and acceptance criteria
+
+<!-- Name the delivery endpoint, for example a reviewed pull request, the requester's merge,
+activation or release where it applies, its verification, and the rollback point. -->
 
 ## Decisions
 
