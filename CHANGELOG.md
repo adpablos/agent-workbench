@@ -30,6 +30,9 @@ should receive, propose that release. Workbenches pin a release tag together wit
   an `instructions` attachment, so a load is confirmed by searching for the probe word.
   `claude agents` does not list sessions started with `claude -p`; a new Director reaches one
   through its transcript and `--resume`.
+- The subfolder probe also covers skills and agents: each folder a host recognizes for them gets one
+  whose description asks for its own word. `docs/HOSTS.md` lists those folders from documentation,
+  not yet exercised.
 
 ## 0.2.0 - 2026-11-02
 

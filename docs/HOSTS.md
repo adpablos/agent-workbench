@@ -25,6 +25,11 @@ Observed on macOS from the command line, without the interactive interface, at d
 | Agent reads a file in a subfolder | Loads that subfolder's instructions on demand, also in subagents | Loads nothing |
 | Names to probe | `CLAUDE.md`, `CLAUDE.local.md`, `.claude/CLAUDE.md`, `.claude/rules/*.md`, `AGENTS.md` | `AGENTS.override.md`, `AGENTS.md`, any `project_doc_fallback_filenames` |
 
+Skills and agents can also come from subfolders, and the subfolder probe covers them. From
+documentation, not exercised: Claude Code reads `.claude/skills/`, `.claude/agents/`, and
+`.claude/commands/`, and Codex reads `.agents/skills/`; Copilot is covered in its own section.
+Probe every folder the installed version documents, since the lists grow.
+
 Setting `instructionFiles` to `claude-md-and-agents-md` in user settings makes Claude Code load
 both `CLAUDE.md` and `AGENTS.md`. Do not rely on it: it belongs to one person, so two people would
 load different instructions. Keep one instruction file per folder instead.
@@ -54,8 +59,9 @@ mkdir -p .claude
 [ -e .claude/settings.json ] || printf '{\n  "claudeMdExcludes": ["%s/repos/**", "%s/tools/**"]\n}\n' "$(pwd -P)" "$(pwd -P)" > .claude/settings.json
 ```
 
-Then run the probe again. Claude Code asks before an agent writes into `.claude/`: approve that
-step or run the commands yourself.
+Then run the probe again. The setting is documented for instruction files only; the probe shows
+whether skills and agents in those folders still load. Claude Code asks before an agent writes
+into `.claude/`: approve that step or run the commands yourself.
 
 Keep the path absolute. A relative pattern such as `**/repos/**` also matches the root `AGENTS.md`
 when the workbench path contains a `repos` folder, and the entrypoint disappears without warning.
@@ -66,8 +72,10 @@ Windows, as in `C:/wb/repos/**`: other characters can break the JSON or the patt
 bind that work. Because Codex does not load them on demand, name them in every assignment.
 
 The alternative is to keep `repos/` and `tools/` outside the workbench and grant access with
-`--add-dir`. Claude Code then loads no instructions from them, unless
-`CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD` is set.
+`--add-dir`. Claude Code then loads no `CLAUDE.md` files from them, unless
+`CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD` is set. Its documentation says that `--add-dir`
+still loads skills, commands, and agents from an added folder, as in Copilot CLI, so this is not
+neutral access either: probe it the same way before relying on it.
 
 ## Delegation
 
@@ -133,7 +141,9 @@ separate host.
   opened root until the subfolder probe passes.
 - `chat.useNestedAgentsMdFiles` does not control the Copilot harness.
 - In Copilot CLI, `--add-dir` also loads that folder's `.github/skills` and `.github/agents` as
-  trusted configuration, so it does not give neutral access to a reference.
+  trusted configuration, so it does not give neutral access to a reference. That says nothing about
+  what loads from a subfolder of the opened root: probe `.github/skills/` and `.github/agents/`
+  there too.
 - Evidence of a load: in VS Code, the system prompt in the Chat Debug view or the discovery events
   in Agent Debug Logs; the customizations editor shows only what was discovered. In Copilot CLI,
   `/env` and `/instructions`.
