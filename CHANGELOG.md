@@ -33,8 +33,6 @@ None.
   covers harnesses, instruction loading, delegation, confirmations, model evidence, and redacted
   secrets. Among other things, Copilot harness sessions in a separate worktree show no confirmation
   prompts, and a hook that times out does not stop a tool call.
-- The documentation check no longer counts a CRLF line ending, so a 100-character line passes on a
-  Windows checkout as it does elsewhere.
 - Merging a pull request does not make a release. Once a merge leaves changes in Unreleased that
   consumers should receive, the agent proposes the release, and that proposal stays as the task's
   next action until the requester decides. Full base acceptance runs once per host, for the first
