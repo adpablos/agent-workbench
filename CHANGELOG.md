@@ -11,6 +11,11 @@ should receive, propose that release. Workbenches pin a release tag together wit
 - The subfolder probe also covers skills and agents: each folder a host recognizes for them gets one
   whose description asks for its own word. `docs/HOSTS.md` lists those folders from documentation,
   not yet exercised.
+- A copy is made only when the task needs one. The task record lists every copy, worktree, cache,
+  kept output, and branch with its purpose and lifetime, and gives each a disposition before the
+  task closes: kept with a reason, or removed with authorization. `docs/PULL-REQUESTS.md` says how
+  to prepare and verify cleanup after a merge; merge approval never authorizes it. Task records no
+  longer need a date prefix.
 - `docs/HOSTS.md` records what Claude Code 2.1.316 showed. `AGENTS.md` appears in the transcript as
   an `instructions` attachment, so a load is confirmed by searching for the probe word.
   `claude agents` does not list sessions started with `claude -p`; a new Director reaches one
