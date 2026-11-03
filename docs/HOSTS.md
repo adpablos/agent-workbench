@@ -29,8 +29,9 @@ Setting `instructionFiles` to `claude-md-and-agents-md` in user settings makes C
 both `CLAUDE.md` and `AGENTS.md`. Do not rely on it: it belongs to one person, so two people would
 load different instructions. Keep one instruction file per folder instead.
 
-To confirm a load on Claude Code, search the session transcript for the probe word. `CLAUDE.md`
-forms appear as `nested_memory` entries and `AGENTS.md` as `hook_additional_context`.
+To confirm a load on Claude Code, search the session transcript for the probe word, not for one
+kind of entry. On 2.1.305, `CLAUDE.md` forms appeared as `nested_memory` entries and `AGENTS.md`
+as `hook_additional_context`. On 2.1.316, `AGENTS.md` appeared as an `instructions` attachment.
 
 ### Claude Code: references inside the workbench
 
@@ -82,6 +83,11 @@ Observed with the same versions and settings.
 
 Without `-m`, `codex exec resume` returned to the configured default model. Claude Code kept the
 session's model.
+
+On Claude Code 2.1.316, neither `claude agents` nor the host's agent listing showed sessions
+started with `claude -p` between their turns. A new Director still reached such a session: it found
+the transcript under `~/.claude/projects/`, read it, and sent one message with
+`claude -p --resume <id>`.
 
 In the `workspace-write` sandbox, with no added writable roots or network access, `codex exec
 resume` failed with `Operation not permitted`, and `claude -p` reported that it was not logged in.
