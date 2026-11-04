@@ -33,7 +33,7 @@ None.
   and one named repository, the requester can record in the task record that the agent pushes the
   reviewed branch and opens its pull request with text the agent writes. That never covers merging,
   releasing, tagging, force pushes, or skipping checks or review, never overrides a stricter policy,
-  and a person still merges.
+  and a person still merges. Under it, a fixed head is reviewed before it is pushed.
 - `docs/HOSTS.md` records what Claude Code 2.1.316 showed. `AGENTS.md` appears in the transcript as
   an `instructions` attachment, so a load is confirmed by searching for the probe word.
   `claude agents` does not list sessions started with `claude -p`; a new Director reaches one
@@ -41,7 +41,8 @@ None.
 - The subfolder probe also covers skills and agents: each folder a host recognizes for them gets one
   whose description asks for its own word. Claude Code 2.1.316 loaded the skills of a subfolder
   despite `claudeMdExcludes`, so on Claude Code `repos/` and `tools/` stay outside the workbench
-  root; Codex 0.166.0 loaded nothing. Workbenches that kept them inside move them out.
+  root; Codex 0.166.0 loaded nothing. Workbenches that kept them inside move them out and continue
+  in a new session, since a session that already loaded their skills keeps them.
 
 ## 0.2.0 - 2026-11-02
 

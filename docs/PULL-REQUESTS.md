@@ -75,7 +75,9 @@ timeout, silence, passing checks, or approval of an earlier head.
 
 - Fix the neighbourhood, not only the reported line: read the whole file and its siblings, and
   search for the same claim elsewhere. Re-read whatever refers to what you changed.
-- Put all in-scope fixes in one commit and one push, then ask for the next round.
+- Put all in-scope fixes in one commit and one push, then ask for the next round. Under a
+  Publication authorization, a fixed head is not yet reviewed: commit it, have the next round
+  review it before pushing, and push only a head that passed.
 - To reject a finding, record concrete evidence in the pull request, where others can check it.
 - If a fix needs work outside the scope, stop: it normally belongs in another pull request.
 - After the correction rounds in `review-rounds`, stop and report, as `OPERATING.md` says.
