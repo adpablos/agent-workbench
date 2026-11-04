@@ -8,6 +8,10 @@ should receive, propose that release. Workbenches pin a release tag together wit
 
 ## Unreleased
 
+None.
+
+## 0.3.0 - 2026-11-04
+
 - A complete read of the files the entrypoint lists stays valid while it is visible in the current
   context and the file is unchanged. Agents read again at the start of a session or worker, after
   compaction or another context reset, when the earlier read is no longer visible, before taking
