@@ -51,7 +51,9 @@ reach the Director as soon as it reads one of that repository's files. Without f
 the subfolder probe fails. Excluding `repos/` and `tools/` in `.claude/settings.json` at the
 workbench root stops their instruction files, but on 2.1.316 not their skills, so the probe still
 fails: keep both folders outside the workbench root. Keep the setting anyway, as a guard for any
-reference that ends up inside. Use the workbench's real absolute path:
+reference that ends up inside. Moving the folders does not remove skills a session already
+loaded: after the move, continue in a new session through an ownership transfer, and confirm the
+chosen access to the moved references before resuming work. Use the workbench's real absolute path:
 
 ```json
 {
