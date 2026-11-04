@@ -35,7 +35,8 @@ activation or release where it applies, its verification, and the rollback point
 ## Resources
 
 Every copy, worktree, cache, kept output, and local or remote branch this task created or adopted.
-Before closing, give each one a disposition: keep with a reason, or remove with its authorization.
+Before closing, merged or not, give each one a disposition: keep, with a reason that outlives the
+task, or remove. Propose the exact paths and refs to remove for approval; removal is destructive.
 
 | Path or ref | Purpose | Lifetime | Expected tip | Disposition (reason or authorization, date) |
 |---|---|---|---|---|
