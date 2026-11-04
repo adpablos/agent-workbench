@@ -8,7 +8,11 @@ should receive, propose that release. Workbenches pin a release tag together wit
 
 ## Unreleased
 
-None.
+- `docs/HOSTS.md` records what Copilot CLI 1.0.84 showed in the probes, and how to run them there:
+  pin the version with `--no-auto-update`, since an npm install ran a newer cached version, and
+  find reads, compaction, and on-demand instruction loads in the session record. The read probe
+  passed. The subfolder probe failed: viewing a file in a subfolder loads every instruction file
+  there, so `repos/` and `tools/` stay outside the opened root.
 
 ## 0.3.0 - 2026-11-04
 
