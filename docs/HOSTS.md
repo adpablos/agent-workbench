@@ -77,6 +77,19 @@ The alternative is to keep `repos/` and `tools/` outside the workbench and grant
 still loads skills, commands, and agents from an added folder, as in Copilot CLI, so this is not
 neutral access either: probe it the same way before relying on it.
 
+## Compaction
+
+Observed on macOS from the command line, Claude Code 2.1.316 and Codex 0.166.0.
+
+| Need | Claude Code | Codex |
+|---|---|---|
+| Compact on request without the interactive interface | `claude -p "/compact" --resume <id>` | Not available: `/compact` through `codex exec resume` was taken as text and the run did not finish in 10 minutes |
+| Signal in the record | A `system` entry with `subtype: compact_boundary`, followed by a user message with `isCompactSummary: true` | A top-level `compacted` line in the rollout; nothing in `--json` output |
+| Files after compaction | Some recently read files return whole, as `file` attachments; others only as `compact_file_reference` | Not observed: the agent read the files again |
+
+To make Codex compact in a probe, lower `model_auto_compact_token_limit` with `-c`. A value low
+enough to trigger it compacted nine times in one turn, so restore the default afterwards.
+
 ## Delegation
 
 Observed with the same versions and settings.
