@@ -159,13 +159,15 @@ Observed on macOS with Copilot CLI 1.0.84 installed from npm, without the intera
 default settings, in a workbench folder that is not a Git repository. Version 1.0.105 gave the same
 results.
 
-- Pin the version. A CLI installed from npm at 1.0.84 ran 1.0.105 from its package cache. Pass
-  `--no-auto-update`, or set `COPILOT_AUTO_UPDATE=false`, and confirm `copilotVersion` in the
-  `session.start` event of the session record.
+- Pin the version. A CLI installed from npm at 1.0.84 ran 1.0.105 from its package cache, and the
+  choice is made at every launch. Run `export COPILOT_AUTO_UPDATE=false` in the shell before the
+  first command of a probe, or pass `--no-auto-update` to every command, including the listings
+  and compaction below. `copilotVersion` in the `session.start` event of the session record shows
+  the version of the first launch only.
 - Run each step as
-  `copilot -p "<prompt>" --no-auto-update --deny-tool shell --deny-tool write --output-format json`
-  from the workbench folder, and continue the same session with `--resume=<sessionId>`; the final
-  `result` line gives the ID. `copilot -p "/compact" --resume=<sessionId>` compacts on request.
+  `copilot -p "<prompt>" --deny-tool shell --deny-tool write --output-format json` from the
+  workbench folder, and continue the same session with `--resume=<sessionId>`; the final `result`
+  line gives the ID. `copilot -p "/compact" --resume=<sessionId>` compacts on request.
 - The JSON stream shows each tool call in order as `tool.execution_start`, and
   `tool.execution_complete` holds what the tool returned, so it shows whether a read was whole. The
   session record, `~/.copilot/session-state/<sessionId>/events.jsonl`, also holds what the stream
