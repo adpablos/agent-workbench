@@ -25,10 +25,16 @@ Observed on macOS from the command line, without the interactive interface, at d
 | Agent reads a file in a subfolder | Loads that subfolder's instructions on demand, also in subagents | Loads nothing |
 | Names to probe | `CLAUDE.md`, `CLAUDE.local.md`, `.claude/CLAUDE.md`, `.claude/rules/*.md`, `AGENTS.md` | `AGENTS.override.md`, `AGENTS.md`, any `project_doc_fallback_filenames` |
 
-Skills and agents can also come from subfolders, and the subfolder probe covers them. From
-documentation, not exercised: Claude Code reads `.claude/skills/`, `.claude/agents/`, and
-`.claude/commands/`, and Codex reads `.agents/skills/`; Copilot is covered in its own section.
-Probe every folder the installed version documents, since the lists grow.
+Skills and agents can also come from subfolders, and the subfolder probe covers them. Claude Code
+documents `.claude/skills/`, `.claude/agents/`, and `.claude/commands/`, and Codex
+`.agents/skills/`; Copilot is covered in its own section. Probe every folder the installed version
+documents, since the lists grow. Observed with Claude Code 2.1.316 and Codex 0.166.0, after the
+agent read a file in `repos/probe/` or `tools/probe/`:
+
+- Claude Code loaded the skills in that folder's `.claude/skills/` on demand, even with the
+  `claudeMdExcludes` setting below. The transcript showed a `commands_changed` entry, and the agent
+  listed them. It loaded no agent or command from there.
+- Codex loaded nothing.
 
 Setting `instructionFiles` to `claude-md-and-agents-md` in user settings makes Claude Code load
 both `CLAUDE.md` and `AGENTS.md`. Do not rely on it: it belongs to one person, so two people would
@@ -42,8 +48,10 @@ as `hook_additional_context`. On 2.1.316, `AGENTS.md` appeared as an `instructio
 
 Because Claude Code loads subfolder instructions on demand, a reference repository's instructions
 reach the Director as soon as it reads one of that repository's files. Without further settings
-the subfolder probe fails. To keep `repos/` and `tools/` in the workbench, exclude them in
-`.claude/settings.json` at the workbench root, with the workbench's real absolute path:
+the subfolder probe fails. Excluding `repos/` and `tools/` in `.claude/settings.json` at the
+workbench root stops their instruction files, but on 2.1.316 not their skills, so the probe still
+fails: keep both folders outside the workbench root. Keep the setting anyway, as a guard for any
+reference that ends up inside. Use the workbench's real absolute path:
 
 ```json
 {
@@ -59,8 +67,7 @@ mkdir -p .claude
 [ -e .claude/settings.json ] || printf '{\n  "claudeMdExcludes": ["%s/repos/**", "%s/tools/**"]\n}\n' "$(pwd -P)" "$(pwd -P)" > .claude/settings.json
 ```
 
-Then run the probe again. The setting is documented for instruction files only; the probe shows
-whether skills and agents in those folders still load. Claude Code asks before an agent writes
+Then run the probe again on each new version. Claude Code asks before an agent writes
 into `.claude/`: approve that step or run the commands yourself.
 
 Keep the path absolute. A relative pattern such as `**/repos/**` also matches the root `AGENTS.md`
@@ -75,7 +82,8 @@ The alternative is to keep `repos/` and `tools/` outside the workbench and grant
 `--add-dir`. Claude Code then loads no `CLAUDE.md` files from them, unless
 `CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD` is set. Its documentation says that `--add-dir`
 still loads skills, commands, and agents from an added folder, as in Copilot CLI, so this is not
-neutral access either: probe it the same way before relying on it.
+neutral access either. Prefer reading a reference outside the root by its path, and probe whichever
+access you use before relying on it.
 
 ## Delegation
 
