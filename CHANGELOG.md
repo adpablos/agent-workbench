@@ -31,8 +31,9 @@ should receive, propose that release. Workbenches pin a release tag together wit
   `claude agents` does not list sessions started with `claude -p`; a new Director reaches one
   through its transcript and `--resume`.
 - The subfolder probe also covers skills and agents: each folder a host recognizes for them gets one
-  whose description asks for its own word. `docs/HOSTS.md` lists those folders from documentation,
-  not yet exercised.
+  whose description asks for its own word. Claude Code 2.1.316 loaded the skills of a subfolder
+  despite `claudeMdExcludes`, so on Claude Code `repos/` and `tools/` stay outside the workbench
+  root; Codex 0.166.0 loaded nothing. Workbenches that kept them inside move them out.
 
 ## 0.2.0 - 2026-11-02
 
