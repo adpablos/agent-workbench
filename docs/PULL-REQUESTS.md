@@ -39,6 +39,8 @@ title and body with the complete diff and remove anything that no longer holds.
   review, pushed to a branch other than the default one, and that pull request's title and body. It
   never covers merging, releasing, tagging, a force push, another repository, broader host
   permissions, or skipping a check or review, and it ends when the task closes. A person merges.
+  It never overrides a stricter rule in `private/POLICY.md` or in the repository's instructions,
+  such as a policy that forbids pushing: report that conflict instead.
 
 ## Review request
 
