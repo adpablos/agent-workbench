@@ -8,8 +8,8 @@ Before acting, read these files in full:
 1. `core/OPERATING.md`: the operating contract.
 2. `private/POLICY.md`: approved local rules and preferences.
 
-A read counts only when the tool returned the whole file. A refused, truncated, or partial read, or
-one issued together with the first operation, does not: finish reading before you act.
+A tool read counts only when the tool returned the whole file. A refused, truncated, or partial
+read, or one issued together with the first operation, does not: finish reading before you act.
 
 A complete read stays valid while it is visible in your current context and the file has not
 changed since. Read again at the start of a session or worker; after compaction, summarization, or
