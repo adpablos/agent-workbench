@@ -19,9 +19,10 @@ should receive, propose that release. Workbenches pin a release tag together wit
 - The Director's model and reasoning effort are chosen explicitly, like those for implementation
   and review. It makes the most model calls over the longest context, so its choice sets most of a
   workbench's usage: it gets the most economical pair that passes a new Director probe in
-  `docs/VALIDATION.md`. On separate copies of the same synthetic records, the candidate must find
-  every next action and blocker that the strongest approved model at its highest approved effort
-  finds, add none that the records do not support, and record the same change. Work that needs a
+  `docs/VALIDATION.md`. On separate copies of the same synthetic records, the candidate and the
+  strongest approved model at its highest approved effort must each match an answer written before
+  any run: every next action and blocker, nothing the records do not support, no approval or
+  readiness they lack, and the same change to a task record. Work that needs a
   stronger model goes to a separate session where the host caps a subagent's model at the
   Director's cost tier: `docs/HOSTS.md` records that VS Code documents such a cap for Local harness
   subagents, unverified. The `POLICY.md` template gains a Director row and a reasoning effort
