@@ -142,7 +142,7 @@ Observed with the same versions.
 
 ## GitHub Copilot
 
-The first subsection records what Copilot CLI showed. The rest comes from documentation read on
+The first two subsections record what Copilot CLI showed. The rest comes from documentation read on
 2026-11-02, not exercised: the VS Code pages are dated 2026-10-28, and GitHub's Copilot CLI pages
 carry no date. They are newer than VS Code 1.137.0, so older versions may lack some settings,
 harnesses, or commands. Installed behavior takes precedence: run the probes before relying on a
@@ -202,9 +202,9 @@ GPT-6 Luna for every workbench request. GitHub's billing pages were read on 2026
 - Copilot bills AI credits, by model and by input, cached, cache-write, and output tokens. The
   session record's `totalNanoAiu` divided by 10^9 gives a session's credits at list price: computed
   again from its token counts and the published rates of two models, it matched exactly.
-  `totalPremiumRequests` counts prompts, one each whatever the number of model calls; it is the unit
-  of legacy plans. Neither shows the remaining allowance, an organization's pool or budget, or
-  discounts.
+  `totalPremiumRequests` accumulates the premium-request cost of legacy plans, each prompt weighted
+  by its model's multiplier; in these runs it rose by one per prompt whatever the number of model
+  calls. Neither shows the remaining allowance, an organization's pool or budget, or discounts.
 - Read usage without a model call: the summary that `copilot -p` prints at exit with text output,
   `--usage-output-file <file>`, `session.shutdown` in the session record, or per model call the
   spans written with `COPILOT_OTEL_FILE_EXPORTER_PATH=<file>`. `copilot -p "/usage"` is sent to the
@@ -213,8 +213,9 @@ GPT-6 Luna for every workbench request. GitHub's billing pages were read on 2026
   that a response can pass the cap before the CLI sees it.
 - Each new session paid in full for about 12,000 tokens of system prompt, tool definitions, and
   `AGENTS.md`, written to the prompt cache. A second session in the same folder a minute later did
-  not reuse them. Every model call then reads the whole context again, so each session or subagent
-  you start pays that prefix, and each call costs more as the session grows.
+  not reuse them. Later calls read the earlier context from the cache at a fraction of the input
+  price, so most of a call's cost came from what it added and from its output: in one first
+  request, the first call cost 0.16 credits and the next eight 0.04 to 0.08 each.
 - At reasoning effort `low` or the default, the first call of each new request wrote the previous
   request's turns to the cache again, up to about 8,000 tokens after a first `Resume`; at `none` it
   did not. `--reasoning-effort` with `--model auto` failed in `copilot -p` but applied over
