@@ -70,9 +70,10 @@ Use a second provider for a distinct review or capability, never to repeat the s
 approved models and reasoning effort by role: economical for bounded, verifiable work, stronger for
 ambiguous analysis and difficult review. The Director makes the most calls over the longest
 context: give it the most economical pair that passes the Director probe in `docs/VALIDATION.md`,
-and delegate what needs more. Select models explicitly for the Director, implementation, and review
-(see Review), also when resuming: a resume can fall back to the host's default. A model change is
-not a harness change.
+and delegate what needs more, to a separate session where the host caps a subagent's model at the
+Director's cost tier (see `docs/HOSTS.md`). Select models explicitly for the Director,
+implementation, and review (see Review), also when resuming: a resume can fall back to the host's
+default. A model change is not a harness change.
 
 ## Copies and references
 
