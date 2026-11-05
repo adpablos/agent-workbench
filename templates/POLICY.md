@@ -24,10 +24,11 @@ Example: GPT implementation is reviewed by Opus, and Opus implementation by GPT.
 
 ## Approved models
 
-| Use | Model |
-|---|---|
-| Bounded, verifiable work | <economical model> |
-| Ambiguous analysis and difficult review | <stronger model> |
+| Use | Model | Reasoning effort |
+|---|---|---|
+| Director | <model; passed the Director probe on YYYY-MM-DD> | <effort> |
+| Bounded, verifiable work | <economical model> | <effort> |
+| Ambiguous analysis and difficult review | <stronger model> | <effort> |
 
 ## Preferences
 

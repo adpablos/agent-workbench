@@ -223,6 +223,13 @@ results.
   only with `include-custom-instructions: true`; the default is `false`. Copilot CLI allows nested
   subagents. Name the instruction paths in every assignment, and say whether the worker may
   delegate.
+- Read on 2026-11-05, not exercised: a VS Code page dated 2026-11-04 says that a Local harness
+  subagent does not run when its model, named in the request or in a custom agent's `model`, is in
+  a higher cost tier than the main conversation's model; it reports the models it can use instead.
+  Only Auto, through the experimental `chat.subagents.defaultToAuto`, is exempt. GitHub's Copilot
+  CLI pages state no such limit for its subagents. Until the probe of which model ran a delegated
+  task shows otherwise, give a worker or reviewer that needs a stronger model than the Director
+  its own session with that model selected.
 - No page describes a notice to another session when a session finishes or waits for a
   confirmation. The session list shows its state; in Copilot CLI, so does `/tasks`.
 - In VS Code, Copilot harness sessions in a separate worktree run with Allow all and show no

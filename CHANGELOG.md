@@ -26,6 +26,17 @@ should receive, propose that release. Workbenches pin a release tag together wit
   share the read probe's chat and rely on the host's record, the subfolder probe no longer starts
   with a greeting, and records and transcripts are searched with a command instead of being opened
   whole.
+- The Director's model and reasoning effort are chosen explicitly, like those for implementation
+  and review. It makes the most model calls over the longest context, so its choice sets most of a
+  workbench's usage: it gets the most economical pair that passes a new Director probe in
+  `docs/VALIDATION.md`. On separate copies of the same synthetic records, the candidate and the
+  strongest approved model at its highest approved effort must each match an answer written before
+  any run: every next action and blocker, nothing the records do not support, no approval or
+  readiness they lack, and the same change to a task record. Work that needs a
+  stronger model goes to a separate session where the host caps a subagent's model at the
+  Director's cost tier: `docs/HOSTS.md` records that VS Code documents such a cap for Local harness
+  subagents, unverified. The `POLICY.md` template gains a Director row and a reasoning effort
+  column; existing workbenches add them when they next change their policy.
 
 ## 0.3.0 - 2026-11-04
 
