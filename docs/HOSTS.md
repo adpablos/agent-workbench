@@ -194,6 +194,42 @@ results.
 - With the default `auto` model, turns of one session ran on different models. Each
   `assistant.message` names its model: *reported*. Pass `--model` when a probe needs one model.
 
+### Copilot CLI: usage
+
+Observed with Copilot CLI 1.0.84 on macOS and the Free plan, which offered only `auto`; it chose
+GPT-6 Luna for every workbench request. GitHub's billing pages were read on 2026-11-05.
+
+- Copilot bills AI credits, by model and by input, cached, cache-write, and output tokens. The
+  session record's `totalNanoAiu` divided by 10^9 gives a session's credits at list price: computed
+  again from its token counts and the published rates of two models, it matched exactly.
+  `totalPremiumRequests` counts prompts, one each whatever the number of model calls; it is the unit
+  of legacy plans. Neither shows the remaining allowance, an organization's pool or budget, or
+  discounts.
+- Read usage without a model call: the summary that `copilot -p` prints at exit with text output,
+  `--usage-output-file <file>`, `session.shutdown` in the session record, or per model call the
+  spans written with `COPILOT_OTEL_FILE_EXPORTER_PATH=<file>`. `copilot -p "/usage"` is sent to the
+  model as a prompt and costs a turn.
+- `copilot help limits` says that `--max-ai-credits <credits>`, at least 30, caps a session, and
+  that a response can pass the cap before the CLI sees it.
+- Each new session paid in full for about 12,000 tokens of system prompt, tool definitions, and
+  `AGENTS.md`, written to the prompt cache. A second session in the same folder a minute later did
+  not reuse them. Every model call then reads the whole context again, so each session or subagent
+  you start pays that prefix, and each call costs more as the session grows.
+- At reasoning effort `low` or the default, the first call of each new request wrote the previous
+  request's turns to the cache again, up to about 8,000 tokens after a first `Resume`; at `none` it
+  did not. `--reasoning-effort` with `--model auto` failed in `copilot -p` but applied over
+  `copilot --acp`.
+- The skills in `~/.agents/skills/` were offered in every session, and an agent used one to answer
+  a workbench `Resume`. `copilot skill list` shows them as personal.
+- `system.message` in the session record holds the instructions loaded at start, with `AGENTS.md`
+  inside `<custom_instruction>`. Records grow fast, to about 600 KB for three requests and a
+  compaction, so search them rather than opening them:
+
+```bash
+grep -c '<probe word>' ~/.copilot/session-state/<sessionId>/events.jsonl
+grep -o '"instruction_discovered","sourcePath":"[^"]*"' ~/.copilot/session-state/<sessionId>/events.jsonl
+```
+
 ### Copilot: instruction loading
 
 - The Copilot harness loads `AGENTS.md`, `.github/copilot-instructions.md`, and

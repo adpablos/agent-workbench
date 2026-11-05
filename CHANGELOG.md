@@ -16,6 +16,11 @@ should receive, propose that release. Workbenches pin a release tag together wit
 - `docs/HOSTS.md` records that Copilot CLI 1.0.84 loaded no `AGENTS.md` from a folder outside the
   opened root, reached with `--add-dir` or `--allow-all-paths`, so keeping `repos/` and `tools/`
   there avoids the loads that the subfolder probe showed.
+- `docs/HOSTS.md` records how Copilot CLI 1.0.84 reports and spends usage: AI credits from the
+  session record at list price, where to read them without a model call (`copilot -p "/usage"`
+  costs a turn), the cost every new session pays before its first answer, the per-request cache
+  writes at default reasoning effort, personal skills offered in every session, and commands that
+  search a session record instead of opening it.
 
 ## 0.3.0 - 2026-11-04
 
