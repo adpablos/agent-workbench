@@ -13,17 +13,23 @@ reduced or blocked validation, never a pass.
 ## Preflight probes
 
 Run a probe only when its answer decides the next step, and reuse facts already established in
-your environment. Results belong to one host: probe each host you use as Director. A result carries
-over to another environment with the same host version and settings; there, rerun only the probes
-whose answer that environment can change, for example through organization settings, available
-models, or permissions. Probes are harmless: they use throwaway lines typed in the target
-environment, not imported candidates, and they are removed afterwards.
+your environment. Results belong to one host: probe each host you use as Director. Probes are
+harmless: they use throwaway lines typed in the target environment, not imported candidates, and
+they are removed afterwards.
 
 Keep probes economical without weakening their evidence:
 
 - What the host loads or allows is host behavior: probe it with the most economical approved model.
   What an agent reads, follows, or delegates depends on the model and its reasoning effort: probe
   it with the pair the role will use.
+- A result carries over to another environment with the same host version and settings, which
+  reruns only the probes whose answer it can change, for example through organization settings,
+  available models, or permissions.
+- A comparable host, such as another version, platform, or interface of the same host, can still
+  differ, so its results count in one direction only. A failure there is enough to choose the
+  option that does not rely on that capability, such as keeping `repos/` and `tools/` outside the
+  opened root; record the probe as not run. A pass counts only once the probe passes in the
+  environment that relies on it.
 - Where the host's record or listing already shows the evidence, check it there instead of adding
   a chat turn. [HOSTS.md](HOSTS.md) says where each host records what it loaded.
 - Search a record or transcript with a command that prints only the matching lines. Opened whole,

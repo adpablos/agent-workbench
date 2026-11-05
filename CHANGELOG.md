@@ -20,9 +20,12 @@ should receive, propose that release. Workbenches pin a release tag together wit
   economical approved model; probes of what an agent does run with the model and reasoning effort
   of its role. A result carries over to another environment with the same host version and
   settings, which reruns only the probes it can change, such as through organization settings,
-  models, or permissions. The root `AGENTS.md` probe can share the read probe's chat and rely on the
-  host's record, the subfolder probe no longer starts with a greeting, and records and transcripts
-  are searched with a command instead of being opened whole.
+  models, or permissions. A failure on a comparable host, such as another version, platform, or
+  interface of the same host, is enough to choose the option that does not rely on the capability;
+  a pass counts only once the probe passes where it is relied on. The root `AGENTS.md` probe can
+  share the read probe's chat and rely on the host's record, the subfolder probe no longer starts
+  with a greeting, and records and transcripts are searched with a command instead of being opened
+  whole.
 
 ## 0.3.0 - 2026-11-04
 
