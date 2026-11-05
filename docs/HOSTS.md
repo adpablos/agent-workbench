@@ -145,8 +145,9 @@ Observed with the same versions.
 The first two subsections record what Copilot CLI showed. The rest comes from documentation read on
 2026-11-02, not exercised: the VS Code pages are dated 2026-10-28, and GitHub's Copilot CLI pages
 carry no date. They are newer than VS Code 1.137.0, so older versions may lack some settings,
-harnesses, or commands. Installed behavior takes precedence: run the probes before relying on a
-line, then replace it with what you observed and the version.
+harnesses, or commands. A line that gives its own dates overrides these. Installed behavior takes
+precedence: run the probes before relying on a line, then replace it with what you observed and the
+version.
 
 VS Code runs each session in a harness: Local, Copilot, Claude, or Codex. A Copilot CLI session in
 VS Code uses the Copilot harness, which shares its runtime with Copilot CLI. Instruction loading,
