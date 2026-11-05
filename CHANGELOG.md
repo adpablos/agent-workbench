@@ -52,8 +52,8 @@ should receive, propose that release. Workbenches pin a release tag together wit
   phase go under Found, and Changed states first what completed, such as a transfer or a merge.
 - Before review, the diff is compared with the repository's existing patterns, and tests that
   protect nothing the change relies on are removed. Cleanup after a merge also checks for work that
-  a clean status hides: ignored files, index flags, checkout filters, and commits that only a
-  worktree's own refs or reflogs reach.
+  a clean status hides: ignored files, index flags, edits that a content filter hides, and commits
+  that only a worktree's own refs or reflogs reach. When a loss cannot be ruled out, the copy stays.
 
 ## 0.3.0 - 2026-11-04
 

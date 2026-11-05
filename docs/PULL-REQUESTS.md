@@ -121,9 +121,10 @@ recorded decision:
   branch tip is the head it merged. After a squash or rebase merge an ancestry check fails; that is
   never a reason to force a deletion. Check also for uncommitted or untracked files, stashes, other
   worktrees, and active writers. A clean status can still hide work: ignored files, files the index
-  marks as unchanged or skip-worktree, changes that a checkout filter hides, and commits that only
-  that worktree's own refs or reflogs reach. Prefer a tested tool for these checks where the project
-  has one. Stop and report any surprise.
+  marks as unchanged or skip-worktree, edits that a clean filter or another content conversion hides
+  from status and diff, and commits that only that worktree's own refs or reflogs reach. Prefer a
+  tested tool for these checks where the project has one, and keep the copy when you cannot show
+  that nothing would be lost. Stop and report any surprise.
 - Never force, reset, or clean. Keep the persistent clone, user work, rollback refs, and tool pins.
 - Record each removal and each retention with its reason before closing the task.
 
