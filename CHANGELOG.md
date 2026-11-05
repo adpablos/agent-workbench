@@ -54,6 +54,18 @@ should receive, propose that release. Workbenches pin a release tag together wit
   the work does not need. `docs/HOSTS.md` says where Claude Code, Codex, and Copilot show them and
   how Copilot turns them off, how VS Code and Copilot CLI set reasoning effort, and that loading
   `core/OPERATING.md` through Copilot's instructions as well did not spare its read.
+- Agents keep notes, plans, logs, and evidence out of repository copies, tracked or ignored, and
+  change a repository's documentation only when the deliverable includes it.
+- In an authorized build, the repository's package manager resolves what its manifests and lock
+  files declare from approved registries, without an approval per dependency unless the
+  organization's approval route requires one. A new registry, dependency, tool, or credential
+  mechanism still needs its own approval.
+- Reports list under Blocked on me only what the current outcome needs; prerequisites of a later
+  phase go under Found, and Changed states first what completed, such as a transfer or a merge.
+- Before review, the diff is compared with the repository's existing patterns, and tests that
+  protect nothing the change relies on are removed. Cleanup after a merge also checks for work that
+  a clean status hides: ignored files, index flags, edits that a content filter hides, and commits
+  that only a worktree's own refs or reflogs reach. When a loss cannot be ruled out, the copy stays.
 
 ## 0.3.0 - 2026-11-04
 
