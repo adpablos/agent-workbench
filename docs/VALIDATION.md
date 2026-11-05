@@ -17,16 +17,34 @@ your environment. Results belong to one host: probe each host you use as Directo
 harmless: they use throwaway lines typed in the target environment, not imported candidates, and
 they are removed afterwards.
 
+Keep probes economical without weakening their evidence:
+
+- What the host loads or allows is host behavior: probe it with the most economical approved model.
+  What an agent reads, follows, or delegates depends on the model and its reasoning effort: probe
+  it with the pair the role will use.
+- A result carries over to another environment with the same host version and settings, which
+  reruns only the probes whose answer it can change, for example through organization settings,
+  available models, or permissions.
+- A comparable host, such as another version, platform, or interface of the same host, can still
+  differ, so its results count in one direction only. A failure there is enough to choose the
+  option that does not rely on that capability, such as keeping `repos/` and `tools/` outside the
+  opened root; record the probe as not run. A pass counts only once the probe passes in the
+  environment that relies on it.
+- Where the host's record or listing already shows the evidence, check it there instead of adding
+  a chat turn. [HOSTS.md](HOSTS.md) says where each host records what it loaded.
+- Search a record or transcript with a command that prints only the matching lines. Opened whole,
+  one can cost more than the session it records.
+
 | Question | Probe | Evidence |
 |---|---|---|
-| Is the root `AGENTS.md` loaded automatically? | Add a temporary line to the workbench `AGENTS.md`: "End your first reply with the word `<random word>`." Open a new Director chat and only say hello. | The word appears unprompted; any read trace the host shows |
+| Is the root `AGENTS.md` loaded automatically? | Add a temporary line to the workbench `AGENTS.md`: "End your first reply with the word `<random word>`." Open a new Director chat and only say hello, or use the first chat of the next probe | The word appears unprompted, or the host's record shows it in the instructions loaded at start; any read trace the host shows |
 | Are `core/OPERATING.md` and `private/POLICY.md` read before acting? | Add a different word to each file, open a new Director chat, and ask for a small read-only task; a greeting may not count as acting. In the same chat, ask for a second one; where the host compacts on request, compact and ask for a third | A read of each file in the host's trace, before the task's first operation. Where the host shows no order, the words prove only that the files were read: record the order as unverified. An agent's claim alone is not evidence. The second task reads neither file again. After compaction, each file is read again before the third, unless the trace shows that the host put its whole text back in context |
 | Does a delegated agent follow the instruction paths it is given? | Delegate a trivial task naming a file that holds a third probe word | The word in the returned result |
-| Can a new Director reach existing sessions? | Start a session from one Director chat; from a new chat, list it, read it, and send it one message | Host listing, the delivered message |
+| Can a new Director reach existing sessions? | Start a session from one Director chat; from a new chat, list it, read its latest result, and send it one message | Host listing, the delivered message |
 | Which confirmations appear? | Count the prompts during the probes above | Count and type of each prompt |
 | Which model ran a delegated task? | Delegate with an explicitly selected model and note what the host shows | Reported or configured evidence, as defined in `OPERATING.md` (Review); [HOSTS.md](HOSTS.md) says where each host shows it |
 | Do delegated tasks run in parallel? | Two independent tasks that each wait 20 seconds and report start and end times | Overlapping times; otherwise sequence the work |
-| Are instruction files, skills, or agents in subfolders loaded? | In temporary subfolders `repos/probe/` and `tools/probe/`, add an instruction file in each location and under each name the host recognizes, and a skill or agent in each folder it recognizes for them ([HOSTS.md](HOSTS.md) lists both), each asking for a different word; put a skill's or agent's word in its description, which hosts load before the body. Add a short `notes.md`. Open a new Director chat, say hello, ask for a one-line summary of both `notes.md` files, read with the host's own file tool, if it has one, then ask it to list any instruction it received, in any form, that asks for a specific word, and every skill and agent it can use. Some names hide others, so repeat in a new chat with only `AGENTS.md` in those subfolders | Any word in a reply or in the list, a probe skill or agent in the list or in the host's own listing, or a load in the host's trace; then delete the subfolders. The probe passes only if all show none and the trace shows that tool, on a host that has one: a read through a shell may load nothing, and an agent may ignore a file the host loaded, so a clean reply alone proves nothing |
+| Are instruction files, skills, or agents in subfolders loaded? | In temporary subfolders `repos/probe/` and `tools/probe/`, add an instruction file in each location and under each name the host recognizes, and a skill or agent in each folder it recognizes for them ([HOSTS.md](HOSTS.md) lists both), each asking for a different word; put a skill's or agent's word in its description, which hosts load before the body. Add a short `notes.md`. Open a new Director chat, ask for a one-line summary of both `notes.md` files, read with the host's own file tool, if it has one, then ask it to list any instruction it received, in any form, that asks for a specific word, and every skill and agent it can use. Some names hide others, so repeat in a new chat with only `AGENTS.md` in those subfolders | Any word in a reply or in the list, a probe skill or agent in the list or in the host's own listing, or a load in the host's trace; then delete the subfolders. The probe passes only if all show none and the trace shows that tool, on a host that has one: a read through a shell may load nothing, and an agent may ignore a file the host loaded, so a clean reply alone proves nothing |
 | Can agents read outside the opened root? | Ask for the first line of an approved file outside the root | Result and any prompt shown |
 | What isolation do experiments have? | Inspect host sandbox and permission settings without changing them | Observed settings; record limits as procedural if none apply |
 
@@ -107,5 +125,5 @@ adding a role, takes the base journey.
 3. Complete a small verified code change with independent review of its final SHA.
 4. Recover from another session with Resume, then run Check in and Wrap up.
 
-Record elapsed time, visible usage, and requester interventions once during this journey; no
-telemetry is needed.
+Record elapsed time, the usage the host reports, and requester interventions once during this
+journey; no telemetry is needed.
