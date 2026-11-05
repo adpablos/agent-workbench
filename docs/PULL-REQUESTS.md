@@ -8,8 +8,11 @@ any repository that uses pull requests, unless the repository is disposable or i
 
 - Keep one cohesive change per pull request. Before parallel work, declare the files each task will
   touch; if they overlap, sequence the work.
-- Re-read the complete base-to-head diff. Remove needless indirection, duplication, dead code, and
-  tests that only restate the implementation. In documents, look for duplication and contradiction.
+- Re-read the complete base-to-head diff and compare it with the repository's existing patterns.
+  Remove needless indirection, duplication, dead code, and tests that only restate the
+  implementation or protect nothing the change relies on; keep a new file, abstraction, setting, or
+  group of tests only when the change needs it. In documents, look for duplication and
+  contradiction.
 - Put information where its lifetime fits: behavior and non-obvious invariants in code and comments,
   the current contract in standing documents, open work in the backlog, and history, measurements,
   and investigation in the pull request or commit.
@@ -117,7 +120,10 @@ recorded decision:
 - Before removing anything, verify that the pull request merged into its target, and that the
   branch tip is the head it merged. After a squash or rebase merge an ancestry check fails; that is
   never a reason to force a deletion. Check also for uncommitted or untracked files, stashes, other
-  worktrees, and active writers. Stop and report any surprise.
+  worktrees, and active writers. A clean status can still hide work: ignored files, files the index
+  marks as unchanged or skip-worktree, changes that a checkout filter hides, and commits that only
+  that worktree's own refs or reflogs reach. Prefer a tested tool for these checks where the project
+  has one. Stop and report any surprise.
 - Never force, reset, or clean. Keep the persistent clone, user work, rollback refs, and tool pins.
 - Record each removal and each retention with its reason before closing the task.
 

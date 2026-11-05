@@ -42,6 +42,18 @@ should receive, propose that release. Workbenches pin a release tag together wit
   costs a turn), the cost every new session pays before its first answer, the per-request cache
   writes at default reasoning effort, personal skills offered in every session, and commands that
   search a session record instead of opening it.
+- Agents keep notes, plans, logs, and evidence out of repository copies, tracked or ignored, and
+  change a repository's documentation only when the deliverable includes it.
+- In an authorized build, the repository's package manager resolves what its manifests and lock
+  files declare from approved registries, without an approval per dependency unless the
+  organization's approval route requires one. A new registry, dependency, tool, or credential
+  mechanism still needs its own approval.
+- Reports list under Blocked on me only what the current outcome needs; prerequisites of a later
+  phase go under Found, and Changed states first what completed, such as a transfer or a merge.
+- Before review, the diff is compared with the repository's existing patterns, and tests that
+  protect nothing the change relies on are removed. Cleanup after a merge also checks for work that
+  a clean status hides: ignored files, index flags, checkout filters, and commits that only a
+  worktree's own refs or reflogs reach.
 
 ## 0.3.0 - 2026-11-04
 

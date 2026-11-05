@@ -82,6 +82,9 @@ default. A model change is not a harness change.
 - Changes happen in isolated copies under `work/<task>/`, one writer per copy. A task may own
   several copies; one integration owner combines results. Do not split coupled work only to add
   agents.
+- Keep notes, plans, logs, and evidence out of repository copies, tracked or ignored: put them in
+  the task record or in `work/<task>/` beside the copy. Change a repository's documentation only
+  when the deliverable includes it.
 - Prefer an independent clone to a Git worktree when the reference must stay untouched: worktrees
   share its Git metadata. Clone from the remote when the task will publish a branch. A clone of a
   local reference has it as `origin`, so disable pushing to it right after cloning:
@@ -204,11 +207,12 @@ a verified recorded commit, and is reconciled before integration.
 Unless the `report` setting says otherwise, end substantial work with these labels, in this order
 and in the language of the conversation:
 
-**Blocked on me**: only decisions, inputs, or approvals the requester must supply, each with its
-consequence. Tool limits that need no action go under Found.
+**Blocked on me**: only decisions, inputs, or approvals the requester must supply for the current
+outcome, each with its consequence. Prerequisites of a later phase, and tool limits that need no
+action, go under Found.
 
-**Changed**: concrete changes or deliverables, with links. Distinguish a proposal from an
-activated configuration.
+**Changed**: concrete changes or deliverables, with links. State first what completed, such as a
+transfer, an approval, or a merge. Distinguish a proposal from an activated configuration.
 
 **Found**: verified results, discrepancies, remaining uncertainty, coverage, and what is still
 untested.
@@ -231,6 +235,10 @@ use ordinary prose. During work, report meaningful progress and blockers, not an
   and coordination. Reuse existing approved tools before adding any.
 - Every executable, ours or third-party, follows your organization's software-approval route, if
   it has one. Public visibility or cloning does not approve running it.
+- In an authorized build, let the repository's package manager resolve what its manifests and lock
+  files declare, from approved registries, into a cache the task may write; record versions that
+  resolve dynamically. That needs no approval per dependency unless the approval route requires it.
+  A new registry, dependency, tool, or credential mechanism needs its own approval.
 - Pin exact revisions of the core and of tools. Prepare upgrades separately, show changes and
   validation, keep private configuration, record the previous revision for rollback, and activate
   only after approval. Opening a session never upgrades anything.
