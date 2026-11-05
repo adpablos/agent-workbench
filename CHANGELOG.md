@@ -13,6 +13,9 @@ should receive, propose that release. Workbenches pin a release tag together wit
   find reads, compaction, and on-demand instruction loads in the session record. The read probe
   passed. The subfolder probe failed: viewing a file in a subfolder loads every instruction file
   there, so `repos/` and `tools/` stay outside the opened root.
+- `docs/HOSTS.md` records that Copilot CLI 1.0.84 loaded no `AGENTS.md` from a folder outside the
+  opened root, reached with `--add-dir` or `--allow-all-paths`, so keeping `repos/` and `tools/`
+  there avoids the loads that the subfolder probe showed.
 
 ## 0.3.0 - 2026-11-04
 

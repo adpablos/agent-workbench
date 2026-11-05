@@ -185,6 +185,12 @@ results.
   `kind.type` is `instruction_discovered`, with `sourcePath` and `triggerFile`. No skill from
   `.github/skills/`, `.claude/skills/`, `.agents/skills/`, or `.copilot/skills/` and no agent from
   `.github/agents/` or `.claude/agents/` appeared in the agent's list or the session record.
+- A folder outside the opened root loaded no `AGENTS.md`, on 1.0.84; this was not run on
+  1.0.105. In a workbench where viewing `repos/ctrl/notes.md` loaded `repos/ctrl/AGENTS.md`,
+  viewing `notes.md` in a sibling folder of the workbench with its own `AGENTS.md`, reached with
+  `--add-dir <folder>` in one run and `--allow-all-paths` in another, gave no
+  `instruction_discovered` event and no probe word. Not tested in that folder: other instruction
+  file names, `.github/skills/`, and `.github/agents/`.
 - With the default `auto` model, turns of one session ran on different models. Each
   `assistant.message` names its model: *reported*. Pass `--model` when a probe needs one model.
 
@@ -197,7 +203,8 @@ results.
   Copilot CLI also in the folders on the path of the file it works on. No documented setting
   excludes a folder as `claudeMdExcludes` does: in Copilot CLI, `/instructions` turns single files
   off and `--no-custom-instructions` turns all of them off. Keep `repos/` and `tools/` outside the
-  opened root: the subfolder probe failed on Copilot CLI 1.0.84.
+  opened root: the subfolder probe failed on Copilot CLI 1.0.84, and a folder outside the root
+  loaded no `AGENTS.md`.
 - `chat.useNestedAgentsMdFiles` does not control the Copilot harness.
 - In Copilot CLI, `--add-dir` also loads that folder's `.github/skills` and `.github/agents` as
   trusted configuration, so it does not give neutral access to a reference. That says nothing about
