@@ -42,6 +42,18 @@ should receive, propose that release. Workbenches pin a release tag together wit
   costs a turn), the cost every new session pays before its first answer, the per-request cache
   writes at default reasoning effort, personal skills offered in every session, and commands that
   search a session record instead of opening it.
+- The Director probe runs a fixed kit in `probes/director/`: synthetic records, the requests to
+  send, and the written answer to judge against, so no workbench writes its own. A reference run,
+  recorded in the pull request that changes the kit, confirms the answer for every host; a host
+  runs the reference itself only to tell a host problem from a model problem after a candidate
+  fails. The same run is the read probe for the candidate's pair, so choosing the Director takes one
+  chat per candidate.
+- A new probe lists what the host adds to every session from outside the workbench: user-level
+  instruction files, skills, agents, and tool servers. Each costs tokens in every call, and on
+  Copilot CLI a personal skill answered a workbench `Resume`; the agent proposes turning off what
+  the work does not need. `docs/HOSTS.md` says where Claude Code, Codex, and Copilot show them and
+  how Copilot turns them off, how VS Code and Copilot CLI set reasoning effort, and that loading
+  `core/OPERATING.md` through Copilot's instructions as well did not spare its read.
 - Agents keep notes, plans, logs, and evidence out of repository copies, tracked or ignored, and
   change a repository's documentation only when the deliverable includes it.
 - In an authorized build, the repository's package manager resolves what its manifests and lock
