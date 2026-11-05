@@ -16,6 +16,12 @@ should receive, propose that release. Workbenches pin a release tag together wit
 - `docs/HOSTS.md` records that Copilot CLI 1.0.84 loaded no `AGENTS.md` from a folder outside the
   opened root, reached with `--add-dir` or `--allow-all-paths`, so keeping `repos/` and `tools/`
   there avoids the loads that the subfolder probe showed.
+- The Director's model and reasoning effort are chosen explicitly, like those for implementation
+  and review. It makes the most model calls over the longest context, so its choice sets most of a
+  workbench's usage: it gets the most economical pair that passes a new Director probe in
+  `docs/VALIDATION.md`, where the candidate must find every next action and blocker that a
+  stronger approved model finds. The `POLICY.md` template gains a Director row and a reasoning
+  effort column; existing workbenches add them when they next change their policy.
 
 ## 0.3.0 - 2026-11-04
 
