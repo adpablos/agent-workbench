@@ -17,6 +17,7 @@ on existing approved tools.
 | [docs/DEFAULTS.md](docs/DEFAULTS.md) | Configurable defaults and the safety floor |
 | [docs/PULL-REQUESTS.md](docs/PULL-REQUESTS.md) | What a pull request contains and how its review ends |
 | [docs/HOSTS.md](docs/HOSTS.md) | Where agent hosts differ in setup, delegation, and evidence |
+| [probes/](probes/) | Fixed records and written answers for probes in `docs/VALIDATION.md` |
 | [templates/](templates/) | Starting points for the workbench's `AGENTS.md` and private files |
 
 ## Set up a workbench

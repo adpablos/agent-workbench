@@ -44,6 +44,12 @@ To confirm a load on Claude Code, search the session transcript for the probe wo
 kind of entry. On 2.1.305, `CLAUDE.md` forms appeared as `nested_memory` entries and `AGENTS.md`
 as `hook_additional_context`. On 2.1.316, `AGENTS.md` appeared as an `instructions` attachment.
 
+Each session also takes what the user configured for every session. On Claude Code 2.1.316,
+`claude -p "/context"` lists, without a model call, the tokens that memory files such as
+`~/.claude/CLAUDE.md`, skills, and MCP tools add to every call: about 12,000 beyond the built-in
+ones in one user's setup. `--setting-sources project,local` left out that `CLAUDE.md`, the user's
+skills, and the MCP servers. Codex lists its MCP servers with `codex mcp list`.
+
 ### Claude Code: references inside the workbench
 
 Because Claude Code loads subfolder instructions on demand, a reference repository's instructions
@@ -223,6 +229,13 @@ GPT-6 Luna for every workbench request. GitHub's billing pages were read on 2026
   `copilot --acp`.
 - The skills in `~/.agents/skills/` were offered in every session, and an agent used one to answer
   a workbench `Resume`. `copilot skill list` shows them as personal.
+- The built-in GitHub MCP server sent its tools with every call, about 1,100 tokens each.
+  `copilot mcp list` and `copilot skill list` show the MCP servers and skills of the user, the
+  folder, and plugins. `--disable-builtin-mcps` or `--disable-mcp-server <name>` turns a server off
+  for one launch; `copilot mcp disable <name>` and `copilot skill disable <name>` turn one off until
+  it is enabled again.
+- Loading `core/OPERATING.md` through `.github/copilot-instructions.md` as well did not spare its
+  read: in one run the agent read the file anyway, and the same three requests cost a third more.
 - `system.message` in the session record holds the instructions loaded at start, with `AGENTS.md`
   inside `<custom_instruction>`. Records grow fast, to about 600 KB for three requests and a
   compaction, so search them rather than opening them:
@@ -244,6 +257,15 @@ grep -o '"instruction_discovered","sourcePath":"[^"]*"' ~/.copilot/session-state
   opened root: the subfolder probe failed on Copilot CLI 1.0.84, and a folder outside the root
   loaded no `AGENTS.md`.
 - `chat.useNestedAgentsMdFiles` does not control the Copilot harness.
+- Read on 2026-11-05, not exercised: every session also takes what the user configured outside the
+  folder. The Copilot harness and Copilot CLI load `~/.copilot/copilot-instructions.md` and
+  `~/.copilot/instructions/`, skills from `~/.copilot/skills/` and `~/.agents/skills/`, agents from
+  `~/.copilot/agents/`, and MCP servers from `~/.copilot/mcp-config.json`; VS Code also reads
+  `~/.claude/skills/`. VS Code shows them under **Chat: Open Customizations** and on the MCP Servers
+  page, which turns a server off for the user, the workspace, or the session, as the server and
+  harness allow. A personal skill is turned off in its own frontmatter, or in the Local harness all
+  of them with `chat.useAgentSkills`. Copilot CLI shows them with
+  `copilot instruction list`, `copilot skill list`, and `/mcp`.
 - In Copilot CLI, `--add-dir` also loads that folder's `.github/skills` and `.github/agents` as
   trusted configuration, so it does not give neutral access to a reference. That says nothing about
   what loads from a subfolder of the opened root: probe `.github/skills/` and `.github/agents/`
@@ -291,6 +313,13 @@ grep -o '"instruction_discovered","sourcePath":"[^"]*"' ~/.copilot/session-state
 
 ### Copilot: model and secrets
 
+- Read on 2026-11-05, not exercised: VS Code sets reasoning effort in the model picker, beside each
+  model that supports it, for Local and Copilot harness sessions, and the picker's label shows it:
+  *configured*. A new chat starts from the last effort chosen for that model. A custom agent's
+  `reasoning-effort` sets it in the Copilot harness. The documentation names no setting for it, and
+  nothing for the Claude and Codex harnesses. Copilot CLI takes `--effort`, `effortLevel` in
+  `~/.copilot/settings.json`, whose default is `medium`, or `/model`, and an agent's
+  `reasoningEffort` sets a subagent's.
 - VS Code shows the model of a response when you hover over it: *reported*. A custom agent's
   `model` is a preference list, so it is at most *configured*. Copilot CLI `/usage` gives per-model
   totals for the whole session, which attribute a turn only when one model ran the session.
