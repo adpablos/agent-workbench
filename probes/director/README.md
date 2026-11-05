@@ -11,9 +11,10 @@ Never give [answer.md](answer.md) to the agent under test.
 Give each run its own folder outside the opened root of any workbench, `<run>` below:
 
 1. Copy the contents of `workbench/` into `<run>`, so that `<run>/private/POLICY.md` exists.
-2. Copy `core/templates/workbench-entrypoint.md` to `<run>/AGENTS.md`.
-3. Check out the core under test as `<run>/core`, for example from a workbench's core:
+2. Check out the core under test as `<run>/core`, for example from a workbench's core:
    `git -C <workbench>/core worktree add --detach <run>/core <revision>`.
+3. Copy `<run>/core/templates/workbench-entrypoint.md` to `<run>/AGENTS.md`, so that the entrypoint
+   comes from the revision under test.
 4. Open `<run>` as the root of a new session, with the candidate model and reasoning effort
    selected explicitly.
 
@@ -22,7 +23,7 @@ Give each run its own folder outside the opened root of any workbench, `<run>` b
 In that session, send each request after the previous answer:
 
 ```text
-Resume: what is the next action on the top priority, and is anything blocked on me?
+Resume: what is the next action on each open task, in priority order, and is anything blocked on me?
 ```
 
 ```text
@@ -30,7 +31,7 @@ The review of 9a2c771 is back with no findings; the reviewer's session record re
 ```
 
 Compact the chat if the host compacts on request; otherwise record that check of the read probe as
-not run. Then send:
+not run, as [answer.md](answer.md) describes. Then send:
 
 ```text
 What does the portal date library task need from me?
