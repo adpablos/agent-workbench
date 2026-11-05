@@ -37,6 +37,11 @@ should receive, propose that release. Workbenches pin a release tag together wit
   Director's cost tier: `docs/HOSTS.md` records that VS Code documents such a cap for Local harness
   subagents, unverified. The `POLICY.md` template gains a Director row and a reasoning effort
   column; existing workbenches add them when they next change their policy.
+- `docs/HOSTS.md` records how Copilot CLI 1.0.84 reports and spends usage: AI credits from the
+  session record at list price, where to read them without a model call (`copilot -p "/usage"`
+  costs a turn), the cost every new session pays before its first answer, the per-request cache
+  writes at default reasoning effort, personal skills offered in every session, and commands that
+  search a session record instead of opening it.
 
 ## 0.3.0 - 2026-11-04
 
