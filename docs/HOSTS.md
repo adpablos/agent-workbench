@@ -142,15 +142,57 @@ Observed with the same versions.
 
 ## GitHub Copilot
 
-From documentation read on 2026-11-02, not exercised: the VS Code pages are dated 2026-10-28, and
-GitHub's Copilot CLI pages carry no date. They are newer than VS Code 1.137.0, so older versions may
-lack some settings, harnesses, or commands. Installed behavior takes precedence: run the probes
-before relying on a line, then replace it with what you observed and the version.
+The first subsection records what Copilot CLI showed. The rest comes from documentation read on
+2026-11-02, not exercised: the VS Code pages are dated 2026-10-28, and GitHub's Copilot CLI pages
+carry no date. They are newer than VS Code 1.137.0, so older versions may lack some settings,
+harnesses, or commands. Installed behavior takes precedence: run the probes before relying on a
+line, then replace it with what you observed and the version.
 
 VS Code runs each session in a harness: Local, Copilot, Claude, or Codex. A Copilot CLI session in
 VS Code uses the Copilot harness, which shares its runtime with Copilot CLI. Instruction loading,
 delegation, and permissions depend on the harness, so probe each harness you use as Director as a
 separate host.
+
+### Copilot CLI: running the probes
+
+Observed on macOS with Copilot CLI 1.0.84 installed from npm, without the interactive interface, at
+default settings, in a workbench folder that is not a Git repository. Version 1.0.105 gave the same
+results.
+
+- Pin the version. A CLI installed from npm at 1.0.84 ran 1.0.105 from its package cache, and the
+  choice is made at every launch. Run `export COPILOT_AUTO_UPDATE=false` in the shell before the
+  first command of a probe, or pass `--no-auto-update` to every command, including the listings
+  and compaction below. `copilotVersion` in the `session.start` event of the session record shows
+  the version of the first launch only.
+- Run each step as
+  `copilot -p "<prompt>" --deny-tool shell --deny-tool write --output-format json` from the
+  workbench folder, and continue the same session with `--resume=<sessionId>`; the final `result`
+  line gives the ID. `copilot -p "/compact" --resume=<sessionId>` compacts on request.
+- The JSON stream shows each tool call in order as `tool.execution_start`, and
+  `tool.execution_complete` holds what the tool returned, so it shows whether a read was whole. The
+  session record, `~/.copilot/session-state/<sessionId>/events.jsonl`, also holds what the stream
+  leaves out: compaction, as `session.compaction_start` and `session.compaction_complete` with
+  `trigger: manual`, and on-demand instruction loads.
+- `copilot instruction list` and `copilot skill list` show what a session loads at start, not what
+  it loads later.
+- The root `AGENTS.md` loaded. The read probe passed: the agent read `core/OPERATING.md` and
+  `private/POLICY.md` in full with its `view` tool before the task's first operation, read neither
+  for the second request, and read both again after compaction, before the third.
+- The subfolder probe failed. After the agent viewed a file in `repos/probe/` or `tools/probe/`, the
+  CLI loaded that folder's `AGENTS.md`, `CLAUDE.md`, `.claude/CLAUDE.md`, `GEMINI.md`,
+  `.github/copilot-instructions.md`, and `.github/instructions/*.instructions.md`, also with only
+  `AGENTS.md` there. Each load appears in the session record as a `system.notification` whose
+  `kind.type` is `instruction_discovered`, with `sourcePath` and `triggerFile`. No skill from
+  `.github/skills/`, `.claude/skills/`, `.agents/skills/`, or `.copilot/skills/` and no agent from
+  `.github/agents/` or `.claude/agents/` appeared in the agent's list or the session record.
+- A folder outside the opened root loaded no `AGENTS.md`, on 1.0.84; this was not run on
+  1.0.105. In a workbench where viewing `repos/ctrl/notes.md` loaded `repos/ctrl/AGENTS.md`,
+  viewing `notes.md` in a sibling folder of the workbench with its own `AGENTS.md`, reached with
+  `--add-dir <folder>` in one run and `--allow-all-paths` in another, gave no
+  `instruction_discovered` event and no probe word. Not tested in that folder: other instruction
+  file names, `.github/skills/`, and `.github/agents/`.
+- With the default `auto` model, turns of one session ran on different models. Each
+  `assistant.message` names its model: *reported*. Pass `--model` when a probe needs one model.
 
 ### Copilot: instruction loading
 
@@ -161,7 +203,8 @@ separate host.
   Copilot CLI also in the folders on the path of the file it works on. No documented setting
   excludes a folder as `claudeMdExcludes` does: in Copilot CLI, `/instructions` turns single files
   off and `--no-custom-instructions` turns all of them off. Keep `repos/` and `tools/` outside the
-  opened root until the subfolder probe passes.
+  opened root: the subfolder probe failed on Copilot CLI 1.0.84, and a folder outside the root
+  loaded no `AGENTS.md`.
 - `chat.useNestedAgentsMdFiles` does not control the Copilot harness.
 - In Copilot CLI, `--add-dir` also loads that folder's `.github/skills` and `.github/agents` as
   trusted configuration, so it does not give neutral access to a reference. That says nothing about
@@ -169,7 +212,7 @@ separate host.
   there too.
 - Evidence of a load: in VS Code, the system prompt in the Chat Debug view or the discovery events
   in Agent Debug Logs; the customizations editor shows only what was discovered. In Copilot CLI,
-  `/env` and `/instructions`.
+  `/env` and `/instructions`, and the session record described above.
 
 ### Copilot: delegation and sessions
 
