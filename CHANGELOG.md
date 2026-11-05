@@ -16,6 +16,27 @@ should receive, propose that release. Workbenches pin a release tag together wit
 - `docs/HOSTS.md` records that Copilot CLI 1.0.84 loaded no `AGENTS.md` from a folder outside the
   opened root, reached with `--add-dir` or `--allow-all-paths`, so keeping `repos/` and `tools/`
   there avoids the loads that the subfolder probe showed.
+- Probes cost less without weaker evidence. Probes of what the host loads or allows run on the most
+  economical approved model; probes of what an agent does run with the model and reasoning effort
+  of its role. A result carries over to another environment with the same host version and
+  settings, which reruns only the probes it can change, such as through organization settings,
+  models, or permissions. A failure on a comparable host, such as another version, platform, or
+  interface of the same host, is enough to choose the option that does not rely on the capability;
+  a pass counts only once the probe passes where it is relied on. The root `AGENTS.md` probe can
+  share the read probe's chat and rely on the host's record, the subfolder probe no longer starts
+  with a greeting, and records and transcripts are searched with a command instead of being opened
+  whole.
+- The Director's model and reasoning effort are chosen explicitly, like those for implementation
+  and review. It makes the most model calls over the longest context, so its choice sets most of a
+  workbench's usage: it gets the most economical pair that passes a new Director probe in
+  `docs/VALIDATION.md`. On separate copies of the same synthetic records, the candidate and the
+  strongest approved model at its highest approved effort must each match an answer written before
+  any run: every next action and blocker, nothing the records do not support, no approval or
+  readiness they lack, and the same change to a task record. Work that needs a
+  stronger model goes to a separate session where the host caps a subagent's model at the
+  Director's cost tier: `docs/HOSTS.md` records that VS Code documents such a cap for Local harness
+  subagents, unverified. The `POLICY.md` template gains a Director row and a reasoning effort
+  column; existing workbenches add them when they next change their policy.
 - `docs/HOSTS.md` records how Copilot CLI 1.0.84 reports and spends usage: AI credits from the
   session record at list price, where to read them without a model call (`copilot -p "/usage"`
   costs a turn), the cost every new session pays before its first answer, the per-request cache
