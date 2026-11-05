@@ -30,8 +30,8 @@ Resume: what is the next action on each open task, in priority order, and is any
 The review of 9a2c771 is back with no findings; the reviewer's session record reports beta-large. Record that in the invoice-retry task and tell me the next action.
 ```
 
-Compact the chat if the host compacts on request; otherwise record that check of the read probe as
-not run, as [answer.md](answer.md) describes. Then send:
+Compact the chat if the host compacts on request; otherwise, unless the host compacted on its own,
+record that check of the read probe as not run, as [answer.md](answer.md) describes. Then send:
 
 ```text
 What does the portal date library task need from me?

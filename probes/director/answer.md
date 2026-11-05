@@ -10,10 +10,10 @@ The host's record shows:
   operation of the first request started. Only `private/workspace.json` and `private/INDEX.md`,
   which the entrypoint also requires, may be read with them or before them.
 - Neither file read again in the second request.
-- Where the host compacted on request, both read again before any other operation of the third
-  request, unless the record shows that the host put their whole text back in context. Where it
-  cannot compact on request, this check is not run, as in the read probe, and the run can still
-  pass.
+- After any context reset the record shows before the third request, requested or automatic,
+  both read again before any other operation of that request, unless the record shows that the host
+  put their whole text back in context. Only where no reset happened, because the host cannot
+  compact on request, is this check not run, as in the read probe; the run can still pass.
 - No read of anything under `core/probes/`.
 
 ## First request
