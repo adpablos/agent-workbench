@@ -1,7 +1,8 @@
 # Defaults
 
 What the core does unless you say otherwise. These are opinions from experience, not obligations:
-every default below changes with one line, and the safety floor changes with a recorded decision.
+every default below changes with one line or one approval, and the safety floor changes with a
+recorded decision.
 Nothing here needs a tool.
 
 To see what applies now, ask the agent to "show the settings". It lists each value and where it
@@ -79,6 +80,70 @@ Set these in `private/POLICY.md`.
 
 `private/POLICY.md` also holds your review pairing and the exact models you approve.
 
+## Policy topics and approval history
+
+Every agent reads `private/POLICY.md` in full in every session, so keep it to what every action
+needs: its approval status, the rules that apply whatever the action, settings, and triggers. A
+rule that only one kind of action needs can move to a topic file that a trigger names:
+
+```markdown
+## Topics
+
+- Before recording a review result in a task record, read `private/review-records.md` in full.
+```
+
+- A topic file is part of the policy: it has the same precedence, and it changes only after the
+  requester approves its exact text. It is read in full before its action under the entrypoint's
+  read rules, so a context reset or a change to the file means reading it again. If it is missing,
+  partial, or unreadable, that action is blocked; other work continues.
+- An assignment that includes a triggered action names the topic file among its instruction paths.
+- Rules that apply whatever the action, such as safeguards, approval stops, and waivers, stay in
+  `POLICY.md`.
+- The approval status stays in `POLICY.md` and covers its topic files, so following the policy
+  needs no other read. The approval log may live in one linked file, such as
+  `private/approvals.md`, instead of in `POLICY.md`, never in both: there is one authoritative
+  history. A log inside `POLICY.md` needs no migration. Each entry records the rule or change, its
+  scope, the reason where one applies, the approver, the date, and evidence of the exact text
+  approved. When an action depends on a specific approval, waiver, migration, or scope, read its
+  entries first. A missing entry is a missing approval: ask the requester, record only what they
+  approve, and never reconstruct one.
+- Moving content out of `POLICY.md` is a change to the policy. The proposal accounts for every
+  rule, approval, waiver, and boundary in effect, says where each one goes, and needs approval of
+  the exact text of every file it changes. Shortening never broadens authority or drops a control.
+
+## Integration runs
+
+By default, local experiments use isolated copies, approved dependencies, synthetic data, and
+mocks. A task can instead authorize an integration run against non-production services. The task
+record's Integration run field names:
+
+- the environment, and the endpoints and methods the run may call;
+- the run copy, the tools, and the route by which dependencies are fetched;
+- the approved credential mechanism, loaded inside the process that uses it, so that values never
+  appear in commands, logs, or reports;
+- how and where the evidence is kept.
+
+The run authorizes only the operations it names. A reachable service, a working credential, or a
+signed-in browser authorizes nothing more. Authenticating, even through a POST, is not a change to
+business data, but these keep their own approvals whatever the HTTP method: changing business data,
+anything that touches production, deployment and publication, and privileged remote operations.
+Direct diagnostics, such as a request sent by hand to see why a call failed, stay within the named
+endpoints and methods.
+
+- Whoever owns the run starts the processes it needs and stops them when it ends.
+- One writer per copy still holds, and the run never uses another worker's copy.
+- A local folder or an offline flag is not a sandbox. Record which limits are technically enforced
+  and which are only procedural, as `OPERATING.md` (Authority) says.
+- The evidence says which dependencies were real and which were mocked. A run against a mocked
+  dependency is not integration with its real producer, and no run is business or delivery
+  acceptance.
+
+A newer, broader rule that allows such runs does not override an older explicit prohibition, such
+as a task scope that excludes starting the application or live calls. Report the conflict as
+`OPERATING.md` (Principles and precedence) says: name the conflicting text and the action that
+depends on it, prepare the exact reconciliation for approval, and leave that action blocked until
+it is approved.
+
 ## Safety floor
 
 These five rules hold for every project, including disposable ones, and no setting changes them.
@@ -97,8 +162,9 @@ waive review: docs/ only; single maintainer; approved by <name> on YYYY-MM-DD
 ```
 
 In a repository the line goes through a pull request and stays in its history. In
-`private/POLICY.md` it also goes in the approval log and covers only your own work. A waiver never
-overrides an organizational requirement or another repository's rules.
+`private/POLICY.md` it stays in that file, never in a topic, its approval goes in the approval log,
+and it covers only your own work. A waiver never overrides an organizational requirement or another
+repository's rules.
 
 The floor is written guidance. Only host permissions and repository settings enforce it, so back
 each rule with them where you can.
