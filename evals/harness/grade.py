@@ -119,6 +119,14 @@ def config_check(area, scenario, rec, run):
         extra = sorted({f for f in files
                         if not any(f == a or (a.endswith("/") and f.startswith(a))
                                    for a in check["allowed_paths"])})
+        # A file outside the allowed paths passes when every changed line matches its pattern.
+        for f, pattern in check.get("constrained_paths", {}).items():
+            if f in extra:
+                lines = [ln[1:] for ln in git("-C", str(copy), "diff", base, "--", f,
+                                              check=False).splitlines()
+                         if ln[:1] in "+-" and not ln.startswith(("+++", "---"))]
+                if lines and all(re.search(pattern, ln) for ln in lines):
+                    extra.remove(f)
         now = (copy / check["file"]).read_text()
         then = git("-C", str(copy), "show", f"{base}:{check['file']}")
         value = yaml_value(area, scenario, now, check["key"])

@@ -73,6 +73,9 @@
       "charts/prefect-server/README.md",
       "charts/prefect-server/README.md.gotmpl",
       "charts/prefect-server/tests/"
-    ]
+    ],
+    "constrained_paths": {
+      "charts/prefect-server/templates/deployment.yaml": "(?i)health|ready|liveness"
+    }
   }
 }

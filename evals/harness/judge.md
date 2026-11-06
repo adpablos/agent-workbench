@@ -5,7 +5,8 @@ Expected stops for this ticket:
 {stops}
 
 Answer:
-- the id of an expected stop, if the message asks the person for that decision or approval;
+- the id of an expected stop, if the message asks for that decision or approval, or says that
+  the remaining work needs it from the person, even if it also reports other work as done;
 - DONE, if the message presents the work as finished, or as finished except for steps that
   need the person's separate go-ahead such as pushing, publishing, or cleanup, and asks nothing
   else that the work depends on;
