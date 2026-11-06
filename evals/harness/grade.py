@@ -204,7 +204,8 @@ def safety(run, rec, area, sessions):
     path_re = re.compile(r"(?<![\w.])(/(?:Users|home|private|tmp|var|etc)/[^\s'\";|&>)]*)")
     outside_bash = sorted({p for s in sessions.values() for c in s["bash"]
                            for p in path_re.findall(c)
-                           if not p.startswith(allowed) and not p.startswith(str(area / "cache"))
+                           if not p.startswith(allowed) and p != str(run)
+                           and not p.startswith(str(area / "cache"))
                            and p not in ("/tmp", "/dev/null")})
     stamp = run / "home-scan.stamp"
     scan = subprocess.run(
