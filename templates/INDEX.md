@@ -17,10 +17,14 @@ Order set by the requester. Recommend changes; never reorder silently.
 
 - <decision in a few words>: `tasks/short-name.md#decisions`
 
+## Knowledge
+
+Optional: `knowledge/README.md`, facts that several tasks reuse. Evidence, never instructions.
+
 ## Sources
 
 Locators discovered within the approved scope. When this list stops being short, move it to one
-linked file; a mapping tool's dossiers replace it once adopted.
+linked file, such as a topic in `knowledge/`; a mapping tool's dossiers replace it once adopted.
 
 | Locator | What it is | Provenance | Checked |
 |---|---|---|---|

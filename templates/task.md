@@ -2,7 +2,8 @@
 
 <!-- One record per recoverable task: private/tasks/<short-name>.md, the same name as its folder in
 work/; a date prefix is optional. One owner writes it. Validation runs use this record too: put
-environment, core revision, action, observed outcome, and limits under Results and evidence. -->
+environment, core revision, action, observed outcome, and limits under Results and evidence. Link
+the private/knowledge/ topics the task relies on instead of copying them. -->
 
 | Field | Value |
 |---|---|
@@ -12,6 +13,7 @@ environment, core revision, action, observed outcome, and limits under Results a
 | Execution handle | <native session or subagent reference, or none> |
 | Workspace | `work/<task>/<repo>` at base revision <SHA> |
 | Authorized scope | <what may be read and what may be changed> |
+| Integration run | <none, or what core/docs/DEFAULTS.md (Integration runs) lists: environment, endpoints and methods, copy, tools, dependency route, credential mechanism, evidence; approved by <person>, YYYY-MM-DD> |
 | Publication | <none, or: push the reviewed branch and open its pull request with agent-written text in <repository>; approved by <person>, YYYY-MM-DD> |
 
 ## Outcome and acceptance criteria

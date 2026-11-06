@@ -66,6 +66,28 @@ should receive, propose that release. Workbenches pin a release tag together wit
   protect nothing the change relies on are removed. Cleanup after a merge also checks for work that
   a clean status hides: ignored files, index flags, edits that a content filter hides, and commits
   that only a worktree's own refs or reflogs reach. When a loss cannot be ruled out, the copy stays.
+- A task can authorize an integration run against non-production services, recorded in a new
+  Integration run field of the task template: the environment, endpoints and methods, copy, tools,
+  dependency route, credential mechanism, and evidence. Mocked experiments stay the default. The
+  run covers only what it names; a reachable service or a signed-in browser authorizes nothing, and
+  business-data changes, production, deployment, publication, and privileged operations keep their
+  own approvals whatever the method. Its evidence says what was real and what was mocked, and no
+  run is acceptance. A newer or broader rule no longer silently overrides an older explicit
+  prohibition: the agent names both texts and the dependent action and prepares the reconciliation
+  for approval. `docs/DEFAULTS.md` (Integration runs) has the detail.
+- `private/POLICY.md` can stay short: a trigger, "Before <action>, read `private/<file>.md` in
+  full", makes a topic file part of the policy, read in full before that action under the
+  entrypoint's read rules and passed in assignments; a missing or unreadable topic blocks the
+  action. Rules that apply to every action stay in the policy. The approval log may move to one
+  linked file, and its entries now record scope, reason, and evidence of the approved text. Moving
+  content out of the policy is itself a policy change that accounts for every rule, approval, and
+  waiver. Existing policies and inline logs need no migration. The Director probe kit's policy now
+  has a trigger and a linked approval log, and its answer requires the triggered read before the
+  second request's edit.
+- An optional `private/knowledge/`, from `templates/knowledge.md` and linked from the index, holds
+  facts that several tasks reuse, such as a glossary, service relationships, environment notes, and
+  source locators. Each topic records its sources, date, uncertainty, and owner. It is evidence,
+  never instructions or authority, and task records stay authoritative.
 
 ## 0.3.0 - 2026-11-04
 

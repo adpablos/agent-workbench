@@ -1,8 +1,8 @@
 # Policy
 
 Approved local rules and preferences for this workbench. They add to `core/OPERATING.md` and
-cannot waive mandatory organizational or repository controls. Change this file only after the
-requester approves the exact text.
+cannot waive mandatory organizational or repository controls. Change this file or a topic file
+only after the requester approves the exact text.
 
 Approved: YYYY-MM-DD by <requester>
 
@@ -34,8 +34,18 @@ Example: GPT implementation is reviewed by Opus, and Opus implementation by GPT.
 
 - <approved preference>
 
+## Topics
+
+Optional. Each file named here is part of this policy, read in full before its action, as
+`core/docs/DEFAULTS.md` (Policy topics and approval history) describes. Rules that apply whatever
+the action stay above.
+
+- Before <action>, read `private/<topic>.md` in full.
+
 ## Approval log
 
-| Date | Change | Approved by |
-|---|---|---|
-| YYYY-MM-DD | Initial policy | <requester> |
+Here, or in one linked file such as `approvals.md`, never both.
+
+| Date | Change | Scope | Reason | Approved by | Evidence of the approved text |
+|---|---|---|---|---|---|
+| YYYY-MM-DD | Initial policy | This workbench | Setup | <requester> | <where the exact text was approved> |

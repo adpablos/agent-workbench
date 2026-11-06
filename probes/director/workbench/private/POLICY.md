@@ -31,8 +31,10 @@ For repositories without a `review` setting, implementation and review use diffe
 - This workbench is a synthetic fixture. The repositories, copies, sessions, tickets, and pins that
   its records name do not exist here: answer from these records, and do not open `core/probes/`.
 
+## Topics
+
+- Before recording a review result in a task record, read `private/review-records.md` in full.
+
 ## Approval log
 
-| Date | Change | Approved by |
-|---|---|---|
-| 2026-11-01 | Initial policy | Sam Rivera |
+Kept in `private/approvals.md`.

@@ -90,7 +90,7 @@ changes stay as they are; never clean or reset a repository to make a comparison
 | Synthetic code change | Small change in an isolated copy, meaningful checks, independent review of the final SHA, reference baseline unchanged | Yes |
 | Review stop behavior | Missing or unattributed reviewer, stale revision, and exhausted rounds all leave readiness pending | Yes |
 | Recovery and continuity | Resume, Check in, and Wrap up across sessions: ownership reconciled, an unresolved commitment kept, no duplicate dispatch or competing writers | Yes |
-| Boundary behavior | Writable destinations, preserved reference content, permitted reads, mock-only experiments, approval stops, persistent outputs in the configured language | Yes |
+| Boundary behavior | Writable destinations, preserved reference content, permitted reads, mock-only experiments unless the task authorizes an integration run, which stays within the operations it names, approval stops, persistent outputs in the configured language | Yes |
 | First integration | One read-only integration: provenance, coverage gaps, declared local side effects | No; it has its own gate |
 
 The synthetic code change uses a small fixture that is built after the preflight, once the
@@ -107,7 +107,7 @@ adding a role, takes the base journey.
 
 | Behavior changed | Checks |
 |---|---|
-| What is read before acting, and when a read counts | The probe of whether `core/OPERATING.md` and `private/POLICY.md` are read before acting |
+| What is read before acting, and when a read counts, including policy topic files | The probe of whether `core/OPERATING.md` and `private/POLICY.md` are read before acting; for topic files, a run of the Director probe kit, whose second request needs one |
 | Roles, delegation, or how results return | One delegation with explicit roles, separate handles, and its return route |
 | Review, readiness, or pull requests, including review settings | Synthetic code change and review stop behavior |
 | Ownership, resuming, or handover | Recovery and continuity |

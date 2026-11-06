@@ -63,9 +63,12 @@ wb/                      # not a Git repository
   core/                  # this repository, pinned
   private/
     POLICY.md            # approved rules and preferences
+    <topic>.md           # optional, policy topics that POLICY.md triggers
+    approvals.md         # optional, the approval log, linked from POLICY.md
     workspace.json       # approved scope and pins
     INDEX.md             # links to priorities, tasks, decisions, and sources
     tasks/               # one record per recoverable task
+    knowledge/           # optional, facts several tasks reuse, from core/templates/knowledge.md
     dossiers/            # optional, from an adopted mapping tool
   repos/                 # read-only reference clones, as <project>/<repo>
   tools/                 # pinned checkouts of tools you run
@@ -154,10 +157,12 @@ repository and its pull requests. The repository must make sense without a workb
 | Common behavior and role contracts | `core/OPERATING.md` |
 | Defaults, settings, and the safety floor | `core/docs/DEFAULTS.md` |
 | Settings that change what a project delivers | That project's agent instructions |
-| Approved personal rules and preferences | `private/POLICY.md` |
+| Approved personal rules and preferences | `private/POLICY.md` and the topic files it triggers |
+| Approval history of the policy | `private/POLICY.md`, or one file it links |
 | Permitted scope, entrypoints, and pins | `private/workspace.json` |
 | Priorities and links to tasks, decisions, and sources | `private/INDEX.md` |
 | Coordination decisions, authorization, results, and next action | One record per task in `private/tasks/` |
+| Facts that several tasks reuse, as evidence | Optional `private/knowledge/` |
 | Capability observations and acceptance evidence | Task records for the validation runs |
 | Detailed service maps from an adopted mapping tool | Its dossiers, referenced rather than copied |
 | Product conventions and business state | Existing repositories and official systems |
