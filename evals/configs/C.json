@@ -1,0 +1,6 @@
+{
+  "title": "Single session: the same workbench, one agent under the same records and limits",
+  "layout": "workbench",
+  "core": "v0.3.0",
+  "prompt": "Work on the ticket in TICKET.md. Work as a single agent under the same records and limits (Reduced operation in core/OPERATING.md): do not delegate, except to start the independent review session the core requires."
+}

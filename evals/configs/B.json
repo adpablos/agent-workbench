@@ -1,0 +1,6 @@
+{
+  "title": "Director: a workbench whose Director delegates to worker sessions",
+  "layout": "workbench",
+  "core": "v0.3.0",
+  "prompt": "Work on the ticket in TICKET.md. Work as Director: delegate substantial work to worker sessions, as core/OPERATING.md describes."
+}
