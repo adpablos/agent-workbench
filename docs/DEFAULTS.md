@@ -99,12 +99,14 @@ rule that only one kind of action needs can move to a topic file that a trigger 
 - An assignment that includes a triggered action names the topic file among its instruction paths.
 - Rules that apply whatever the action, such as safeguards, approval stops, and waivers, stay in
   `POLICY.md`.
-- The approval log may live in one linked file, such as `private/approvals.md`, instead of in
-  `POLICY.md`, never in both: there is one authoritative history. A log inside `POLICY.md` needs
-  no migration. Each entry records the rule or change, its scope, the reason where one applies, the
-  approver, the date, and evidence of the exact text approved. Before relying on an approval,
-  waiver, migration, or scope, read its entries. A missing entry is a missing approval: ask the
-  requester, record only what they approve, and never reconstruct one.
+- The approval status stays in `POLICY.md` and covers its topic files, so following the policy
+  needs no other read. The approval log may live in one linked file, such as
+  `private/approvals.md`, instead of in `POLICY.md`, never in both: there is one authoritative
+  history. A log inside `POLICY.md` needs no migration. Each entry records the rule or change, its
+  scope, the reason where one applies, the approver, the date, and evidence of the exact text
+  approved. When an action depends on a specific approval, waiver, migration, or scope, read its
+  entries first. A missing entry is a missing approval: ask the requester, record only what they
+  approve, and never reconstruct one.
 - Moving content out of `POLICY.md` is a change to the policy. The proposal accounts for every
   rule, approval, waiver, and boundary in effect, says where each one goes, and needs approval of
   the exact text of every file it changes. Shortening never broadens authority or drops a control.

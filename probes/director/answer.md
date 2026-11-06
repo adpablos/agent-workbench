@@ -13,7 +13,8 @@ The host's record shows:
 - A whole read of `private/review-records.md`, which `private/POLICY.md` triggers, that returned
   before the second request's first edit of `private/tasks/invoice-retry.md`: in the second
   request, or earlier in the same context with no reset in between. The first request does not need
-  it.
+  it. No request depends on a specific approval entry, so a read of `private/approvals.md` is
+  neither required nor a failure.
 - After any context reset the record shows before the third request, requested or automatic,
   both read again before any other operation of that request, unless the record shows that the host
   put their whole text back in context. Only where no reset happened, because the host cannot
