@@ -8,6 +8,13 @@ should receive, propose that release. Workbenches pin a release tag together wit
 
 ## Unreleased
 
+- `evals/` measures the core's way of working on real repositories: a service and the separate
+  repository that configures its deployment, with tickets based on recent upstream fixes and
+  hidden tests. It compares a bare session, a Director that delegates to worker sessions, and a
+  single session under the same workbench, and reports outcome, safety, continuity, cost, and
+  friction from the host's records. A candidate core is one more configuration file. The first
+  report, in `evals/reports/`, is the baseline for redesigning the core. Nothing in the operating
+  contract changes.
 - `docs/HOSTS.md` records what Copilot CLI 1.0.84 showed in the probes, and how to run them there:
   pin the version at every launch, since an npm install ran a newer cached version, and
   find reads, compaction, and on-demand instruction loads in the session record. The read probe

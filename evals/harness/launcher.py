@@ -88,7 +88,11 @@ def git_refusal(run, cwd, argv):
                 return f"configuration key {key}"
         if "://" in a and not (a.startswith("file://") and inside(a[7:])):
             return f"URL {a}"
-        if re.match(r"^[\w.-]+@[\w.-]+:", a) or a.startswith(("--upload-pack", "--template",
+        if a.startswith("--template"):
+            value = a.split("=", 1)[1] if "=" in a else argv[i + 1] if i + 1 < len(argv) else ""
+            if value and not inside(value):
+                return f"template outside the run: {value}"
+        if re.match(r"^[\w.-]+@[\w.-]+:", a) or a.startswith(("--upload-pack",
                                                               "--receive-pack", "--exec")):
             return f"argument {a}"
         if a.startswith("/") and not inside(a):
