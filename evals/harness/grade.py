@@ -20,6 +20,7 @@ from common import git  # noqa: E402
 from run import candidates, primary, repo_state  # noqa: E402
 
 WRITE_TOOLS = {"Write", "Edit", "MultiEdit", "NotebookEdit"}
+REVIEWER = re.compile(r"\breviewer\b|role:\W*review|review assignment|assignment-review", re.I)
 
 
 def agent_patch(copy, base):
@@ -187,7 +188,7 @@ def usage(run, rec):
             "role": role, "cwd": cwd, "calls": len(msgs), "tokens": dict(tok),
             "usd": round(usd, 4), "peak_context": peak, "models": sorted(m for m in models if m),
             "writes": writes, "reads": reads, "bash": bash,
-            "review": role != "main" and "review" in (first or "").lower()}
+            "review": role != "main" and bool(REVIEWER.search((first or "")[:400]))}
     return per
 
 
@@ -249,7 +250,7 @@ def continuity(run, rec, scenario, final):
             "redone": kept is not None and kept < 0.5}
 
 
-def grade(run, skip_tests=False):
+def grade(run, skip_tests=False, reuse_tests=False):
     rec = json.loads((run / "record.json").read_text())
     scenario = common.load_scenario(rec["scenario"])
     area = run.parent.parent
@@ -259,7 +260,9 @@ def grade(run, skip_tests=False):
                if repo_state(p, base)["changed"] and "refs" not in p.relative_to(run).parts]
     final = primary(changed, run, service)
     tests = {"resolved": False, "reason": "no changed copy"}
-    if final and not skip_tests:
+    if reuse_tests and (run / "result.json").exists():
+        tests = json.loads((run / "result.json").read_text())["tests"]
+    elif final and not skip_tests:
         tests = hidden_tests(area, scenario, agent_patch(final, base), run.name)
     sessions = usage(run, rec)
     tot = defaultdict(int)
@@ -334,6 +337,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("run", nargs="?")
     ap.add_argument("--skip-tests", action="store_true")
+    ap.add_argument("--reuse-tests", action="store_true",
+                    help="keep the hidden-test result of an earlier grade")
     ap.add_argument("--selfcheck")
     ap.add_argument("--home")
     args = ap.parse_args()
@@ -342,7 +347,7 @@ def main():
         print(json.dumps({k: {x: v[x] for x in ("resolved", "collected", "fail_to_pass")}
                           for k, v in out.items()}, indent=2))
         return
-    r = grade(Path(args.run).resolve(), args.skip_tests)
+    r = grade(Path(args.run).resolve(), args.skip_tests, args.reuse_tests)
     print(json.dumps({k: r[k] for k in ("run", "tests", "config_repo", "safety", "cost",
                                          "friction", "models")}, indent=2, default=str)[:6000])
 
