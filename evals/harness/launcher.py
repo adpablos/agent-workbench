@@ -113,6 +113,7 @@ class Launcher:
     def __init__(self, real, run, env, model, effort, real_git="/usr/bin/git"):
         self.real, self.run, self.env, self.model, self.effort = real, run, env, model, effort
         self.real_git = real_git
+        self.procs = set()
         self.log = run / "logs" / "claude-calls.jsonl"
         launcher = self
 
@@ -161,6 +162,7 @@ class Launcher:
                else command(self.real, self.run, self.model, self.effort, req["argv"]))
         proc = subprocess.Popen(cmd, cwd=cwd, env=self.env, stdin=subprocess.DEVNULL,
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        self.procs.add(proc.pid)
 
         def pump(stream, kind):
             for chunk in iter(lambda: stream.read1(65536), b""):
@@ -172,10 +174,15 @@ class Launcher:
             t.start()
         for t in threads:
             t.join()
+        code = proc.wait()
+        self.procs.discard(proc.pid)
         try:
-            send(3, str(proc.wait()).encode())
+            send(3, str(code).encode())
         except (BrokenPipeError, ConnectionResetError, socket.error):
             pass
+
+    def pids(self):
+        return list(self.procs)
 
     def write(self, entry):
         with open(self.log, "a") as f:

@@ -165,25 +165,36 @@ def repo_state(path, base):
             "changed": bool(status) or (head and head != base)}
 
 
-def kill_run(run):
-    """Stop every process that belongs to the run, found by its temporary directory."""
-    marker = f"TMPDIR={run / 'tmp'}"
+def kill_run(run, roots=()):
+    """Stop every process of the run: the given roots, their descendants, and any process whose
+    command line names the run folder. The host does not show its environment to `ps`."""
     for sig in (signal.SIGTERM, signal.SIGKILL):
-        out = subprocess.run(["ps", "-axeww", "-o", "pid=,command="], capture_output=True,
+        out = subprocess.run(["ps", "-axo", "pid=,ppid=,command="], capture_output=True,
                              text=True).stdout
-        pids = [int(line.split()[0]) for line in out.splitlines()
-                if marker in line and int(line.split()[0]) != os.getpid()]
-        for pid in pids:
+        procs = {}
+        for line in out.splitlines():
+            parts = line.split(None, 2)
+            if len(parts) == 3:
+                procs[int(parts[0])] = (int(parts[1]), parts[2])
+        targets = {p for p in roots if p in procs}
+        targets |= {p for p, (_, cmd) in procs.items() if str(run) + "/" in cmd}
+        grew = True
+        while grew:
+            children = {p for p, (pp, _) in procs.items() if pp in targets} - targets
+            targets |= children
+            grew = bool(children)
+        targets.discard(os.getpid())
+        for pid in targets:
             try:
                 os.kill(pid, sig)
             except ProcessLookupError:
                 pass
-        if not pids:
+        if not targets:
             return
         time.sleep(5)
 
 
-def session(run, cwd, env, prompt, log, resume=None, cut=None, deadline=None):
+def session(run, cwd, env, prompt, log, resume=None, cut=None, deadline=None, starter=None):
     sid = resume or str(uuid.uuid4())
     cmd = launcher.command(common.real_claude(), run, common.MODEL, common.EFFORT,
                            ["-p", prompt, "--output-format", "stream-json", "--verbose"]
@@ -200,7 +211,7 @@ def session(run, cwd, env, prompt, log, resume=None, cut=None, deadline=None):
             elif deadline and time.time() > deadline:
                 stopped = "time limit"
             if stopped:
-                kill_run(run)
+                kill_run(run, [proc.pid, *(starter.pids() if starter else [])])
                 proc.wait()
                 break
     text, result = "", None
@@ -300,7 +311,8 @@ def main():
     stops = list(scenario.get("expected_stops", []))
     prompt = config["prompt"]
     cut = service_changed if scenario.get("cut") else None
-    s = session(run, root, env, prompt, run / "logs" / "s1.jsonl", cut=cut, deadline=deadline)
+    s = session(run, root, env, prompt, run / "logs" / "s1.jsonl", cut=cut, deadline=deadline,
+                starter=starter)
     s["role"] = "main"
     record["sessions"].append(s)
     if s["stopped"] == "cut":
@@ -312,7 +324,8 @@ def main():
         prompt = scenario["resume_prompt"]
         if config["layout"] != "bare":
             prompt += " " + config["prompt"].split(". ", 1)[1]
-        s = session(run, root, env, prompt, run / "logs" / "s2.jsonl", deadline=deadline)
+        s = session(run, root, env, prompt, run / "logs" / "s2.jsonl", deadline=deadline,
+                    starter=starter)
         s["role"] = "resume"
         record["sessions"].append(s)
     answered = set()
@@ -332,10 +345,10 @@ def main():
                                   "after_snapshot": len(record["snapshots"]) - 1})
         n = len(record["sessions"]) + 1
         s = session(run, root, env, reply, run / "logs" / f"s{n}.jsonl",
-                    resume=s["session_id"], deadline=deadline)
+                    resume=s["session_id"], deadline=deadline, starter=starter)
         s["role"] = "reply"
         record["sessions"].append(s)
-    kill_run(run)
+    kill_run(run, starter.pids())
     starter.close()
     record["snapshots"].append(snapshot())
     record["ended"] = NOW()

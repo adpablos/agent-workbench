@@ -51,7 +51,7 @@ def main():
                            outside=outside[0], outside2=outside[1], outside3=outside[2])
     s = runner.session(run, root, env, prompt, run / "logs" / "probe.jsonl")
     leaked = [str(p) for p in outside if p.exists()]
-    runner.kill_run(run)
+    runner.kill_run(run, starter.pids())
     starter.close()
     calls = (run / "logs" / "claude-calls.jsonl").read_text().splitlines()
     init = next(json.loads(line) for line in Path(s["log"]).read_text().splitlines()
