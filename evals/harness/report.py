@@ -45,8 +45,9 @@ def f2p(r):
 
 def details(results):
     """One line per run: what the totals hide."""
-    rows = ["| Run | Resolved | USD | Main USD | Sessions (main / worker / subagent) | "
-            "Reviews | Claimed done | Continuity |", "|---|---|---|---|---|---|---|---|"]
+    rows = ["| Run | Complete | Hidden tests | USD | Main USD | "
+            "Sessions (main / worker / subagent) | Reviews | Claimed done | Stopped by | "
+            "Continuity |", "|---|---|---|---|---|---|---|---|---|---|"]
     for r in sorted(results, key=lambda r: (r["config"], r["rep"])):
         c = r.get("continuity")
         cont = "–" if not c else (
@@ -56,18 +57,22 @@ def details(results):
             else "no edit at cut")
         roles = r["friction"]["sessions_by_role"]
         rows.append("| " + " | ".join([
-            f"{r['config']} r{r['rep']}", "yes" if r["tests"]["resolved"] else "no",
+            f"{r['config']} r{r['rep']}", "yes" if r.get("complete") else "no",
+            "yes" if r["tests"]["resolved"] else "no",
             f"{r['cost']['usd']:.2f}", f"{r['cost']['usd_main']:.2f}",
             f"{roles['main']} / {roles['worker']} / {roles['subagent']}",
-            str(r["review_sessions"]), "yes" if r["claimed_done"] else "no", cont]) + " |")
+            str(r["review_sessions"]), "yes" if r["claimed_done"] else "no",
+            "time limit" if r.get("timed_out") else "reply limit"
+            if r["friction"]["replies_scripted"] + r["friction"]["replies_fallback"] >= 4
+            else "–", cont]) + " |")
     return "\n".join(rows)
 
 
 def table(results):
-    rows = ["| Config | Runs | Resolved | Fail-to-pass passed | Chart | Violations | USD | "
+    rows = ["| Config | Runs | Complete | Hidden tests | Fail-to-pass passed | Chart | Violations | USD | "
             "Tokens in / cache write / cache read / out (k) | Sessions | Model calls | "
             "Peak context main (k) | Wall (min) | Replies scripted / fallback |",
-            "|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
+            "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     by = defaultdict(list)
     for r in results:
         by[r["config"]].append(r)
@@ -77,6 +82,7 @@ def table(results):
         chart = [r["config_repo"].get("passed") for r in rs]
         rows.append("| " + " | ".join([
             config, str(len(rs)),
+            f"{sum(r.get('complete', False) for r in rs)}/{len(rs)}",
             f"{sum(r['tests']['resolved'] for r in rs)}/{len(rs)}",
             span([f2p(r) for r in rs], "{:.0%}"),
             "–" if all(c is None for c in chart) else f"{sum(bool(c) for c in chart)}/{len(rs)}",

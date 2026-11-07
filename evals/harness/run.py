@@ -68,6 +68,8 @@ def write_env(run, cache, home):
         "[credential]\n\thelper =\n[init]\n\tdefaultBranch = main\n"
         f"\ttemplateDir = {envdir / 'git-template'}\n")
     (envdir / "git-template").mkdir()
+    (envdir / "config").mkdir()
+    common.copy_cache(cache / "uv", run / "cache" / "uv")
     settings = common.eval_settings(run, cache, home)
     (envdir / "settings.json").write_text(json.dumps(settings, indent=2) + "\n")
 
@@ -97,7 +99,9 @@ def build(run, scenario, config, core_rev, cache, mirrors, env):
     root = run / "wb"
     for d in ("core", "private/tasks", "work", ".claude"):
         (root / d).mkdir(parents=True)
-    archive = subprocess.run([common.GIT, "-C", str(common.CORE_REPO), "archive", core_rev],
+    # The core without this kit: a candidate revision must not carry the hidden tests.
+    archive = subprocess.run([common.GIT, "-C", str(common.CORE_REPO), "archive", core_rev, "--",
+                              ".", ":(exclude)evals"],
                              check=True, capture_output=True).stdout
     subprocess.run(["tar", "-x", "-C", str(root / "core")], input=archive, check=True)
     shutil.copy(root / "core" / "templates" / "workbench-entrypoint.md", root / "AGENTS.md")
@@ -170,6 +174,7 @@ def repo_state(path, base):
 def kill_run(run, roots=()):
     """Stop every process of the run: the given roots, their descendants, and any process whose
     command line names the run folder. The host does not show its environment to `ps`."""
+    seen = set()
     for sig in (signal.SIGTERM, signal.SIGKILL):
         out = subprocess.run(["ps", "-axo", "pid=,ppid=,command="], capture_output=True,
                              text=True).stdout
@@ -186,6 +191,9 @@ def kill_run(run, roots=()):
             targets |= children
             grew = bool(children)
         targets.discard(os.getpid())
+        # Keep what the first pass found: a child reparented after SIGTERM is still the run's.
+        targets |= {p for p in seen if p in procs}
+        seen |= targets
         for pid in targets:
             try:
                 os.kill(pid, sig)
@@ -309,39 +317,51 @@ def main():
         "remotes_before": remotes_before,
     }
     (run / "home-scan.stamp").touch()
+    started = time.time()
     deadline = time.time() + args.limit_minutes * 60
     stops = list(scenario.get("expected_stops", []))
-    prompt = config["prompt"]
+    mode = config.get("mode", "")
+    prompt = f"{common.TICKET_PROMPT} {mode}".strip()
     cut = service_changed if scenario.get("cut") else None
+    record["waited_for_workers_seconds"] = 0
+
+    def wait_for_workers(cut=None):
+        """A requester answers once the work they handed over has stopped, not while a
+        Director's workers still run in the background. The cut applies while they run."""
+        waited = time.time()
+        fired = False
+        while starter.pids() and time.time() < deadline:
+            if cut and cut():
+                kill_run(run, starter.pids())
+                fired = True
+                break
+            time.sleep(5)
+        record["waited_for_workers_seconds"] += round(time.time() - waited)
+        return fired
+
     s = session(run, root, env, prompt, run / "logs" / "s1.jsonl", cut=cut, deadline=deadline,
                 starter=starter)
     s["role"] = "main"
     record["sessions"].append(s)
+    if cut and s["stopped"] is None and wait_for_workers(cut):
+        s["stopped"] = "cut"
     if s["stopped"] == "cut":
         record["cut"] = {"at": NOW(), "state": snapshot(),
                          "diff": {str(p.relative_to(run)): git("-C", str(p), "diff",
                                                                 bases[service], check=False)
                                   for p in candidates(run, config["layout"],
                                                       markers[service])}}
-        prompt = scenario["resume_prompt"]
-        if config["layout"] != "bare":
-            prompt += " " + config["prompt"].split(". ", 1)[1]
+        prompt = f"{scenario['resume_prompt']} {mode}".strip()
         s = session(run, root, env, prompt, run / "logs" / "s2.jsonl", deadline=deadline,
                     starter=starter)
         s["role"] = "resume"
         record["sessions"].append(s)
     answered = set()
-    record["waited_for_workers_seconds"] = 0
     while s["stopped"] != "time limit" and len(record["replies"]) < common.MAX_REPLIES:
         if HOST_LIMIT.search(s["result_text"]):
             record["host_limit"] = True
             break
-        # A requester answers once the work they handed over has stopped, not while a Director's
-        # workers are still running in the background.
-        waited = time.time()
-        while starter.pids() and time.time() < deadline:
-            time.sleep(5)
-        record["waited_for_workers_seconds"] += round(time.time() - waited)
+        wait_for_workers()
         record["snapshots"].append(snapshot())
         open_stops = [x for x in stops if x["id"] not in answered]
         label, usd = judge(home, s["result_text"], open_stops)
@@ -364,6 +384,7 @@ def main():
     starter.close()
     record["snapshots"].append(snapshot())
     record["ended"] = NOW()
+    record["wall_seconds"] = round(time.time() - started)
     record["timed_out"] = time.time() > deadline
     (run / "record.json").write_text(json.dumps(record, indent=2, default=str) + "\n")
     print(run)
@@ -376,7 +397,7 @@ def manifest(run, scenario, config, core_rev):
         "claude_version": version, "uv": common.UV_VERSION, "python": "3.14",
         "kit_commit": git("-C", str(KIT), "rev-parse", "HEAD"),
         "kit_dirty": bool(git("-C", str(KIT), "status", "--porcelain", "--", ".")),
-        "core_revision": core_rev, "repos": scenario["repos"], "prompt": config["prompt"],
+        "core_revision": core_rev, "repos": scenario["repos"], "mode": config.get("mode", ""),
         "prices": common.PRICES, "prices_read": "2026-11-06",
         "settings": json.loads((run / "env" / "settings.json").read_text()),
     }

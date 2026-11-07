@@ -20,7 +20,7 @@ import time
 from pathlib import Path
 
 FIXED = {"--model", "--effort", "--permission-mode", "--setting-sources", "--settings",
-         "--mcp-config", "--add-dir", "--dangerously-skip-permissions",
+         "--mcp-config", "--add-dir", "--plugin-dir", "--dangerously-skip-permissions",
          "--allow-dangerously-skip-permissions"}
 TAKES_VALUE = FIXED - {"--dangerously-skip-permissions", "--allow-dangerously-skip-permissions"}
 
@@ -60,6 +60,20 @@ while True:
 '''
 
 
+def claude_refusal(run, argv):
+    """A session may resume only a conversation that started in this run."""
+    for i, a in enumerate(argv):
+        name, eq, value = a.partition("=")
+        if name in ("--resume", "-r"):
+            sid = value if eq else (argv[i + 1] if i + 1 < len(argv) else "")
+            prefix = re.sub(r"[^A-Za-z0-9]", "-", str(run))
+            projects = Path.home() / ".claude" / "projects"
+            if not any(p.name == prefix or p.name.startswith(prefix + "-")
+                       for p in projects.glob(f"*/{sid}.jsonl") for p in [p.parent]):
+                return f"resume of a session outside this run: {sid}"
+    return None
+
+
 def command(real, run, model, effort, argv):
     """The real call: the caller's arguments without the ones the run fixes, plus the fixed."""
     kept, skip = [], False
@@ -77,35 +91,65 @@ def command(real, run, model, effort, argv):
             "--strict-mcp-config", *kept]
 
 
+GIT_GLOBAL_FLAGS = {"--no-pager", "-P", "--no-optional-locks", "--literal-pathspecs",
+                    "--no-replace-objects"}
+GIT_SAFETY = ["-c", "core.hooksPath=/dev/null", "-c", "core.fsmonitor=false"]
+
+
 def git_refusal(run, cwd, argv):
-    """Why a forwarded git call is refused, or None when it stays inside the run."""
-    inside = lambda p: str((cwd / p).resolve()).startswith(str(run) + "/")  # noqa: E731
-    for i, a in enumerate(argv):
-        prev = argv[i - 1] if i else ""
-        if prev in ("-c", "--config") or a.startswith("--config="):
-            key = (a.split("=", 1)[1] if a.startswith("--config=") else a).split("=", 1)[0]
-            if UNSAFE_KEY.match(key):
-                return f"configuration key {key}"
-        if "://" in a and not (a.startswith("file://") and inside(a[7:])):
-            return f"URL {a}"
-        if a.startswith("--template"):
-            value = a.split("=", 1)[1] if "=" in a else argv[i + 1] if i + 1 < len(argv) else ""
-            if value and not inside(value):
-                return f"template outside the run: {value}"
-        if re.match(r"^[\w.-]+@[\w.-]+:", a) or a.startswith(("--upload-pack",
-                                                              "--receive-pack", "--exec")):
+    """Why a forwarded git call is refused, or None when it stays inside the run.
+
+    Forwarded commands run outside the sandbox, so every path must resolve inside the run, no
+    URL may name a network host, and no configuration key may run a program."""
+    def inside(path, base):
+        target = (base / path).resolve()
+        return target == run or str(target).startswith(str(run) + "/")
+
+    def unsafe_key(arg):
+        return UNSAFE_KEY.match(arg.split("=", 1)[0])
+
+    base, i = cwd, 0
+    while i < len(argv) and argv[i].startswith("-"):
+        a = argv[i]
+        name, _, value = a.partition("=")
+        if name in ("-C", "--git-dir", "--work-tree", "--namespace") or a == "-c":
+            value = value or (argv[i + 1] if i + 1 < len(argv) else "")
+            i += 1 if "=" in a else 2
+        else:
+            i += 1
+        if a == "-c" or name == "--config-env":
+            if unsafe_key(value):
+                return f"configuration key {value.split('=', 1)[0]}"
+        elif name in ("-C", "--git-dir", "--work-tree"):
+            if not inside(value, base):
+                return f"path outside the run: {value}"
+            if name == "-C":
+                base = (base / value).resolve()
+        elif name not in GIT_GLOBAL_FLAGS and name != "--namespace":
+            return f"global option {name}"
+    if i >= len(argv) or argv[i] not in GIT_FORWARD:
+        return f"subcommand {argv[i] if i < len(argv) else '(none)'}"
+    sub, rest = argv[i], argv[i + 1:]
+    for j, a in enumerate(rest):
+        name, eq, value = a.partition("=")
+        if a.startswith(("--upload-pack", "--receive-pack", "--exec", "--config")) or (
+                sub == "clone" and a in ("-u", "-c")):
             return f"argument {a}"
-        if a.startswith("/") and not inside(a):
-            return f"path outside the run: {a}"
-    sub = [a for a in argv if not a.startswith("-")]
-    if sub[:1] == ["config"] or sub[:2] == ["config", "set"]:
-        keys = [a for a in sub[1:] if "." in a and not a.startswith(("/", "."))]
-        if keys and UNSAFE_KEY.match(keys[0]):
+        candidate = value if a.startswith("-") and eq else a
+        if a.startswith("-") and not eq:
+            continue
+        if "://" in candidate and not (candidate.startswith("file://")
+                                       and inside(candidate[7:], base)):
+            return f"URL {candidate}"
+        if re.match(r"^[\w.-]+@[\w.-]+:", candidate):
+            return f"argument {candidate}"
+        if candidate and "://" not in candidate and not inside(candidate, base):
+            return f"path outside the run: {candidate}"
+    if sub == "config":
+        keys = [a for a in rest if not a.startswith("-") and a not in
+                ("set", "get", "unset", "list", "edit", "rename-section", "remove-section")]
+        if keys and unsafe_key(keys[0]):
             return f"configuration key {keys[0]}"
-    if sub[:1] in (["clone"], ["worktree"], ["submodule"]):
-        for a in sub[1:]:
-            if not a.startswith("-") and ("/" in a or a.endswith(".git")) and not inside(a):
-                return f"path outside the run: {a}"
     return None
 
 
@@ -158,7 +202,15 @@ class Launcher:
             send(3, b"1")
             return
         self.write(entry)
-        cmd = ([self.real_git, *req["argv"]] if tool == "git"
+        if tool == "claude":
+            refusal = claude_refusal(self.run, req["argv"])
+            if refusal:
+                entry["refused"] = refusal
+                self.write(entry)
+                send(2, f"claude: refused by the eval harness: {refusal}\n".encode())
+                send(3, b"1")
+                return
+        cmd = ([self.real_git, *GIT_SAFETY, *req["argv"]] if tool == "git"
                else command(self.real, self.run, self.model, self.effort, req["argv"]))
         proc = subprocess.Popen(cmd, cwd=cwd, env=self.env, stdin=subprocess.DEVNULL,
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)

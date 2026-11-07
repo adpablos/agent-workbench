@@ -56,17 +56,6 @@
       "path"
     ],
     "expected": "{{ .Values.server.apiBasePath }}/ready",
-    "unchanged": [
-      [
-        "server",
-        "readinessProbe"
-      ],
-      [
-        "server",
-        "livenessProbe",
-        "config"
-      ]
-    ],
     "allowed_paths": [
       "charts/prefect-server/values.yaml",
       "charts/prefect-server/values.schema.json",

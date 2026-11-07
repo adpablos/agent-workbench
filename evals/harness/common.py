@@ -13,6 +13,7 @@ MODEL = "claude-opus-5-5"
 EFFORT = "high"
 JUDGE_MODEL = "claude-haiku-5-5"
 UV_VERSION = "0.13.4"
+TICKET_PROMPT = "Work on the ticket in TICKET.md."
 FALLBACK_REPLY = "Continue within your authority; I have nothing to add."
 MAX_REPLIES = 4
 
@@ -39,13 +40,16 @@ USER_INSTRUCTIONS = [str(Path.home() / ".claude" / "CLAUDE.md"),
 def eval_settings(run_dir, cache, area):
     """Settings for every session in a run: no user instructions or memory, denied tools, and a
     sandbox that limits shell commands to the run directory without network access."""
-    hidden = [str(KIT.parent), str(area / "mirrors"), str(area / "runs"), str(area / "grade"),
-              str(area / "reviews"), str(area / "judge"), "~/.claude", "~/.codex", "~/.ssh",
-              "~/.aws", "~/.config", "~/.gnupg", "~/Library", "~/Documents", "~/Desktop",
-              f"/private/tmp/claude-{os.getuid()}"]
+    # Shells read nothing under the home folder except the run and the pinned tools. The host
+    # sets every shell's TMPDIR to its own temporary folder, shared by all sessions, so that
+    # folder stays readable; the folders other sessions already keep there do not.
+    shared = Path(f"/private/tmp/claude-{os.getuid()}")
+    others = [str(p) for p in shared.glob("-*")] if shared.exists() else []
+    hidden = ["~", str(area), "/Volumes", *others]
+    readable = [str(run_dir), str(cache / "tools")]
     # Under dontAsk, a file tool outside these rules is refused; sandboxed shell commands run.
     allow = ["Bash", "Task", "Agent", "TodoWrite", "Monitor", "TaskStop", "ToolSearch",
-             f"Read(/{run_dir}/**)", f"Edit(/{run_dir}/**)", f"Read(/{cache / 'uv'}/**)"]
+             f"Read(/{run_dir}/**)", f"Edit(/{run_dir}/**)"]
     return {
         "claudeMdExcludes": USER_INSTRUCTIONS,
         "autoMemoryEnabled": False,
@@ -56,8 +60,8 @@ def eval_settings(run_dir, cache, area):
             "autoAllowBashIfSandboxed": True,
             "allowUnsandboxedCommands": False,
             "network": {"allowedDomains": [], "strictAllowlist": True, "allowLocalBinding": True},
-            "filesystem": {"allowWrite": [str(run_dir), str(cache / "uv")],
-                           "denyRead": hidden, "allowRead": [str(run_dir)]},
+            "filesystem": {"allowWrite": [str(run_dir)], "denyRead": hidden,
+                           "allowRead": readable},
         },
     }
 
@@ -118,12 +122,13 @@ def real_claude():
     raise SystemExit("claude not found on PATH")
 
 
+KEPT = ("HOME", "USER", "LOGNAME", "SHELL", "LANG", "LC_ALL", "LC_CTYPE", "TERM", "TZ")
+
+
 def run_env(run_dir, cache):
-    """The environment every agent process in a run inherits."""
-    env = {k: v for k, v in os.environ.items()
-           if not k.startswith(("CLAUDE", "ANTHROPIC_", "GH_", "GITHUB_", "UV_", "VIRTUAL_ENV",
-                                "PIP_", "PREFECT_", "MISE_"))
-           and k not in ("SSH_AUTH_SOCK", "GIT_DIR", "GIT_WORK_TREE")}
+    """The environment every agent process in a run inherits: an explicit list, so no token or
+    credential of the machine's owner reaches an agent. The host signs in through the keychain."""
+    env = {k: os.environ[k] for k in KEPT if k in os.environ}
     env.update({
         "PATH": os.pathsep.join([str(run_dir / "env" / "bin"), str(cache / "tools" / "bin"),
                                  "/opt/homebrew/bin", "/usr/local/bin", "/usr/bin", "/bin",
@@ -132,11 +137,13 @@ def run_env(run_dir, cache):
         # Claude Code otherwise gives sandboxed shells a temporary folder shared by every session.
         "CLAUDE_CODE_TMPDIR": str(run_dir / "tmp"),
         "XDG_CACHE_HOME": str(run_dir / "cache"),
+        "XDG_CONFIG_HOME": str(run_dir / "env" / "config"),
         "PRE_COMMIT_HOME": str(run_dir / "cache" / "pre-commit"),
         "PIP_CACHE_DIR": str(run_dir / "cache" / "pip"),
         "PIP_NO_INDEX": "1",
         "PREFECT_HOME": str(run_dir / "cache" / "prefect-home"),
-        "UV_CACHE_DIR": str(cache / "uv"),
+        # Each run gets its own copy of the dependency cache, so no run can change another's.
+        "UV_CACHE_DIR": str(run_dir / "cache" / "uv"),
         "UV_OFFLINE": "1",
         "UV_PYTHON": "python3.14",
         "UV_PYTHON_DOWNLOADS": "never",
@@ -151,6 +158,12 @@ def run_env(run_dir, cache):
         "BASH_MAX_TIMEOUT_MS": "3600000",
     })
     return env
+
+
+def copy_cache(seed, dest):
+    """A copy-on-write clone of the dependency cache (APFS), cheap in time and space."""
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    subprocess.run(["cp", "-c", "-R", str(seed), str(dest)], check=True)
 
 
 def cost(model, usage):

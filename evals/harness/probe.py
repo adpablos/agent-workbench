@@ -63,7 +63,24 @@ def main():
                      indent=2))
     for p in outside:
         p.unlink(missing_ok=True)
-    subprocess.run(["true"])
+    # Judge from what the tools returned, not from the agent's summary.
+    results = []
+    for line in Path(s["log"]).read_text().splitlines():
+        event = json.loads(line)
+        if event.get("type") == "user":
+            for c in event["message"].get("content") or []:
+                if isinstance(c, dict) and c.get("type") == "tool_result":
+                    results.append(json.dumps(c.get("content")))
+    text = "\n".join(results)
+    expected = {"network refused": text.count("not on the allow list") >= 1,
+                "shell reads and writes refused": text.count("Operation not permitted") >= 3,
+                "file tools refused": text.count("has been denied") >= 2,
+                "git network and hooks refused": text.count("refused by the eval harness") >= 2,
+                "local clone works": "cloned" in text,
+                "nested session started": len(calls) >= 1,
+                "no file outside the run": not leaked}
+    print(json.dumps(expected, indent=2))
+    sys.exit(0 if all(expected.values()) else 1)
 
 
 if __name__ == "__main__":
