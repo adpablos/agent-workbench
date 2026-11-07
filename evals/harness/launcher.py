@@ -20,7 +20,8 @@ import time
 from pathlib import Path
 
 FIXED = {"--model", "--effort", "--permission-mode", "--setting-sources", "--settings",
-         "--mcp-config", "--add-dir", "--plugin-dir", "--dangerously-skip-permissions",
+         "--mcp-config", "--add-dir", "--plugin-dir", "--plugin-url", "--debug-file",
+         "--dangerously-skip-permissions",
          "--allow-dangerously-skip-permissions"}
 TAKES_VALUE = FIXED - {"--dangerously-skip-permissions", "--allow-dangerously-skip-permissions"}
 
@@ -130,7 +131,14 @@ def git_refusal(run, cwd, argv):
     if i >= len(argv) or argv[i] not in GIT_FORWARD:
         return f"subcommand {argv[i] if i < len(argv) else '(none)'}"
     sub, rest = argv[i], argv[i + 1:]
+    if sub == "config" and any(a.split("=", 1)[0] in ("-f", "--file", "--blob")
+                               or (a.startswith("-f") and len(a) > 2) for a in rest):
+        return "configuration file option"
     for j, a in enumerate(rest):
+        # host:path is SSH, the transport git uses when a name has a colon before any slash.
+        if sub in ("clone", "remote", "submodule") and not a.startswith("-") and re.match(
+                r"^[^/:]+:", a):
+            return f"remote transport {a}"
         name, eq, value = a.partition("=")
         if a.startswith(("--upload-pack", "--receive-pack", "--exec", "--config")) or (
                 sub == "clone" and a in ("-u", "-c")):
@@ -187,11 +195,13 @@ class Launcher:
 
         req = json.loads(rfile.readline())
         cwd = Path(req["cwd"]).resolve()
-        tool = req.get("tool", "claude")
+        tool = req.get("tool")
         entry = {"at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "tool": tool,
                  "cwd": str(cwd), "argv": req["argv"]}
         refusal = None
-        if cwd != self.run and not str(cwd).startswith(str(self.run) + "/"):
+        if tool not in ("claude", "git"):
+            refusal = f"unknown tool {tool}"
+        elif cwd != self.run and not str(cwd).startswith(str(self.run) + "/"):
             refusal = "folder outside the run"
         elif tool == "git":
             refusal = git_refusal(self.run, cwd, req["argv"])

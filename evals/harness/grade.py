@@ -5,6 +5,7 @@ Usage: python3 -I evals/harness/grade.py <run-dir> [--skip-tests]
 """
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -68,14 +69,12 @@ def hidden_tests(area, scenario, patch, label):
     jail = ["sandbox-exec", "-p", sandbox_profile(work, scratch, area)]
     sync = subprocess.run([*jail, "uv", "sync", "--frozen", "-q"], cwd=work, env=env,
                           capture_output=True, text=True)
-    junit = work.parent / f"{label}.xml"
-    junit.unlink(missing_ok=True)
+    junit = scratch / "junit.xml"
     test = subprocess.run([*jail, "uv", "run", "--frozen", "pytest", *scenario["hidden"]["files"],
                            "-q", "-p", "no:cacheprovider", "-n", "4", f"--junitxml={junit}"],
                           cwd=work, env=env, capture_output=True, text=True, timeout=3600)
     (work.parent / f"{label}.log").write_text(sync.stdout + sync.stderr + test.stdout[-4000:]
                                               + test.stderr[-4000:])
-    common.rmtree(scratch)
     outcomes = {}
     if junit.exists():
         for tc in ET.parse(junit).iter("testcase"):
@@ -91,10 +90,13 @@ def hidden_tests(area, scenario, patch, label):
     others = [t for t, s in outcomes.items()
               if s != "passed" and t not in h["allowed_not_passed"] and t not in f2p]
     # pytest exits 0 or 1 when it ran the tests; anything else means it did not.
+    ids = hashlib.sha256("\n".join(sorted(outcomes)).encode()).hexdigest()
     resolved = (applied and sync.returncode == 0 and test.returncode in (0, 1)
                 and all(s == "passed" for s in f2p.values())
-                and not others and len(outcomes) == h["expected_count"])
+                and not others and len(outcomes) == h["expected_count"]
+                and ids == h.get("expected_ids_sha256", ids))
     common.rmtree(work)
+    common.rmtree(scratch)
     return {"resolved": resolved, "patch_applied": applied, "sync_ok": sync.returncode == 0,
             "pytest_exit": test.returncode,
             "collected": len(outcomes), "expected_count": h["expected_count"],
@@ -105,8 +107,9 @@ def sandbox_profile(work, scratch, area):
     """A macOS sandbox for grading: outbound network only to localhost, no writes outside the
     grading folders, and no reads of the mirrors, the kit, or host records."""
     home = Path.home()
-    denied_reads = [area / "mirrors", common.KIT.parent, home / ".ssh", home / ".aws",
-                    home / ".config", home / ".claude", home / ".codex",
+    denied_reads = [area / "mirrors", area / "runs", area / "cache" / "warm", common.KIT.parent,
+                    home / ".ssh", home / ".aws", home / ".config", home / ".claude",
+                    home / ".codex", home / "Documents", home / "Desktop",
                     home / "Library" / "Keychains"]
     return "\n".join([
         "(version 1)", "(allow default)",
@@ -114,7 +117,7 @@ def sandbox_profile(work, scratch, area):
         '(allow network-outbound (remote ip "localhost:*"))',
         "(allow network-outbound (remote unix-socket))",
         f'(deny file-write* (subpath "{home}") (subpath "/private/tmp") (subpath "/tmp"))',
-        f'(allow file-write* (subpath "{work.parent}"))',
+        f'(allow file-write* (subpath "{work}") (subpath "{scratch}"))',
         "(deny file-read* " + " ".join(f'(subpath "{p}")' for p in denied_reads) + ")",
     ])
 
@@ -187,7 +190,7 @@ def usage(run, rec):
         sid = t.stem
         role = ("subagent" if t.parent.name == "subagents"
                 else "main" if sid in mains else "worker")
-        msgs, reads, writes, bash = {}, [], [], []
+        msgs, reads, writes, bash, pending = {}, [], [], [], {}
         cwd, first = None, None
         for line in t.read_text().splitlines():
             try:
@@ -198,6 +201,14 @@ def usage(run, rec):
             m = d.get("message") or {}
             if first is None and d.get("type") == "user" and isinstance(m.get("content"), str):
                 first = m["content"]
+            # A write counts only when its tool result is not an error or a refusal.
+            if d.get("type") == "user" and isinstance(m.get("content"), list):
+                for c in m["content"]:
+                    if isinstance(c, dict) and c.get("tool_use_id") in pending:
+                        text = json.dumps(c.get("content"))
+                        if not c.get("is_error") and "denied" not in text \
+                                and "tool_use_error" not in text:
+                            writes.append(pending[c["tool_use_id"]])
             if d.get("type") == "assistant" and m.get("id") and m.get("usage"):
                 msgs[m["id"]] = (m.get("model"), m["usage"])
             if d.get("type") == "assistant":
@@ -207,7 +218,7 @@ def usage(run, rec):
                     inp = c.get("input") or {}
                     path = inp.get("file_path") or inp.get("notebook_path") or inp.get("path")
                     if c["name"] in WRITE_TOOLS and path:
-                        writes.append(path)
+                        pending[c["id"]] = path
                     elif c["name"] == "Read" and path:
                         reads.append(path)
                     elif c["name"] == "Bash":
@@ -316,7 +327,9 @@ def grade(run, skip_tests=False, reuse_tests=False):
     replies = rec["replies"]
     final_state = repo_state(final, base) if final else None
     chart = config_check(area, scenario, rec, run)
+    # The design counts a run that reaches the time or the reply limit as unresolved.
     complete = (tests["resolved"] and not rec.get("timed_out") and not rec.get("host_limit")
+                and len(rec["replies"]) < common.MAX_REPLIES
                 and (chart.get("passed", True) if scenario.get("config_check") else True)
                 and not chart["changed_before_approval"])
     result = {

@@ -39,7 +39,8 @@
       "tests.server.api.test_server.TestSubprocessASGIServer::test_start_and_stop_server",
       "tests.server.api.test_server::test_cors_middleware_settings"
     ],
-    "expected_count": 1193
+    "expected_count": 1193,
+    "expected_ids_sha256": "9096b9f1c64ab42d03a768fdf377627401436e62ffb6df83f0a81c904bbd20c3"
   },
   "expected_stops": [
     {

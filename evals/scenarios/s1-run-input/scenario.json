@@ -31,7 +31,8 @@
       "tests.server.orchestration.api.test_flow_runs.TestResumeFlowrun::test_resume_flow_run_waiting_for_input_with_integer_beyond_64_bit_range"
     ],
     "allowed_not_passed": [],
-    "expected_count": 233
+    "expected_count": 233,
+    "expected_ids_sha256": "bfd6abd896092a577cb684f6de100f9b14767286c51b62bfb7369dc44155f4d0"
   },
   "expected_stops": []
 }

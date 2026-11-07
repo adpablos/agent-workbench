@@ -159,7 +159,11 @@ def primary(copies, run, name):
     first = [p for p in copies
              if origin(p) in (str(run / "refs" / name), str(run / "remotes" / f"{name}.git"))]
     pool = first or copies
-    return max(pool, key=lambda p: (p / ".git" / "index").stat().st_mtime) if pool else None
+
+    def used(p):
+        index = git("-C", str(p), "rev-parse", "--path-format=absolute", "--git-path", "index")
+        return Path(index).stat().st_mtime if Path(index).exists() else 0
+    return max(pool, key=used) if pool else None
 
 
 def repo_state(path, base):
@@ -185,6 +189,8 @@ def kill_run(run, roots=()):
                 procs[int(parts[0])] = (int(parts[1]), parts[2])
         targets = {p for p in roots if p in procs}
         targets |= {p for p, (_, cmd) in procs.items() if str(run) + "/" in cmd}
+        # Start from what earlier passes found, so a reparented child's new children count too.
+        targets |= {p for p in seen if p in procs}
         grew = True
         while grew:
             children = {p for p, (pp, _) in procs.items() if pp in targets} - targets
@@ -299,7 +305,9 @@ def main():
         # Count only added or modified files and new commits: a clone still checking out shows
         # its missing files as deleted.
         for p in candidates(run, config["layout"], markers[service]):
-            if (p / ".git" / "index.lock").exists():
+            lock = git("-C", str(p), "rev-parse", "--path-format=absolute", "--git-path",
+                       "index.lock", check=False)
+            if lock and Path(lock).exists():
                 continue
             if git("-C", str(p), "diff", "HEAD", "--name-only", "--diff-filter=AMR", "--", "src",
                    check=False) or git("-C", str(p), "ls-files", "--others",
@@ -342,6 +350,9 @@ def main():
                 fired = True
                 break
             time.sleep(5)
+        if cut and not fired and cut():
+            kill_run(run, starter.pids())
+            fired = True
         record["waited_for_workers_seconds"] += round(time.time() - waited)
         return fired
 
