@@ -296,8 +296,14 @@ def main():
                     for p in candidates(run, config["layout"], markers[n])} for n in bases}
 
     def service_changed():
+        # Count only added or modified files and new commits: a clone still checking out shows
+        # its missing files as deleted.
         for p in candidates(run, config["layout"], markers[service]):
-            if git("-C", str(p), "status", "--porcelain", "--", "src", check=False):
+            if (p / ".git" / "index.lock").exists():
+                continue
+            if git("-C", str(p), "diff", "HEAD", "--name-only", "--diff-filter=AMR", "--", "src",
+                   check=False) or git("-C", str(p), "ls-files", "--others",
+                                       "--exclude-standard", "--", "src", check=False):
                 return True
             head = git("-C", str(p), "rev-parse", "HEAD", check=False)
             if head and head != bases[service] and git(

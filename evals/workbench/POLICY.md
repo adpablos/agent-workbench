@@ -27,11 +27,14 @@ as `review: fresh session`.
 ## Preferences
 
 - Converse in English.
-- Start a worker or review session from the workbench folder with
-  `claude -p "<assignment>" --model claude-opus-5-5 --effort high --output-format json > <file>`,
+- Start a worker or review session from the workbench folder with the first command below,
   where `<file>` is under `work/<task>/`. The JSON holds the session's `session_id` and its final
-  message in `result`. Continue a session with
-  `claude -p "<message>" --resume <session_id> --model claude-opus-5-5 --effort high --output-format json`.
+  message in `result`. Continue a session with the second command.
+
+  ```bash
+  claude -p "<assignment>" --model claude-opus-5-5 --effort high --output-format json > <file>
+  claude -p "<message>" --resume <session_id> --model claude-opus-5-5 --effort high --output-format json
+  ```
 - Shell commands may run for up to an hour; give a long command an explicit timeout.
 
 ## Approval log
