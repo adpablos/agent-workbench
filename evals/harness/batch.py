@@ -5,6 +5,7 @@ Usage: python3 -I evals/harness/batch.py --scenarios s1-run-input s2-db-outage -
 """
 
 import argparse
+import json
 import random
 import subprocess
 import sys
@@ -30,14 +31,23 @@ def main():
     print("order:", " ".join(f"{s.split('-')[0]}-{c}-r{r}" for s, c, r in jobs), flush=True)
     slots = threading.Semaphore(args.parallel)
 
+    stop = threading.Event()
+
     def work(job):
         s, c, r = job
         with slots:
+            if stop.is_set():
+                print(f"skipped {s} {c} r{r}: host usage limit", flush=True)
+                return
             out = subprocess.run([sys.executable, "-I", str(HERE / "run.py"), s, c, "--rep", str(r),
                                   *home], capture_output=True, text=True)
             run = out.stdout.strip().splitlines()[-1] if out.stdout.strip() else ""
             if out.returncode or not run:
                 print(f"failed {s} {c} r{r}: {out.stderr[-500:]}", flush=True)
+                return
+            if json.loads((Path(run) / "record.json").read_text()).get("host_limit"):
+                stop.set()
+                print(f"host limit {run}", flush=True)
                 return
             g = subprocess.run([sys.executable, "-I", str(HERE / "grade.py"), run],
                                capture_output=True, text=True)

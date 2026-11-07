@@ -8,6 +8,7 @@ import argparse
 import datetime
 import json
 import os
+import re
 import shutil
 import signal
 import subprocess
@@ -21,6 +22,7 @@ import common  # noqa: E402
 import launcher  # noqa: E402
 from common import KIT, git  # noqa: E402
 
+HOST_LIMIT = re.compile(r"hit your [\w -]*limit|usage limit reached", re.I)
 NOW = lambda: datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")  # noqa
 
 
@@ -329,7 +331,17 @@ def main():
         s["role"] = "resume"
         record["sessions"].append(s)
     answered = set()
+    record["waited_for_workers_seconds"] = 0
     while s["stopped"] != "time limit" and len(record["replies"]) < common.MAX_REPLIES:
+        if HOST_LIMIT.search(s["result_text"]):
+            record["host_limit"] = True
+            break
+        # A requester answers once the work they handed over has stopped, not while a Director's
+        # workers are still running in the background.
+        waited = time.time()
+        while starter.pids() and time.time() < deadline:
+            time.sleep(5)
+        record["waited_for_workers_seconds"] += round(time.time() - waited)
         record["snapshots"].append(snapshot())
         open_stops = [x for x in stops if x["id"] not in answered]
         label, usd = judge(home, s["result_text"], open_stops)

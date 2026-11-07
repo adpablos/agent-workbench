@@ -99,7 +99,8 @@ def main():
     ap.add_argument("--runs", default="s*-*-r*")
     args = ap.parse_args()
     results = [json.loads(p.read_text())
-               for p in sorted((common.home(args.home) / "runs").glob(f"{args.runs}/result.json"))]
+               for p in sorted((common.home(args.home) / "runs").glob(f"{args.runs}/result.json"))
+               if not json.loads((p.parent / "record.json").read_text()).get("host_limit")]
     by = defaultdict(list)
     for r in results:
         by[r["scenario"]].append(r)
