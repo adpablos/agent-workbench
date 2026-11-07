@@ -166,12 +166,24 @@ class Launcher:
 
         def pump(stream, kind):
             for chunk in iter(lambda: stream.read1(65536), b""):
-                send(kind, chunk)
+                try:
+                    send(kind, chunk)
+                except OSError:
+                    proc.terminate()
+                    return
+
+        def hangup():
+            # The caller sends nothing after its request, so end of input means it was stopped:
+            # stop what it started, as a shell would stop its own child.
+            rfile.read()
+            if proc.poll() is None:
+                proc.terminate()
 
         threads = [threading.Thread(target=pump, args=(proc.stdout, 1)),
                    threading.Thread(target=pump, args=(proc.stderr, 2))]
         for t in threads:
             t.start()
+        threading.Thread(target=hangup, daemon=True).start()
         for t in threads:
             t.join()
         code = proc.wait()
