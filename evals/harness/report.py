@@ -99,11 +99,41 @@ def table(results):
     return "\n".join(rows)
 
 
+def spend(area):
+    """List-price cost of every request in every session that ran in the run area, including
+    runs set aside, probes, and the requester's judge."""
+    root = Path.home() / ".claude" / "projects"
+    seen, total, by = set(), 0.0, defaultdict(float)
+    for prefix, label in ((common.encode_project(area / "runs"), "runs"),
+                          (common.encode_project(area / "judge"), "judge")):
+        for t in list(root.glob(f"{prefix}*/*.jsonl")) + list(
+                root.glob(f"{prefix}*/*/subagents/*.jsonl")):
+            for line in t.read_text().splitlines():
+                try:
+                    d = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                m = d.get("message") or {}
+                if d.get("type") == "assistant" and m.get("id") and m.get("usage"):
+                    if m["id"] in seen:
+                        continue
+                    seen.add(m["id"])
+                    usd = common.cost(m.get("model"), m["usage"]) or 0
+                    total += usd
+                    by[label] += usd
+    return total, dict(by)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--home")
     ap.add_argument("--runs", default="s*-*-r*")
+    ap.add_argument("--spend", action="store_true", help="total list-price cost in the run area")
     args = ap.parse_args()
+    if args.spend:
+        total, by = spend(common.home(args.home))
+        print(f"total US${total:.2f}: " + ", ".join(f"{k} US${v:.2f}" for k, v in by.items()))
+        return
     results = [json.loads(p.read_text())
                for p in sorted((common.home(args.home) / "runs").glob(f"{args.runs}/result.json"))
                if not json.loads((p.parent / "record.json").read_text()).get("host_limit")]
