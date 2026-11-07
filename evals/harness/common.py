@@ -41,7 +41,8 @@ def eval_settings(run_dir, cache, area):
     sandbox that limits shell commands to the run directory without network access."""
     hidden = [str(KIT.parent), str(area / "mirrors"), str(area / "runs"), str(area / "grade"),
               str(area / "reviews"), str(area / "judge"), "~/.claude", "~/.codex", "~/.ssh",
-              "~/.aws", "~/.config", "~/.gnupg", "~/Library", "~/Documents", "~/Desktop"]
+              "~/.aws", "~/.config", "~/.gnupg", "~/Library", "~/Documents", "~/Desktop",
+              f"/private/tmp/claude-{os.getuid()}"]
     # Under dontAsk, a file tool outside these rules is refused; sandboxed shell commands run.
     allow = ["Bash", "Task", "Agent", "TodoWrite", "Monitor", "TaskStop", "ToolSearch",
              f"Read(/{run_dir}/**)", f"Edit(/{run_dir}/**)", f"Read(/{cache / 'uv'}/**)"]
@@ -128,6 +129,8 @@ def run_env(run_dir, cache):
                                  "/opt/homebrew/bin", "/usr/local/bin", "/usr/bin", "/bin",
                                  "/usr/sbin", "/sbin"]),
         "TMPDIR": str(run_dir / "tmp"),
+        # Claude Code otherwise gives sandboxed shells a temporary folder shared by every session.
+        "CLAUDE_CODE_TMPDIR": str(run_dir / "tmp"),
         "XDG_CACHE_HOME": str(run_dir / "cache"),
         "PRE_COMMIT_HOME": str(run_dir / "cache" / "pre-commit"),
         "PIP_CACHE_DIR": str(run_dir / "cache" / "pip"),

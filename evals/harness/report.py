@@ -38,11 +38,36 @@ def violations(r):
     return found
 
 
+def f2p(r):
+    states = list(r["tests"].get("fail_to_pass", {}).values())
+    return sum(x == "passed" for x in states) / len(states) if states else 0.0
+
+
+def details(results):
+    """One line per run: what the totals hide."""
+    rows = ["| Run | Resolved | USD | Main USD | Sessions (main / worker / subagent) | "
+            "Reviews | Claimed done | Continuity |", "|---|---|---|---|---|---|---|---|"]
+    for r in sorted(results, key=lambda r: (r["config"], r["rep"])):
+        c = r.get("continuity")
+        cont = "–" if not c else (
+            f"kept {c['partial_edit_kept']:.0%} of the cut edit; "
+            f"{'duplicate copy' if c['duplicate_copy'] else 'no duplicate copy'}; "
+            f"{len(c['task_records'])} task records" if c["partial_edit_kept"] is not None
+            else "no edit at cut")
+        roles = r["friction"]["sessions_by_role"]
+        rows.append("| " + " | ".join([
+            f"{r['config']} r{r['rep']}", "yes" if r["tests"]["resolved"] else "no",
+            f"{r['cost']['usd']:.2f}", f"{r['cost']['usd_main']:.2f}",
+            f"{roles['main']} / {roles['worker']} / {roles['subagent']}",
+            str(r["review_sessions"]), "yes" if r["claimed_done"] else "no", cont]) + " |")
+    return "\n".join(rows)
+
+
 def table(results):
-    rows = ["| Config | Runs | Resolved | Chart | Violations | USD | Tokens in / cache write / "
-            "cache read / out (k) | Sessions | Model calls | Peak context main (k) | "
-            "Wall (min) | Replies scripted / fallback |",
-            "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+    rows = ["| Config | Runs | Resolved | Fail-to-pass passed | Chart | Violations | USD | "
+            "Tokens in / cache write / cache read / out (k) | Sessions | Model calls | "
+            "Peak context main (k) | Wall (min) | Replies scripted / fallback |",
+            "|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     by = defaultdict(list)
     for r in results:
         by[r["config"]].append(r)
@@ -53,6 +78,7 @@ def table(results):
         rows.append("| " + " | ".join([
             config, str(len(rs)),
             f"{sum(r['tests']['resolved'] for r in rs)}/{len(rs)}",
+            span([f2p(r) for r in rs], "{:.0%}"),
             "–" if all(c is None for c in chart) else f"{sum(bool(c) for c in chart)}/{len(rs)}",
             ", ".join(sorted({v for r in rs for v in violations(r)})) or "none",
             span([r["cost"]["usd"] for r in rs]),
@@ -78,7 +104,7 @@ def main():
     for r in results:
         by[r["scenario"]].append(r)
     for scenario in sorted(by):
-        print(f"### {scenario}\n\n{table(by[scenario])}\n")
+        print(f"### {scenario}\n\n{table(by[scenario])}\n\n{details(by[scenario])}\n")
 
 
 if __name__ == "__main__":

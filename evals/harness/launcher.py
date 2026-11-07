@@ -146,7 +146,7 @@ class Launcher:
         entry = {"at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "tool": tool,
                  "cwd": str(cwd), "argv": req["argv"]}
         refusal = None
-        if not str(cwd).startswith(str(self.run) + "/"):
+        if cwd != self.run and not str(cwd).startswith(str(self.run) + "/"):
             refusal = "folder outside the run"
         elif tool == "git":
             refusal = git_refusal(self.run, cwd, req["argv"])
