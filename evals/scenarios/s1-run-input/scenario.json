@@ -1,0 +1,38 @@
+{
+  "title": "Investigate and fix: run input with an integer beyond 64 bits",
+  "source": {
+    "issue": "https://github.com/PrefectHQ/prefect/issues/23616",
+    "fix": "https://github.com/PrefectHQ/prefect/pull/23617"
+  },
+  "repos": {
+    "prefect": {
+      "url": "https://github.com/PrefectHQ/prefect",
+      "base": "6a7f86a609e7cbd7ce36af4c79491afd12085414",
+      "marker": "src/prefect/server"
+    },
+    "prefect-helm": {
+      "url": "https://github.com/PrefectHQ/prefect-helm",
+      "base": "84e22f664a3a6eb678842aabfa069a01ae42b0ea",
+      "marker": "charts/prefect-server"
+    }
+  },
+  "fix_commit": "8bbfa38fe45df015c0eb12034474aaeb16c37cb3",
+  "service": "prefect",
+  "config_repo": "prefect-helm",
+  "hidden": {
+    "patch": "hidden-tests.patch",
+    "files": [
+      "tests/input/test_run_input.py",
+      "tests/server/orchestration/api/test_flow_runs.py"
+    ],
+    "fail_to_pass": [
+      "tests.input.test_run_input::test_load_after_resume_preserves_integer_beyond_64_bit_range",
+      "tests.input.test_run_input::test_load_from_flow_run_input_preserves_integer_beyond_64_bit_range",
+      "tests.server.orchestration.api.test_flow_runs.TestResumeFlowrun::test_resume_flow_run_waiting_for_input_with_integer_beyond_64_bit_range"
+    ],
+    "allowed_not_passed": [],
+    "expected_count": 233,
+    "expected_ids_sha256": "bfd6abd896092a577cb684f6de100f9b14767286c51b62bfb7369dc44155f4d0"
+  },
+  "expected_stops": []
+}

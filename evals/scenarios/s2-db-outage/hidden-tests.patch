@@ -1,0 +1,55 @@
+diff --git a/tests/server/api/test_server.py b/tests/server/api/test_server.py
+index 815f6d5d64..17ab03e749 100644
+--- a/tests/server/api/test_server.py
++++ b/tests/server/api/test_server.py
+@@ -360,6 +360,11 @@ async def test_invalid_data_exception_handler(exc: Exception):
+ 
+ def test_non_data_database_errors_remain_retryable():
+     assert is_client_retryable_exception(_asyncpg_dbapi_error("57014"))
++    assert is_client_retryable_exception(TimeoutError("asyncpg timeout"))
++    assert is_client_retryable_exception(sa.exc.TimeoutError("queue pool timeout"))
++    assert is_client_retryable_exception(
++        asyncpg.exceptions.PostgresConnectionError("connection failure")
++    )
+ 
+ 
+ def _write_fake_ui_bundle(directory: pathlib.Path, marker: str) -> pathlib.Path:
+diff --git a/tests/server/orchestration/test_rules.py b/tests/server/orchestration/test_rules.py
+index a8a81d3f10..eaab469150 100644
+--- a/tests/server/orchestration/test_rules.py
++++ b/tests/server/orchestration/test_rules.py
+@@ -1603,6 +1603,34 @@ class TestOrchestrationContext:
+             == "Error validating state: RuntimeError('One time error!')"
+         )
+ 
++    @pytest.mark.parametrize(
++        "exc",
++        [
++            TimeoutError("asyncpg query timeout"),
++            sqlalchemy.exc.TimeoutError("queue pool timeout"),
++        ],
++    )
++    async def test_context_state_validation_encounters_timeout_exception(
++        self, session, run_type, initialize_orchestration, exc
++    ):
++        initial_state_type = states.StateType.PENDING
++        proposed_state_type = states.StateType.RUNNING
++        intended_transition = (initial_state_type, proposed_state_type)
++
++        ctx = await initialize_orchestration(session, run_type, *intended_transition)
++
++        object.__setattr__(
++            ctx.session,
++            "flush",
++            AsyncMock(side_effect=exc),
++        )
++
++        with pytest.raises((TimeoutError, sqlalchemy.exc.TimeoutError)):
++            async with contextlib.AsyncExitStack():
++                await ctx.validate_proposed_state()
++
++        assert ctx.proposed_state is None
++
+     async def test_context_state_validation_encounters_sqlite_busy_exception(
+         self, session, run_type, initialize_orchestration
+     ):
