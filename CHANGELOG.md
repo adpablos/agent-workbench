@@ -38,13 +38,14 @@ should receive, propose that release. Workbenches pin a release tag together wit
 
   - The shorter status note in `templates/task.md`; existing records keep working as they are.
   - Keep reference repositories and tool checkouts outside the workbench folder, listed in
-    `private/workspace.json` and no longer writable. The README's layout has no `repos/` or
-    `tools/`, since hosts load instruction files and skills from subfolders of the folder they open.
+    `private/workspace.json`, and drop `repos` from its `writable` list. The README's layout has no
+    `repos/` or `tools/`, since hosts load instruction files and skills from subfolders of the
+    folder they open; do this first wherever the subfolder probe failed.
   - Run the entrypoint probe once with the new `AGENTS.md`.
 
   **Nothing to do for:** settings, which keep their values, including `review`; an `agents` line,
   which no longer applies and can go when you next edit the policy; approvals, the approval log,
-  `private/workspace.json`'s format, and probes already passed. `private/INDEX.md` is optional.
+  `private/workspace.json`'s format, and probes already passed.
   `docs/VALIDATION.md` keeps two probes, whether the entrypoint is loaded and followed and whether
   subfolders add instructions, and a short acceptance of a release; the Director probe, its kit in
   `probes/`, and the other probes are gone. `docs/HOSTS.md` says when delegation pays off, in one

@@ -37,8 +37,8 @@ Code must be 2.1.281 or later.
    remaining steps with you; you can also perform them by hand.
 4. Copy `core/templates/workbench-entrypoint.md` to `AGENTS.md` at the workbench root. The host
    loads it, and it points every agent to the rules. Add no other instruction file at the root.
-   Create `private/` with `POLICY.md` and `workspace.json` from `core/templates/`, and create
-   `private/tasks/` and `work/`. Create only what is missing; never overwrite an existing file.
+   Create `private/` with `POLICY.md`, `workspace.json`, and `INDEX.md` from `core/templates/`, and
+   create `private/tasks/` and `work/`. Create only what is missing; never overwrite a file.
 5. Complete `private/POLICY.md` (review pairing, approved models, preferences) and
    `private/workspace.json` (approved sources, writable paths, pins). Read what the environment
    shows without changing it, such as tool versions. Ask the requester only for the rest, in one
@@ -56,7 +56,7 @@ wb/                      # not a Git repository
     POLICY.md            # approved rules and preferences
     workspace.json       # approved sources, writable paths, and pins
     tasks/               # status notes for work that spans sessions
-    INDEX.md             # optional, priorities and links, from core/templates/INDEX.md
+    INDEX.md             # priorities and links, read when resuming
     <topic>.md           # optional, policy topics that POLICY.md triggers
     knowledge/           # optional, facts several tasks reuse, from core/templates/knowledge.md
   work/                  # your writable clones, one folder per task
@@ -93,12 +93,6 @@ Ask the agent: "Update the core by following `core/README.md`." From the workben
    the previous revision and restores the pin.
 
 A release tag in `core-version` keeps everyone on a project on the same commit.
-
-## Change the defaults
-
-The core ships with defaults you can change with one line: report format, changelog, versioning,
-review, and more. [docs/DEFAULTS.md](docs/DEFAULTS.md) lists them and describes the small safety
-floor that takes a recorded decision to change.
 
 ## Work with others
 

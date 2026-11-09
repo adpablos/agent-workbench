@@ -11,8 +11,7 @@ Run a probe only when its answer decides the next step, and once per host and ve
 carries over to another environment with the same host version and settings. Probes use throwaway
 lines typed in the target environment, and are removed afterwards: confirm they are gone. Where the
 host's record already shows the evidence, check it there instead of adding a chat turn;
-[HOSTS.md](HOSTS.md) says where each host records what it loaded. Search a record with a command
-that prints only the matching lines: opened whole, one can cost more than the session it records.
+[HOSTS.md](HOSTS.md) says where each host records what it loaded.
 
 | Question | Probe | Evidence |
 |---|---|---|

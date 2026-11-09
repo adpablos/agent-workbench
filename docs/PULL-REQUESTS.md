@@ -112,7 +112,8 @@ stated decision:
 - Before removing anything, verify that the pull request merged and that the branch tip is the head
   it merged; after a squash or rebase merge an ancestry check fails, which is never a reason to
   force a deletion. Check for uncommitted, untracked, or ignored files, stashes, other worktrees,
-  active writers, and commits only that worktree's refs reach. Keep the copy when you cannot show
+  active writers, files the index marks as unchanged or skip-worktree, edits a content filter hides,
+  and commits only that worktree's own refs or reflogs reach. Keep the copy when you cannot show
   that nothing would be lost, and report any surprise.
 - Never force, reset, or clean. Report each removal and each retention with its reason.
 

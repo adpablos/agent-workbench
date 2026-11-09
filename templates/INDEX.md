@@ -1,6 +1,6 @@
 # Index
 
-Optional: keep it once several tasks are open. Short navigation for this workbench, links only:
+Short navigation for this workbench, read when resuming; every section is optional. Links only:
 next actions, results, and evidence live in status notes in `tasks/` or with their official owner.
 
 ## Priorities

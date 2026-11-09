@@ -35,12 +35,9 @@ when you hand work to a Codex session.
 To confirm a load on Claude Code, search the session transcript for the probe word, not for one
 kind of entry: on 2.1.316, `AGENTS.md` appeared as an `instructions` attachment.
 
-Each session also takes what the user configured for every session. On Claude Code 2.1.316,
-`claude -p "/context"` lists, without a model call, the tokens that memory files such as
-`~/.claude/CLAUDE.md`, skills, and MCP tools add to every call; `--setting-sources project,local`
-left out that `CLAUDE.md`, the user's skills, and the MCP servers. Codex lists its MCP servers with
-`codex mcp list`. Turn off for workbench sessions what the work does not need, where the host
-allows it.
+Every session also takes the user's own instruction files, skills, and tool servers. On Claude
+Code 2.1.316, `claude -p "/context"` lists their tokens without a model call. Turn off for workbench
+sessions what the work does not need, where the host allows it.
 
 ## Delegation and review
 
