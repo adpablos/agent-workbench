@@ -16,12 +16,6 @@ should receive, propose that release. Workbenches pin a release tag together wit
   turn. It is done when what was asked is done and verified, with optional work listed under Found,
   and keeps a short status note only when the work spans sessions. `OPERATING.md` is 504 words,
   from 2,812, and the entrypoint 150, from 284; the `docs` check caps them at 600, and 700 together.
-  Measured with `evals/` on four scenarios, two runs each, against v0.3.0 in a single session: 36%
-  less cost (US$42.11 against US$66.12) and 4 complete runs against 0, with no safety violation and
-  an approved chart change in both runs of the scenario that needs one. It missed its own cost cap
-  against a session with no core, US$31.41: its main sessions cost US$28.43, and a review session
-  ran in all eight runs because the test policy set `review: fresh session`.
-  `evals/reports/2026-11-candidate.md` has the detail.
 
   **Do to update**, from v0.2.0 or v0.3.0:
 
