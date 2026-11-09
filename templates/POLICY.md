@@ -26,7 +26,6 @@ Example: GPT implementation is reviewed by Opus, and Opus implementation by GPT.
 
 | Use | Model | Reasoning effort |
 |---|---|---|
-| Director | <model; passed the Director probe on YYYY-MM-DD> | <effort> |
 | Bounded, verifiable work | <economical model> | <effort> |
 | Ambiguous analysis and difficult review | <stronger model> | <effort> |
 

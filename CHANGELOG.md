@@ -8,93 +8,77 @@ should receive, propose that release. Workbenches pin a release tag together wit
 
 ## Unreleased
 
+- **Breaking: one session does one task, under a 504-word contract.** The Director, worker
+  sessions, roles, ownership transfer, and the routines built on them are gone. The session that
+  does a task works with the requester directly. It acts without asking within its task and its own
+  copy, and asks first, showing the exact action, before anything outside them. It gets an
+  independent review only for a change with several parts or real risk, and waits for it within its
+  turn. It is done when what was asked is done and verified, with optional work listed under Found,
+  and keeps a short status note only when the work spans sessions. `OPERATING.md` is 504 words,
+  from 2,812, and the entrypoint 150, from 284; the `docs` check caps them at 600, and 700 together.
+  Measured with `evals/` on four scenarios, two runs each, against v0.3.0 in a single session: 36%
+  less cost (US$42.11 against US$66.12) and 4 complete runs against 0, with no safety violation and
+  an approved chart change in both runs of the scenario that needs one. It missed its own cost cap
+  against a session with no core, US$31.41: its main sessions cost US$28.43, and a review session
+  ran in all eight runs because the test policy set `review: fresh session`.
+  `evals/reports/2026-11-candidate.md` has the detail.
+
+  **Do to update**, from v0.2.0 or v0.3.0:
+
+  1. Finish or close any Director and worker sessions first; they are not resumed.
+  2. Update the core as the README says, keep a copy of your `AGENTS.md`, and replace it with
+     `templates/workbench-entrypoint.md`, adding back your local lines.
+  3. In `private/POLICY.md`, remove the Director row of the models table and any rule about
+     Directors or coordinators, roles, delegation, or session ownership: a policy that keeps them
+     brings them back. Keep the review pairing and the approved models.
+  4. In each open record in `private/tasks/`, make a person its owner and drop Director and worker
+     session handles.
+
+  **Adopt when convenient:**
+
+  - The shorter status note in `templates/task.md`; existing records keep working as they are.
+  - Keep reference repositories and tool checkouts outside the workbench folder, listed in
+    `private/workspace.json` and no longer writable. The README's layout has no `repos/` or
+    `tools/`, since hosts load instruction files and skills from subfolders of the folder they open.
+  - Run the entrypoint probe once with the new `AGENTS.md`.
+
+  **Nothing to do for:** settings, which keep their values, including `review`; an `agents` line,
+  which no longer applies and can go when you next edit the policy; approvals, the approval log,
+  `private/workspace.json`'s format, and probes already passed. `private/INDEX.md` is optional.
+  `docs/VALIDATION.md` keeps two probes, whether the entrypoint is loaded and followed and whether
+  subfolders add instructions, and a short acceptance of a release; the Director probe, its kit in
+  `probes/`, and the other probes are gone. `docs/HOSTS.md` says when delegation pays off, in one
+  paragraph.
 - `evals/` measures the core's way of working on real repositories: a service and the separate
   repository that configures its deployment, with tickets based on recent upstream fixes and
-  hidden tests. It compares a bare session, a Director that delegates to worker sessions, and a
-  single session under the same workbench, and reports outcome, safety, continuity, cost, and
-  friction from the host's records. A candidate core is one more configuration file. The first
-  report, in `evals/reports/`, is the baseline for redesigning the core. Nothing in the operating
-  contract changes.
-- `docs/HOSTS.md` records what Copilot CLI 1.0.84 showed in the probes, and how to run them there:
-  pin the version at every launch, since an npm install ran a newer cached version, and
-  find reads, compaction, and on-demand instruction loads in the session record. The read probe
-  passed. The subfolder probe failed: viewing a file in a subfolder loads every instruction file
-  there, so `repos/` and `tools/` stay outside the opened root.
-- `docs/HOSTS.md` records that Copilot CLI 1.0.84 loaded no `AGENTS.md` from a folder outside the
-  opened root, reached with `--add-dir` or `--allow-all-paths`, so keeping `repos/` and `tools/`
-  there avoids the loads that the subfolder probe showed.
-- Probes cost less without weaker evidence. Probes of what the host loads or allows run on the most
-  economical approved model; probes of what an agent does run with the model and reasoning effort
-  of its role. A result carries over to another environment with the same host version and
-  settings, which reruns only the probes it can change, such as through organization settings,
-  models, or permissions. A failure on a comparable host, such as another version, platform, or
-  interface of the same host, is enough to choose the option that does not rely on the capability;
-  a pass counts only once the probe passes where it is relied on. The root `AGENTS.md` probe can
-  share the read probe's chat and rely on the host's record, the subfolder probe no longer starts
-  with a greeting, and records and transcripts are searched with a command instead of being opened
-  whole.
-- The Director's model and reasoning effort are chosen explicitly, like those for implementation
-  and review. It makes the most model calls over the longest context, so its choice sets most of a
-  workbench's usage: it gets the most economical pair that passes a new Director probe in
-  `docs/VALIDATION.md`. On separate copies of the same synthetic records, the candidate and the
-  strongest approved model at its highest approved effort must each match an answer written before
-  any run: every next action and blocker, nothing the records do not support, no approval or
-  readiness they lack, and the same change to a task record. Work that needs a
-  stronger model goes to a separate session where the host caps a subagent's model at the
-  Director's cost tier: `docs/HOSTS.md` records that VS Code documents such a cap for Local harness
-  subagents, unverified. The `POLICY.md` template gains a Director row and a reasoning effort
-  column; existing workbenches add them when they next change their policy.
-- `docs/HOSTS.md` records how Copilot CLI 1.0.84 reports and spends usage: AI credits from the
-  session record at list price, where to read them without a model call (`copilot -p "/usage"`
-  costs a turn), the cost every new session pays before its first answer, the per-request cache
-  writes at default reasoning effort, personal skills offered in every session, and commands that
-  search a session record instead of opening it.
-- The Director probe runs a fixed kit in `probes/director/`: synthetic records, the requests to
-  send, and the written answer to judge against, so no workbench writes its own. A reference run,
-  recorded in the pull request that changes the kit, confirms the answer for every host; a host
-  runs the reference itself only to tell a host problem from a model problem after a candidate
-  fails. The same run is the read probe for the candidate's pair, so choosing the Director takes one
-  chat per candidate.
-- A new probe lists what the host adds to every session from outside the workbench: user-level
-  instruction files, skills, agents, and tool servers. Each costs tokens in every call, and on
-  Copilot CLI a personal skill answered a workbench `Resume`; the agent proposes turning off what
-  the work does not need. `docs/HOSTS.md` says where Claude Code, Codex, and Copilot show them and
-  how Copilot turns them off, how VS Code and Copilot CLI set reasoning effort, and that loading
-  `core/OPERATING.md` through Copilot's instructions as well did not spare its read.
-- Agents keep notes, plans, logs, and evidence out of repository copies, tracked or ignored, and
-  change a repository's documentation only when the deliverable includes it.
-- In an authorized build, the repository's package manager resolves what its manifests and lock
-  files declare from approved registries, without an approval per dependency unless the
-  organization's approval route requires one. A new registry, dependency, tool, or credential
-  mechanism still needs its own approval.
-- Reports list under Blocked on me only what the current outcome needs; prerequisites of a later
-  phase go under Found, and Changed states first what completed, such as a transfer or a merge.
+  hidden tests. It compares configurations of the core against a bare session and reports outcome,
+  safety, continuity, cost, and friction from the host's records. A candidate core is one more
+  configuration file. It is a development tool for the core: a workbench never reads it.
+- `docs/HOSTS.md` records what Copilot CLI 1.0.84 showed: pin the version at every launch, since an
+  npm install ran a newer cached version; find reads, compaction, and on-demand instruction loads in
+  the session record; and read usage there without a model call. The entrypoint loaded and was
+  read. Viewing a file in a subfolder loaded every instruction file there, and a folder outside the
+  opened root loaded none. Each new session pays for about 12,000 tokens before its first answer,
+  and personal skills and tool servers are offered in every session; one skill answered a workbench
+  request in place of the contract.
 - Before review, the diff is compared with the repository's existing patterns, and tests that
-  protect nothing the change relies on are removed. Cleanup after a merge also checks for work that
-  a clean status hides: ignored files, index flags, edits that a content filter hides, and commits
-  that only a worktree's own refs or reflogs reach. When a loss cannot be ruled out, the copy stays.
-- A task can authorize an integration run against non-production services, recorded in a new
-  Integration run field of the task template: the environment, endpoints and methods, copy, tools,
-  dependency route, credential mechanism, and evidence. Mocked experiments stay the default. The
-  run covers only what it names; a reachable service or a signed-in browser authorizes nothing, and
-  business-data changes, production, deployment, publication, and privileged operations keep their
-  own approvals whatever the method. Its evidence says what was real and what was mocked, and no
-  run is acceptance. A newer or broader rule no longer silently overrides an older explicit
-  prohibition: the agent names both texts and the dependent action and prepares the reconciliation
-  for approval. `docs/DEFAULTS.md` (Integration runs) has the detail.
+  protect nothing the change relies on are removed. Cleanup after a merge also checks for ignored
+  files and commits that only a worktree's own refs reach; when a loss cannot be ruled out, the
+  copy stays.
+- The requester can approve an integration run against non-production services. The approval names
+  the environment, endpoints and methods, copy, tools, credential mechanism, and where evidence is
+  kept, and the run covers only what it names. Business-data changes, production, deployment,
+  publication, and privileged operations keep their own approvals whatever the method. A newer,
+  broader rule does not override an older explicit prohibition: both are reported.
+  `docs/DEFAULTS.md` (Integration runs) has the detail.
 - `private/POLICY.md` can stay short: a trigger, "Before <action>, read `private/<file>.md` in
-  full", makes a topic file part of the policy, read in full before that action under the
-  entrypoint's read rules and passed in assignments; a missing or unreadable topic blocks the
-  action. Rules that apply to every action stay in the policy. The approval log may move to one
-  linked file, and its entries now record scope, reason, and evidence of the approved text. Moving
-  content out of the policy is itself a policy change that accounts for every rule, approval, and
-  waiver. Existing policies and inline logs need no migration. The Director probe kit's policy now
-  has a trigger and a linked approval log, and its answer requires the triggered read before the
-  second request's edit.
-- An optional `private/knowledge/`, from `templates/knowledge.md` and linked from the index, holds
-  facts that several tasks reuse, such as a glossary, service relationships, environment notes, and
-  source locators. Each topic records its sources, date, uncertainty, and owner. It is evidence,
-  never instructions or authority, and task records stay authoritative.
+  full", makes a topic file part of the policy, read in full before that action; a missing topic
+  blocks the action. The approval log may move to one linked file, and its entries record scope,
+  reason, and where the exact text was approved. Moving content out of the policy is itself a
+  policy change. Existing policies need no migration.
+- An optional `private/knowledge/`, from `templates/knowledge.md`, holds facts that several tasks
+  reuse, such as a glossary, service relationships, and source locators. It is evidence, never
+  instructions or authority.
 
 ## 0.3.0 - 2026-11-04
 

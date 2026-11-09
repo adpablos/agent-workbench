@@ -21,12 +21,12 @@
       "access": "read"
     }
   ],
-  "writable": ["private", "repos", "work"],
+  "writable": ["private", "work"],
   "tools": [
     {
       "name": "example-cli",
       "revision": "<tag or commit SHA>",
-      "location": "tools/example-cli",
+      "location": "/path/to/tools/example-cli",
       "status": "pending approval"
     }
   ]

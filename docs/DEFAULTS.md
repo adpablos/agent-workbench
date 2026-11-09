@@ -76,7 +76,6 @@ Set these in `private/POLICY.md`.
 |---|---|---|
 | `report` | `blocks` | Ends substantial work with the labels in `OPERATING.md` (Reporting), in the language of the conversation. `prose` removes them; any other wording describes what you prefer |
 | `language` | Requester's language in conversation, English in persistent notes | Applies to your private files. A project can set `language` in its instructions for its own content |
-| `agents` | One Director and at most two other active agents | Concurrency for your budget and host |
 
 `private/POLICY.md` also holds your review pairing and the exact models you approve.
 
@@ -89,60 +88,37 @@ rule that only one kind of action needs can move to a topic file that a trigger 
 ```markdown
 ## Topics
 
-- Before recording a review result in a task record, read `private/review-records.md` in full.
+- Before publishing a branch, read `private/publishing.md` in full.
 ```
 
-- A topic file is part of the policy: it has the same precedence, and it changes only after the
-  requester approves its exact text. It is read in full before its action under the entrypoint's
-  read rules, so a context reset or a change to the file means reading it again. If it is missing,
-  partial, or unreadable, that action is blocked; other work continues.
-- An assignment that includes a triggered action names the topic file among its instruction paths.
-- Rules that apply whatever the action, such as safeguards, approval stops, and waivers, stay in
-  `POLICY.md`.
-- The approval status stays in `POLICY.md` and covers its topic files, so following the policy
-  needs no other read. The approval log may live in one linked file, such as
-  `private/approvals.md`, instead of in `POLICY.md`, never in both: there is one authoritative
-  history. A log inside `POLICY.md` needs no migration. Each entry records the rule or change, its
-  scope, the reason where one applies, the approver, the date, and evidence of the exact text
-  approved. When an action depends on a specific approval, waiver, migration, or scope, read its
-  entries first. A missing entry is a missing approval: ask the requester, record only what they
-  approve, and never reconstruct one.
-- Moving content out of `POLICY.md` is a change to the policy. The proposal accounts for every
-  rule, approval, waiver, and boundary in effect, says where each one goes, and needs approval of
-  the exact text of every file it changes. Shortening never broadens authority or drops a control.
+- A topic file is part of the policy: same precedence, changed only after the requester approves
+  its exact text, and read in full before its action under the entrypoint's read rules. If it is
+  missing or unreadable, that action is blocked; other work continues. A request to another session
+  that includes the action names the file.
+- Rules that apply whatever the action, such as safeguards, approval stops, and waivers, and the
+  approval status, which covers the topic files, stay in `POLICY.md`.
+- The approval log may live in one linked file, such as `private/approvals.md`, never in both
+  places. Each entry records the change, its scope, the reason, the approver, the date, and where
+  the exact text was approved. A missing entry is a missing approval: ask, never reconstruct one.
+- Moving content out of `POLICY.md` is itself a policy change: the proposal says where every rule,
+  approval, and waiver goes. Shortening never broadens authority or drops a control.
 
 ## Integration runs
 
 By default, local experiments use isolated copies, approved dependencies, synthetic data, and
-mocks. A task can instead authorize an integration run against non-production services. The task
-record's Integration run field names:
+mocks. The requester can instead approve a run against non-production services. The approval names
+the environment, the endpoints and methods the run may call, the copy and tools it uses, the
+credential mechanism, loaded inside the process so that values never appear in commands, logs, or
+reports, and where the evidence is kept.
 
-- the environment, and the endpoints and methods the run may call;
-- the run copy, the tools, and the route by which dependencies are fetched;
-- the approved credential mechanism, loaded inside the process that uses it, so that values never
-  appear in commands, logs, or reports;
-- how and where the evidence is kept.
-
-The run authorizes only the operations it names. A reachable service, a working credential, or a
-signed-in browser authorizes nothing more. Authenticating, even through a POST, is not a change to
-business data, but these keep their own approvals whatever the HTTP method: changing business data,
-anything that touches production, deployment and publication, and privileged remote operations.
-Direct diagnostics, such as a request sent by hand to see why a call failed, stay within the named
-endpoints and methods.
-
-- Whoever owns the run starts the processes it needs and stops them when it ends.
-- One writer per copy still holds, and the run never uses another worker's copy.
-- A local folder or an offline flag is not a sandbox. Record which limits are technically enforced
-  and which are only procedural, as `OPERATING.md` (Authority) says.
-- The evidence says which dependencies were real and which were mocked. A run against a mocked
-  dependency is not integration with its real producer, and no run is business or delivery
-  acceptance.
-
-A newer, broader rule that allows such runs does not override an older explicit prohibition, such
-as a task scope that excludes starting the application or live calls. Report the conflict as
-`OPERATING.md` (Principles and precedence) says: name the conflicting text and the action that
-depends on it, prepare the exact reconciliation for approval, and leave that action blocked until
-it is approved.
+The run authorizes only what it names; a reachable service, a working credential, or a signed-in
+browser authorizes nothing more. Changing business data, anything that touches production,
+deployment, publication, and privileged operations keep their own approvals whatever the HTTP
+method. The session that runs it starts and stops the processes it needs. A local folder or an
+offline flag is not a sandbox. The evidence says which dependencies were real and which were
+mocked; no run is business or delivery acceptance. A newer, broader rule that allows such runs does
+not override an older explicit prohibition: report both, as `OPERATING.md` says for conflicting
+instructions, and leave the action blocked until the requester reconciles them.
 
 ## Safety floor
 
@@ -168,14 +144,3 @@ repository's rules.
 
 The floor is written guidance. Only host permissions and repository settings enforce it, so back
 each rule with them where you can.
-
-## Before a repository goes public
-
-Treat a repository meant to be public as public from its first commit. Before the switch:
-
-- Choose a license.
-- Review the whole history, not only the current files: commits, branches, tags, and pull request
-  titles and descriptions.
-- Remove internal references: names, hostnames, paths, and identifiers. Rotate any secret that was
-  ever committed.
-- Add `SECURITY.md`, unless `security-policy` is off.
