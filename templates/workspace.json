@@ -1,5 +1,5 @@
 {
-  "description": "Approved scope and pins for this workbench. Change only after the requester approves the exact content.",
+  "description": "Approved scope and pins for this workbench. A source, path, or tool not listed here is outside the scope: ask the requester first. Change only after the requester approves the exact content.",
   "approved": "YYYY-MM-DD",
   "core": {
     "path": "core",

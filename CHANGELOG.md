@@ -35,6 +35,8 @@ should receive, propose that release. Workbenches pin a release tag together wit
     delegated bounded read.
   - A topic trigger that names a core document, such as reading `core/docs/PULL-REQUESTS.md` before
     opening, reviewing, or merging a pull request: the contract itself does not point to it.
+  - The `description` of `templates/workspace.json`: a source, path, or tool not listed is outside
+    the scope.
   - Keep reference repositories and tool checkouts outside the workbench folder, listed in
     `private/workspace.json`, and drop `repos` from its `writable` list. The README's layout has no
     `repos/` or `tools/`, since hosts load instruction files and skills from subfolders of the

@@ -60,6 +60,10 @@ resume` failed with `Operation not permitted`, and `claude -p` reported that it 
 If yours does the same, run those commands yourself outside the sandbox and give the session the
 result.
 
+When the session cannot start a reviewer with the paired model at all, it commits and hands you the
+review request, the SHA, and your own words for the outcome, to give to a session with that model.
+Until the result is back, it reports the change as not reviewed.
+
 Which model ran a session or a review, *reported* by the host:
 
 | Source | Where to read it |
