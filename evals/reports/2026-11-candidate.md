@@ -11,8 +11,8 @@ review, and a contract 38% shorter.
 were removed when M was adopted, and the commits they named (`d46f082`, `69abc0a`, `c5c4ef0`,
 `959d62c`) existed only on a development branch and are no longer reachable. M was measured at
 `c75860a`. Its `OPERATING.md` and workbench entrypoint are byte-identical to those on `main` since
-`cffb5f1`, which `configs/M.json` now names, and released as v0.4.0; the documents read on demand
-changed after the measurement.
+`cffb5f1`, which `configs/M.json` now names; the documents read on demand changed after the
+measurement.
 
 ## Plan and criteria
 
