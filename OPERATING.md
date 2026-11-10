@@ -37,7 +37,7 @@ security, concurrency, or behavior that others rely on. Then:
 1. Commit the change. Give a fresh session that did not write it the SHA and the requester's own
    words for the outcome, following the review pairing in the project's instructions. The reviewer
    checks the change against those words, writes nothing in your copy, experiments in its own
-   clone, and returns findings.
+   copy, and returns findings.
 2. Wait for the result within your turn. Never end your turn just to wait.
 3. Resolve findings with evidence and have the new SHA reviewed, at most twice more. If blockers
    remain, report them with your recommendation.

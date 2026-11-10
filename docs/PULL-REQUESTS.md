@@ -100,12 +100,12 @@ stated decision:
 - When the requester says a task's change is merged or dropped, remove that task's own copy and
   branch after the checks below. Anything else, such as other copies, remote branches, or what the
   task did not create, waits for approval of the exact plan, with refs, tips, and paths.
-- Before removing anything, verify that the pull request merged and that the branch tip is the head
-  it merged; after a squash or rebase merge an ancestry check fails, which is never a reason to
-  force a deletion. Check for uncommitted, untracked, or ignored files, stashes, other worktrees,
-  active writers, files the index marks as unchanged or skip-worktree, edits a content filter hides,
-  and commits only that worktree's own refs or reflogs reach. Keep the copy when you cannot show
-  that nothing would be lost, and report any surprise.
+- Before removing anything, fetch with `--prune`, then verify that the pull request merged and that
+  the branch tip is the head it merged; after a squash or rebase merge an ancestry check fails,
+  which is never a reason to force a deletion. Check for uncommitted, untracked, or ignored files,
+  stashes, other worktrees, active writers, files the index marks as unchanged or skip-worktree,
+  edits a content filter hides, and commits only that worktree's own refs or reflogs reach. Keep the
+  copy when you cannot show that nothing would be lost, and report any surprise.
 - Never force, reset, or clean. Report each removal and each retention with its reason.
 
 ## Mixed authorship
