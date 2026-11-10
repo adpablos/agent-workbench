@@ -59,7 +59,7 @@ wb/                      # not a Git repository
     INDEX.md             # priorities and links, read when resuming
     <topic>.md           # optional, policy topics that POLICY.md triggers
     knowledge/           # optional, facts several tasks reuse, from core/templates/knowledge.md
-  work/                  # your writable clones, one folder per task
+  work/                  # your writable copies, one folder per task
 ```
 
 Reference repositories and tool checkouts stay outside the workbench folder, wherever they already
@@ -71,9 +71,27 @@ repository; a `.gitignore` is not a substitute for that separation.
 
 ### Add a repository
 
-Add the repository to the sources in `private/workspace.json` with the requester's approval. A
-task that changes it clones its own copy, `git clone <repository URL> work/<task>/<repo>`, whose
-`origin` stays the remote.
+Clone the repository once, outside the workbench folder, and list that clone in
+`private/workspace.json` with the requester's approval. The clone stays on its default branch and
+nobody edits it. A task works in a worktree of it, on its own branch:
+
+```bash
+git -C <clone> fetch origin
+git -C <clone> worktree add <workbench>/work/<task>/<repo> -b <branch> origin/<default branch>
+```
+
+A worktree shares the clone's history, so it takes seconds and little space, and
+`git -C <clone> worktree list` shows every open copy. The clone's own default branch may fall
+behind; that is harmless, since copies start from `origin/<default branch>`. When the change is
+merged or dropped, the session removes the copy and its branch after the After merge checks in
+[docs/PULL-REQUESTS.md](docs/PULL-REQUESTS.md), so `work/` holds only open tasks.
+[templates/POLICY.md](templates/POLICY.md) carries these rules as preferences. Where there is no
+local clone, or the host cannot write to it, `git clone <repository URL> work/<task>/<repo>` still
+gives a task its copy.
+
+To review what is open, ask the agent: it lists each clone's worktrees and the folders under
+`work/` with the state of each branch, proposes the exact removals, and removes nothing before
+you approve them.
 
 ## Update the core
 

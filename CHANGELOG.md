@@ -49,6 +49,8 @@ None.
     `repos/` or `tools/`, since hosts load instruction files and skills from subfolders of the
     folder they open; do this first wherever the subfolder probe failed.
   - Run the entrypoint probe once with the new `AGENTS.md`.
+  - The three preferences on task copies and repository skills in `templates/POLICY.md`; clones
+    already under `work/` keep working.
 
   Publishing now always needs approval of the exact branch, head, title, and body: a Publication
   authorization in a task record or the policy no longer lets an agent push its own text, and
@@ -61,6 +63,11 @@ None.
   subfolders add instructions, and a short acceptance of a release; the Director probe, its kit in
   `probes/`, and the other probes are gone. `docs/HOSTS.md` says when delegation pays off, in one
   paragraph.
+- A task's copy is a worktree of one clone per project, kept outside the workbench folder, instead
+  of a fresh clone under `work/`, and closing a task removes its copy and branch after the After
+  merge checks. A session also reads a repository's own agent instructions and skills before
+  changing it, since Copilot CLI loads no skill from a subfolder. The README and
+  `templates/POLICY.md` carry this; the contract and the entrypoint did not change.
 - `evals/` measures the core's way of working on real repositories: a service and the separate
   repository that configures its deployment, with tickets based on recent upstream fixes and
   hidden tests. It compares configurations of the core against a bare session and reports outcome,

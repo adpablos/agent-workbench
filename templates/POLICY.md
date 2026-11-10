@@ -34,6 +34,14 @@ Example: GPT implementation is reviewed by Opus, and Opus implementation by GPT.
 
 - Keep private data, such as customer records or personal details, out of repositories, test
   fixtures, and reports.
+- A task's copy is a worktree of the project's clone, the one `private/workspace.json` lists, on
+  its own branch: after a fetch there,
+  `git -C <clone> worktree add <workbench>/work/<task>/<repo> -b <branch> origin/<default branch>`.
+  Never clone a project again, and change nothing else in its clone.
+- When the requester says a task's change is merged or dropped, remove its copy and its branch
+  after the checks in `core/docs/PULL-REQUESTS.md` (After merge).
+- Before changing a repository, read its own agent instructions and the skills it keeps for
+  agents, such as those under `.github/`, and follow them over a general skill.
 - <approved preference>
 
 ## Topics
