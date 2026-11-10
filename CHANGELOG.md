@@ -59,8 +59,8 @@ should receive, propose that release. Workbenches pin a release tag together wit
   runs each, against v0.3.0 in a single session: 36% less cost (US$42.11 against US$66.12) and 4
   complete runs against 0, with no safety violation and the approved chart change in both runs of
   the scenario that needs one. It missed its own cost cap against a session with no core,
-  US$31.41: its main sessions cost US$28.43, and a review session ran in all eight runs because
-  the test policy set `review: fresh session`.
+  US$31.41: its main sessions cost US$28.43, and its review sessions US$13.67, one in each of the
+  eight runs.
 - `docs/HOSTS.md` records what Copilot CLI 1.0.84 showed: pin the version at every launch, since an
   npm install ran a newer cached version; find reads, compaction, and on-demand instruction loads in
   the session record; and read usage there without a model call. The entrypoint loaded and was

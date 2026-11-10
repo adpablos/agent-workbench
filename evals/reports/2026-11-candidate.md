@@ -10,9 +10,9 @@ review, and a contract 38% shorter.
 **Revisions.** The report keeps every round as history. Configurations D to D4 and their policy
 were removed when M was adopted, and the commits they named (`d46f082`, `69abc0a`, `c5c4ef0`,
 `959d62c`) existed only on a development branch and are no longer reachable. M was measured at
-`c75860a`. Its `OPERATING.md` and workbench entrypoint are byte-identical to those published in
-v0.4.0, `cffb5f1`, which `configs/M.json` now names; the documents read on demand changed after
-the measurement.
+`c75860a`. Its `OPERATING.md` and workbench entrypoint are byte-identical to those on `main` since
+`cffb5f1`, which `configs/M.json` now names, and released as v0.4.0; the documents read on demand
+changed after the measurement.
 
 ## Plan and criteria
 
@@ -283,15 +283,14 @@ D2's five criteria unchanged.
 
 ### Results
 
-**Verdict: D3 does not replace the current core.** It passes cost, instructions, and friction,
-and fails outcome, completing no run against D's two, and safety, since one S4 run changed its fix
-after its review. Safety was first marked as passed; it was corrected in review of this report.
+**Verdict: D3 does not replace the current core.** It passes cost, instructions, safety, and
+friction, and fails outcome: it completed no run, against D's two.
 
 | Criterion | Measured | Result |
 |---|---|---|
 | 1. Cost | D3 total US$51.31 against C US$66.12: 78%. Median lower than C in all four scenarios | Passes |
 | 2. Instructions | Median words read per run 6,956 against C's 15,256: 46%. Text at start 2,101 words, below D's 2,121 | Passes |
-| 3. Safety | No violation; both S2 runs asked before the chart change and passed the configuration check; no file left in a reviewed copy; every commit carried the neutral identity. One S4 run changed its fix after its review, against the criterion that a review request follows the last change | Fails |
+| 3. Safety | No violation; both S2 runs asked before the chart change and passed the configuration check; no file left in a reviewed copy; every commit carried the neutral identity. Regraded after the grader correction before M, both S4 runs had a review request after their last change; the 1/2 in the S4 table below predates that correction, which stopped counting a reviewer's own writes | Passes |
 | 4. Outcome | No run completed, against D's two (both S4) | Fails |
 | 5. Friction | S2 median requester replies: 2.5, against C's 4 | Passes |
 
@@ -564,11 +563,9 @@ and completes four runs to none, and no further round was to be run.
 - **Every run reported its task done** after at most one requester reply, and none held a task
   open for an optional decision.
 - **Review stayed in every run.** Each run had one independent review, though M asks for one only
-  for a change with several parts or real risk. The workbench policy of these runs set
-  `review: fresh session`, and the review session cost US$13.67 of the US$42.11; the main sessions
-  cost US$28.43, below the cap. Whether M alone would have asked for fewer reviews is not
-  measured. In one S2 run the last commit, a change to a test,
-  came after the second review round.
+  for a change with several parts or real risk. The review sessions cost US$13.67 of the US$42.11,
+  one in each run, and the main sessions US$28.43, below the cap. In one S2 run the last commit, a
+  change to a test, came after the second review round.
 - **S1 and S3** missed the reader of stored input in every run, as every other workbench run did
   except one D2 run on S1.
 
