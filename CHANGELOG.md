@@ -8,6 +8,10 @@ should receive, propose that release. Workbenches pin a release tag together wit
 
 ## Unreleased
 
+None.
+
+## 0.4.0 - 2026-11-09
+
 - **Breaking: one session does one task, under a 504-word contract.** The Director, worker
   sessions, roles, ownership transfer, and the routines built on them are gone. The session that
   does a task works with the requester directly. It acts without asking within its task and its own
@@ -15,7 +19,8 @@ should receive, propose that release. Workbenches pin a release tag together wit
   independent review only for a change with several parts or real risk, and waits for it within its
   turn. It is done when what was asked is done and verified, with optional work listed under Found,
   and keeps a short status note only when the work spans sessions. `OPERATING.md` is 504 words,
-  from 2,812, and the entrypoint 150, from 284; the `docs` check caps them at 600, and 700 together.
+  from 2,510 in v0.3.0, and the entrypoint 150, from 284; the `docs` check caps them at 600, and
+  700 together.
 
   **Do to update**, from v0.2.0 or v0.3.0:
 

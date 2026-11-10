@@ -28,7 +28,7 @@ Code must be 2.1.281 or later.
 1. Create a folder with a short path, for example `~/wb` or `C:/wb`, outside any Git repository and
    below no folder with its own agent instructions.
 2. Place this repository at `core/` at a pinned revision. With Git, from the workbench folder:
-   `git clone --branch v0.3.0 https://github.com/adpablos/agent-workbench.git core`, note the
+   `git clone --branch v0.4.0 https://github.com/adpablos/agent-workbench.git core`, note the
    revision that `git -C core rev-parse HEAD` prints, and disable pushing from the workbench:
    `git -C core remote set-url --push origin DISABLED`. If your organization restricts imports, use
    its approved route.
