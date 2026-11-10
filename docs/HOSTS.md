@@ -123,8 +123,8 @@ Read between 2026-11-02 and 2026-11-05, not exercised. Installed behavior takes 
 - The Copilot harness loads `AGENTS.md`, `.github/copilot-instructions.md`, and
   `.github/instructions/*.instructions.md`; Copilot CLI also `CLAUDE.md` and `GEMINI.md`, with no
   stated precedence. Keep one instruction file per folder. No setting excludes a folder.
-- A Local harness subagent inherits the main agent's instructions and tools, not the
-  conversation, and takes no follow-up messages. A Copilot CLI subagent that runs a custom agent
+- A Local harness subagent inherits the main agent's instructions and tools, unless it runs a
+  custom agent, but not the conversation, and takes no follow-up messages. A Copilot CLI subagent that runs a custom agent
   loads instruction files only with `include-custom-instructions: true`. Name the instruction paths
   in every request to a subagent, and say whether it may delegate.
 - A VS Code page dated 2026-11-04 says a Local harness subagent does not run when its model is in a
