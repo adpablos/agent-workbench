@@ -28,9 +28,10 @@ file in a subfolder, Claude Code 2.1.316 loaded that folder's skills on demand, 
 `claudeMdExcludes` set for it; Codex 0.166.0 loaded nothing. This is why reference repositories and
 tools stay outside the workbench folder; read them by their path. `--add-dir` is not neutral
 access: Claude Code's documentation says it loads skills, commands, and agents from the added
-folder. Repositories you change are cloned into `work/` on
-purpose: their instructions bind that work. Because Codex does not load them on demand, name them
-when you hand work to a Codex session.
+folder. The copies of repositories you change sit in `work/` on purpose: their instructions bind
+that work. Because Codex does not load them on demand, name them when you hand work to a Codex
+session. Skills are another matter: Copilot CLI loaded none from a subfolder, so
+`templates/POLICY.md` tells a session to read a repository's own skills before changing it.
 
 To confirm a load on Claude Code, search the session transcript for the probe word, not for one
 kind of entry: on 2.1.316, `AGENTS.md` appeared as an `instructions` attachment.

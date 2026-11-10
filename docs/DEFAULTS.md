@@ -53,7 +53,7 @@ Set these in the project's agent instructions.
 | `security-policy` | `on` if public with runnable code, otherwise `off` | Keeps `SECURITY.md` with a private way to report a vulnerability |
 | `repository-baseline` | `on` if several people maintain it or it is deployed, otherwise `off` | Protects the default branch, requires pull requests and at least one required check that really runs, pins Actions to full commit SHAs, and enables Dependabot |
 | `review` | `other model family` | Who reviews a change; also accepts `fresh session` or `human` |
-| `review-rounds` | `2` | Correction rounds after the first review before stopping to ask |
+| `review-rounds` | `2` | Correction rounds after the first review before stopping to ask: `0`, `1`, or `2`, the contract's limit |
 | `re-review` | `delta` | What each round after the first covers. `delta` checks the earlier findings and the diff since the reviewed commit, so reviews converge, but it can miss what a new look at everything would find. `full` reviews everything again |
 | `models` | None | Minimum model tier for implementation and review, without exact identifiers |
 | `commits` | Imperative subject, reason in the body | Message style; with squash merges, the pull request title becomes the commit |
@@ -102,10 +102,24 @@ but changes only with the core.
 - Rules that apply whatever the action, such as safeguards, approval stops, and waivers, and the
   approval status, which covers the topic files, stay in `POLICY.md`.
 - The approval log may live in one linked file, such as `private/approvals.md`, never in both
-  places. Each entry records the change, its scope, the reason, the approver, the date, and where
-  the exact text was approved. A missing entry is a missing approval: ask, never reconstruct one.
+  places. Each entry records the date, the change, and the approver. A missing entry is a missing
+  approval: ask, never reconstruct one.
 - Moving content out of `POLICY.md` is itself a policy change: the proposal says where every rule,
   approval, and waiver goes. Shortening never broadens authority or drops a control.
+
+## Approvals in advance
+
+By default, the requester approves each push and publication with its exact text, as
+`docs/PULL-REQUESTS.md` (Delivery and publication) says. A request that names the action approves
+it, and so does a policy line approved in advance, such as:
+
+```markdown
+- In `<repository>`, when the tests pass and any review the change warrants is done, push the
+  task's branch and open its pull request with your own title and body, without asking.
+```
+
+Such a line covers only what it names: here, that repository, pushing the branch, and opening the
+pull request. Merging, releasing, tagging, and a force push still need the requester's own word.
 
 ## Integration runs
 

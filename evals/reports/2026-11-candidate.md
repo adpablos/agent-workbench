@@ -10,9 +10,10 @@ review, and a contract 38% shorter.
 **Revisions.** The report keeps every round as history. Configurations D to D4 and their policy
 were removed when M was adopted, and the commits they named (`d46f082`, `69abc0a`, `c5c4ef0`,
 `959d62c`) existed only on a development branch and are no longer reachable. M was measured at
-`c75860a`. Its `OPERATING.md` and workbench entrypoint are byte-identical to those on `main` since
-`cffb5f1`, which `configs/M.json` now names; the documents read on demand changed after the
-measurement.
+`c75860a`. Its `OPERATING.md` and workbench entrypoint equal those of `cffb5f1` on `main`, which
+`configs/M.json` names. v0.4.0's contract is that text plus one sentence on actions approved in
+advance and the word "copy" for "clone"; rehearsals checked both, and this kit did not. The
+documents read on demand also changed after the measurement.
 
 ## Plan and criteria
 
