@@ -53,7 +53,7 @@ Set these in the project's agent instructions.
 | `security-policy` | `on` if public with runnable code, otherwise `off` | Keeps `SECURITY.md` with a private way to report a vulnerability |
 | `repository-baseline` | `on` if several people maintain it or it is deployed, otherwise `off` | Protects the default branch, requires pull requests and at least one required check that really runs, pins Actions to full commit SHAs, and enables Dependabot |
 | `review` | `other model family` | Who reviews a change; also accepts `fresh session` or `human` |
-| `review-rounds` | `2` | Correction rounds after the first review before stopping to ask |
+| `review-rounds` | `2` | Correction rounds after the first review before stopping to ask: `0`, `1`, or `2`, the contract's limit |
 | `re-review` | `delta` | What each round after the first covers. `delta` checks the earlier findings and the diff since the reviewed commit, so reviews converge, but it can miss what a new look at everything would find. `full` reviews everything again |
 | `models` | None | Minimum model tier for implementation and review, without exact identifiers |
 | `commits` | Imperative subject, reason in the body | Message style; with squash merges, the pull request title becomes the commit |

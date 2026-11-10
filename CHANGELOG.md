@@ -29,7 +29,9 @@ None.
      `templates/workbench-entrypoint.md`, adding back your local lines.
   3. In `private/POLICY.md`, remove the Director row of the models table and any rule about
      Directors or coordinators, roles, delegation, or session ownership: a policy that keeps them
-     brings them back. Keep the review pairing and the approved models.
+     brings them back. Keep the review pairing and the approved models, and add the private-data
+     line of `templates/POLICY.md` (Preferences): the contract covers secrets, not other private
+     data.
   4. In each open record in `private/tasks/` and in `private/INDEX.md`, make a person the owner
      and drop Director and worker session handles.
 
@@ -47,6 +49,10 @@ None.
     `repos/` or `tools/`, since hosts load instruction files and skills from subfolders of the
     folder they open; do this first wherever the subfolder probe failed.
   - Run the entrypoint probe once with the new `AGENTS.md`.
+
+  Publishing now always needs approval of the exact branch, head, title, and body: a Publication
+  authorization in a task record or the policy no longer lets an agent push its own text, and
+  `review-rounds` above 2 stops at 2, the contract's limit.
 
   **Nothing to do for:** settings, which keep their values, including `review`; an `agents` line,
   which no longer applies and can go when you next edit the policy; approvals, the approval log,

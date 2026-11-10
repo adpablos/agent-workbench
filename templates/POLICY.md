@@ -32,6 +32,8 @@ Example: GPT implementation is reviewed by Opus, and Opus implementation by GPT.
 
 ## Preferences
 
+- Keep private data, such as customer records or personal details, out of repositories, test
+  fixtures, and reports.
 - <approved preference>
 
 ## Topics
