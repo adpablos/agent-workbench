@@ -1,13 +1,13 @@
 # Index
 
-Short navigation for this workbench. Links only: next actions, results, decisions, and evidence
-live in task records or their official owner. Use relative links to records in `tasks/`.
+Short navigation for this workbench, read when resuming; every section is optional. Links only:
+next actions, results, and evidence live in status notes in `tasks/` or with their official owner.
 
 ## Priorities
 
 Order set by the requester. Recommend changes; never reorder silently.
 
-1. <task title>: `tasks/short-name.md`, owner <Director session handle or person>
+1. <task title>: `tasks/short-name.md`, owner <person>
 
 ## Recently closed
 
@@ -15,7 +15,7 @@ Order set by the requester. Recommend changes; never reorder silently.
 
 ## Decisions
 
-- <decision in a few words>: `tasks/short-name.md#decisions`
+- <decision in a few words>: `tasks/short-name.md`
 
 ## Knowledge
 

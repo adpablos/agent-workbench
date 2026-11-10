@@ -1,8 +1,8 @@
 # Agent Workbench
 
-A small, Markdown-first foundation for coordinating coding agents across repositories and
-information sources: one Director that delegates bounded work, independent cross-family review of
-code changes, and private records that let work resume from another session.
+A small, Markdown-first foundation for working with coding agents across repositories and
+information sources: one session per task that works with you directly, independent review of
+changes that carry risk, and a short status note when work spans sessions.
 
 It adds no runtime, scheduler, background service, database, dashboard, or installer. It relies
 on the agent host you already have, such as Claude Code, Codex, or GitHub Copilot in VS Code, and
@@ -13,12 +13,12 @@ on existing approved tools.
 | File | Purpose |
 |---|---|
 | [OPERATING.md](OPERATING.md) | Operating contract that every agent reads |
-| [docs/VALIDATION.md](docs/VALIDATION.md) | Capability probes and acceptance procedure |
 | [docs/DEFAULTS.md](docs/DEFAULTS.md) | Configurable defaults and the safety floor |
+| [docs/HOSTS.md](docs/HOSTS.md) | Where agent hosts differ, read only when needed |
 | [docs/PULL-REQUESTS.md](docs/PULL-REQUESTS.md) | What a pull request contains and how its review ends |
-| [docs/HOSTS.md](docs/HOSTS.md) | Where agent hosts differ in setup, delegation, and evidence |
-| [probes/](probes/) | Fixed records and written answers for probes in `docs/VALIDATION.md` |
+| [docs/VALIDATION.md](docs/VALIDATION.md) | Probes and how a release is accepted |
 | [templates/](templates/) | Starting points for the workbench's `AGENTS.md` and private files |
+| [evals/](evals/) | Development tool for the core: measures a candidate on real repositories. A workbench never reads it |
 
 ## Set up a workbench
 
@@ -26,82 +26,54 @@ You need Git, a login that can clone the repositories you will work on, and an a
 Code must be 2.1.281 or later.
 
 1. Create a folder with a short path, for example `~/wb` or `C:/wb`, outside any Git repository and
-   below no folder with its own agent instructions. On Windows, a short path also keeps deep build
-   trees within path limits.
+   below no folder with its own agent instructions.
 2. Place this repository at `core/` at a pinned revision. With Git, from the workbench folder:
-   `git clone --branch v0.3.0 https://github.com/adpablos/agent-workbench.git core` (without
-   `core`, the folder takes the repository's name), note the revision that
-   `git -C core rev-parse HEAD` prints, and disable pushing from the workbench:
+   `git clone --branch v0.3.0 https://github.com/adpablos/agent-workbench.git core`, note the
+   revision that `git -C core rev-parse HEAD` prints, and disable pushing from the workbench:
    `git -C core remote set-url --push origin DISABLED`. If your organization restricts imports, use
    its approved route.
 3. Open the workbench folder in your agent host, accept its prompt to trust the folder if it shows
-   one, and ask the agent: "Set up this workbench by following `core/README.md`." It reads
-   `core/OPERATING.md` and performs the remaining steps with you; you can also perform them by
-   hand.
-4. Copy `core/templates/workbench-entrypoint.md` to `AGENTS.md` at the workbench root. This is the
-   workbench's entrypoint: the host loads it, and it points every agent to the rules. Add no other
-   instruction file at the root. Create `private/`, copy `POLICY.md`, `workspace.json`, and
-   `INDEX.md` into it, and create `private/tasks/` and `work/`. If you may use Claude Code here,
-   also create `.claude/settings.json` as
-   [docs/HOSTS.md](docs/HOSTS.md#claude-code-references-inside-the-workbench) describes. Create
-   only what is missing; never overwrite an existing file.
-5. Complete `private/POLICY.md` (review pairing, approved models, local preferences),
-   `private/workspace.json` (approved sources, writable paths, pins), and one task record per
-   initial priority, linked from `private/INDEX.md`. Read what the environment shows without
-   changing it, such as tool versions. Ask the requester only for the rest, in one short list that
-   includes the name or role to record as approver, and use any answers they have already
-   prepared. Do not ask again for what `OPERATING.md` covers.
+   one, and ask the agent: "Set up this workbench by following `core/README.md`." It performs the
+   remaining steps with you; you can also perform them by hand.
+4. Copy `core/templates/workbench-entrypoint.md` to `AGENTS.md` at the workbench root. The host
+   loads it, and it points every agent to the rules. Add no other instruction file at the root.
+   Create `private/` with `POLICY.md`, `workspace.json`, and `INDEX.md` from `core/templates/`, and
+   create `private/tasks/` and `work/`. Create only what is missing; never overwrite a file.
+5. Complete `private/POLICY.md` (review pairing, approved models, preferences) and
+   `private/workspace.json` (approved sources, writable paths, pins). Read what the environment
+   shows without changing it, such as tool versions. Ask the requester only for the rest, in one
+   short list that includes the name or role to record as approver.
 6. Show the exact content of `POLICY.md` and `workspace.json`. They take effect only after the
    requester approves that content; then record the approval date and approver in each.
-7. Run the preflight probes in [docs/VALIDATION.md](docs/VALIDATION.md) that decide your next step,
-   on each host you use. The first one, in a new chat, shows whether `AGENTS.md` is loaded.
+7. In a new chat, run the probe in [docs/VALIDATION.md](docs/VALIDATION.md) that shows whether the
+   entrypoint is loaded and followed.
 
 ```text
 wb/                      # not a Git repository
   AGENTS.md              # entrypoint, from core/templates/workbench-entrypoint.md
-  .claude/settings.json  # Claude Code only, see docs/HOSTS.md
   core/                  # this repository, pinned
   private/
     POLICY.md            # approved rules and preferences
+    workspace.json       # approved sources, writable paths, and pins
+    tasks/               # status notes for work that spans sessions
+    INDEX.md             # priorities and links, read when resuming
     <topic>.md           # optional, policy topics that POLICY.md triggers
-    approvals.md         # optional, the approval log, linked from POLICY.md
-    workspace.json       # approved scope and pins
-    INDEX.md             # links to priorities, tasks, decisions, and sources
-    tasks/               # one record per recoverable task
     knowledge/           # optional, facts several tasks reuse, from core/templates/knowledge.md
-    dossiers/            # optional, from an adopted mapping tool
-  repos/                 # read-only reference clones, as <project>/<repo>
-  tools/                 # pinned checkouts of tools you run
-  work/                  # isolated writable copies, per task
+  work/                  # your writable clones, one folder per task
 ```
 
-Existing reference repositories may stay where they are. Clone new ones into `repos/` only when a
-task needs them, mirroring the remote: a service map, not the folder layout, records how they
-relate. If a tool writes to the repositories it finds, point it at `work/<task>/`, never at a
-reference. Use `repos/` and `tools/` only once the subfolder probe in
-[docs/VALIDATION.md](docs/VALIDATION.md) passes; until then, keep both folders outside the
-workbench root. Keep `private/` and `work/` out of this repository; a `.gitignore` is not a
-substitute for that separation.
+Reference repositories and tool checkouts stay outside the workbench folder, wherever they already
+are, and `private/workspace.json` lists them. Hosts load instruction files and skills from
+subfolders of the folder they open, so a reference inside it would add its instructions to every
+session that reads one of its files; the subfolder probe in
+[docs/VALIDATION.md](docs/VALIDATION.md) shows it. Keep `private/` and `work/` out of this
+repository; a `.gitignore` is not a substitute for that separation.
 
 ### Add a repository
 
-From the workbench folder, clone a read-only reference into `repos/`, and add it to the sources in
-`private/workspace.json` with the requester's approval:
-
-```bash
-git clone <repository URL> repos/<project>/<repo>
-git -C repos/<project>/<repo> remote set-url --push origin DISABLED
-```
-
-For each task that changes it, clone a writable copy from the same URL into `work/`. Its `origin`
-stays the remote, so it can publish a branch once that is authorized:
-
-```bash
-git clone <repository URL> work/<task>/<repo>
-```
-
-Record the copy under Resources in the task record, and settle it when the task closes, as
-`OPERATING.md` (Copies and references) says.
+Add the repository to the sources in `private/workspace.json` with the requester's approval. A
+task that changes it clones its own copy, `git clone <repository URL> work/<task>/<repo>`, whose
+`origin` stays the remote.
 
 ## Update the core
 
@@ -109,71 +81,24 @@ Ask the agent: "Update the core by following `core/README.md`." From the workben
 
 1. Runs `git -C core fetch --tags` and takes, by its full SHA, the revision in the project's
    `core-version` setting, otherwise the latest release tag, otherwise the tip of the remote default
-   branch, as the candidate. `main` means `origin/main`, never a local branch. If two projects
-   require different versions, it reports the conflict: each workbench has one core, so use one
-   workbench per version.
-2. Checks the candidate out apart from the active core:
-   `git -C core worktree add --detach ../work/core-update <SHA>`.
-3. Validates it there: changelog entries and changed files since the revision pinned in
-   `private/workspace.json`, the core paths that the entrypoint and private files rely on, and new
-   template fields or probes. It shows you the SHA, the changes, and the result, and waits.
-4. After your approval, activates exactly that commit with `git -C core checkout --detach <SHA>`,
-   which also works for a tag older than the active core, and confirms that
+   branch, as the candidate. `main` means `origin/main`, never a local branch.
+2. Shows you the SHA and the changelog entries since the revision pinned in
+   `private/workspace.json`, including any step the entrypoint or the private files need, and
+   waits.
+3. After your approval, runs `git -C core checkout --detach <SHA>` and confirms that
    `git -C core rev-parse HEAD` prints that SHA; `git pull` could add commits you did not see. It
-   records the SHA, and its release tag if it has one, in `private/workspace.json` with the previous
-   revision as the rollback point, and removes the candidate with
-   `git -C core worktree remove ../work/core-update`.
-5. Reruns the preflight probes that the changes affect, and reports. If the core itself breaks,
-   because a core path that the entrypoint or the private files rely on is gone, it moves the core
-   back to the previous revision and restores that revision, with its release tag if it has one, as
-   the pin in `private/workspace.json`. If a probe fails because of the host, moving back would not
-   fix the host and would only weaken the probe: it keeps the update and stops relying on what that
-   probe established, for example by moving reference clones and tool checkouts outside the opened
-   root while the subfolder probe fails.
+   records the SHA, and its release tag if it has one, in `private/workspace.json`, with the
+   previous revision as the rollback point, and applies the steps the changelog lists.
+4. If a path that the entrypoint or the private files rely on is gone, it moves the core back to
+   the previous revision and restores the pin.
 
-A different candidate needs its own validation and approval. Prefer this procedure to editing the
-pin by hand.
-
-`main` stays usable, so a project can follow it before a release exists. People on the same project
-may then sit on different commits; a release tag in `core-version` keeps them identical.
-
-## Change the defaults
-
-The core ships with defaults you can change with one line: report format, changelog, versioning,
-review, and more. [docs/DEFAULTS.md](docs/DEFAULTS.md) lists them, says when each applies, and
-describes the small safety floor that takes a recorded decision to change. Ask the agent to "show
-the settings" to see what applies now.
+A release tag in `core-version` keeps everyone on a project on the same commit.
 
 ## Work with others
 
 Each person keeps their own workbench; `private/` is never shared. Shared rules live in the
 project's repository, as settings in its agent instructions, and shared work lives in that
 repository and its pull requests. The repository must make sense without a workbench.
-
-## Where information lives
-
-| Information | Owner |
-|---|---|
-| Common behavior and role contracts | `core/OPERATING.md` |
-| Defaults, settings, and the safety floor | `core/docs/DEFAULTS.md` |
-| Settings that change what a project delivers | That project's agent instructions |
-| Approved personal rules and preferences | `private/POLICY.md` and the topic files it triggers |
-| Approval history of the policy | `private/POLICY.md`, or one file it links |
-| Permitted scope, entrypoints, and pins | `private/workspace.json` |
-| Priorities and links to tasks, decisions, and sources | `private/INDEX.md` |
-| Coordination decisions, authorization, results, and next action | One record per task in `private/tasks/` |
-| Facts that several tasks reuse, as evidence | Optional `private/knowledge/` |
-| Capability observations and acceptance evidence | Task records for the validation runs |
-| Detailed service maps from an adopted mapping tool | Its dossiers, referenced rather than copied |
-| Product conventions and business state | Existing repositories and official systems |
-| Whether an agent is running now | Current host evidence; a saved status is a dated observation |
-
-## Optional integrations
-
-[Toil](https://github.com/imagile-dev/toil) can provide service maps (dossiers), work-item
-normalization, and briefings through its CLI. If you adopt it, keep a pinned checkout in `tools/`,
-check its runtime requirement and your software approval first, and declare its local side
-effects. Its UI is not required.
 
 ## Contributing to the core
 
@@ -183,14 +108,15 @@ discuss a larger change, or fork the repository and open a pull request against 
 you answer any findings.
 
 - Keep everything generic and in English, with synthetic examples only: no organization names,
-  internal addresses or paths, account identifiers, conversations, or operational records.
-- Keep `OPERATING.md` short, about 2,500 words at most; move detail into documents read on demand.
+  internal addresses or paths, account identifiers, conversations, or operational records. The
+  core is installed where nothing else is: no rule or example may rely on its author's setup.
+- Keep `OPERATING.md` to 600 words at most, and it and the entrypoint together to 700; the `docs`
+  check enforces both. Move detail into documents read on demand.
 - This repository has no `AGENTS.md` or `CLAUDE.md` on purpose: inside a workbench, a nested
   instruction file could be discovered as runtime instructions. For the same reason, the
   entrypoint template is named `workbench-entrypoint.md`. Contributor guidance lives here.
 - Changes reach `main` only through pull requests, and each one leaves `main` usable. A reviewer
-  from another model family reviews the exact head, as in the Review section of `OPERATING.md`,
-  with at most two correction rounds.
+  from another model family reviews the exact head, with at most two correction rounds.
 - Note each user-visible change under Unreleased in [CHANGELOG.md](CHANGELOG.md).
 - Add an executable only for a demonstrated, repeated need, using built-in modules, portable
   paths, and tests of real failure modes on each platform it supports.
@@ -199,7 +125,7 @@ you answer any findings.
 
 ## Acknowledgements
 
-The separation of coordination, execution, and review draws on concepts from
+Earlier versions separated coordination, execution, and review following concepts from
 [Director Pattern](https://github.com/bladnman/director_pattern). No code is copied.
 
 ## License

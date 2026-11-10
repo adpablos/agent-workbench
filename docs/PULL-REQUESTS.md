@@ -35,9 +35,10 @@ title and body with the complete diff and remove anything that no longer holds.
 - When the next step needs an approval you do not have, prepare the exact request, with action,
   target, and head, instead of reporting the step you reached as the result.
 - By default, the requester approves the exact branch, title, and body before anything is published.
-  For one task and one named repository, the requester may instead record in the task record
-  (Publication) that the agent pushes the reviewed branch and opens its pull request with text the
-  agent writes, following Description.
+  For one task and one named repository, the requester may instead authorize the agent to push
+  the reviewed branch and open its pull request with text the agent writes, following Description.
+  Record that authorization, with its date and approver, in the task's status note, or in
+  `private/POLICY.md` when it is a standing rule.
 - That authorization covers only a head that passed the repository's local checks and independent
   review, pushed to a branch other than the default one, and that pull request's title and body. It
   never covers merging, releasing, tagging, a force push, another repository, broader host
@@ -79,7 +80,7 @@ timeout, silence, passing checks, or approval of an earlier head.
 - Fix the neighbourhood, not only the reported line: read the whole file and its siblings, and
   search for the same claim elsewhere. Re-read whatever refers to what you changed.
 - Put all in-scope fixes in one commit and one push, then ask for the next round. Under a
-  Publication authorization, a fixed head is not yet reviewed: commit it, have the next round
+  publishing authorization, a fixed head is not yet reviewed: commit it, have the next round
   review it before pushing, and push only a head that passed.
 - To reject a finding, record concrete evidence in the pull request, where others can check it.
 - If a fix needs work outside the scope, stop: it normally belongs in another pull request.
@@ -87,20 +88,13 @@ timeout, silence, passing checks, or approval of an earlier head.
 
 ## Rounds after the first
 
-The first review is complete and independent, with every finding at once. After it, the `re-review`
-setting decides what a round covers. Under the default, `delta`:
-
-- The reviewer gets the earlier findings and the diff since the reviewed commit, and checks only
-  that the findings are resolved and that the fix broke nothing. Where the host allows it, resume
-  the same reviewer session with the model set explicitly.
-- Anything new outside that diff does not block, unless it is P0, P1, or a real security risk. It
-  goes to a follow-up list or another pull request. An earlier finding stays open until it is fixed
-  or rejected with evidence, wherever it is.
-- `review-rounds` still applies: if the rounds run out, stop, and people decide.
-
-A delta round can miss what a new look at everything would find. Save a full review from scratch for
-risk and milestones: signing or security changes, before a release, and before a repository goes
-public. What it finds is new work, not a failure of the earlier review.
+The first review is complete and independent, with every finding at once. After it, `re-review`
+decides what a round covers. Under the default, `delta`, the reviewer gets the earlier findings and
+the diff since the reviewed commit, and checks that the findings are resolved and the fix broke
+nothing; where the host allows it, resume the same reviewer session with the model set explicitly.
+Anything new outside that diff goes to a follow-up unless it is P0, P1, or a real security risk. An
+earlier finding stays open until it is fixed or rejected with evidence. Save a full review from
+scratch for risk and milestones: security changes, a release, and before a repository goes public.
 
 ## When the base moves
 
@@ -112,21 +106,18 @@ integration on the new head.
 ## After merge
 
 A merge leaves branches, worktrees, and copies behind. Keeping them can be right, but only as a
-recorded decision:
+stated decision:
 
-- List them in the task record (Resources): repository, local and remote refs with their expected
-  tips, and worktree paths. Present the exact cleanup plan together with the merge approval request.
-  Approval to merge never authorizes cleanup, which is a destructive operation.
-- Before removing anything, verify that the pull request merged into its target, and that the
-  branch tip is the head it merged. After a squash or rebase merge an ancestry check fails; that is
-  never a reason to force a deletion. Check also for uncommitted or untracked files, stashes, other
-  worktrees, and active writers. A clean status can still hide work: ignored files, files the index
-  marks as unchanged or skip-worktree, edits that a clean filter or another content conversion hides
-  from status and diff, and commits that only that worktree's own refs or reflogs reach. Prefer a
-  tested tool for these checks where the project has one, and keep the copy when you cannot show
-  that nothing would be lost. Stop and report any surprise.
-- Never force, reset, or clean. Keep the persistent clone, user work, rollback refs, and tool pins.
-- Record each removal and each retention with its reason before closing the task.
+- List them, with local and remote refs, their expected tips, and worktree paths, and present the
+  exact cleanup plan with the merge approval request. Approval to merge never authorizes cleanup,
+  which is destructive.
+- Before removing anything, verify that the pull request merged and that the branch tip is the head
+  it merged; after a squash or rebase merge an ancestry check fails, which is never a reason to
+  force a deletion. Check for uncommitted, untracked, or ignored files, stashes, other worktrees,
+  active writers, files the index marks as unchanged or skip-worktree, edits a content filter hides,
+  and commits only that worktree's own refs or reflogs reach. Keep the copy when you cannot show
+  that nothing would be lost, and report any surprise.
+- Never force, reset, or clean. Report each removal and each retention with its reason.
 
 ## Mixed authorship
 

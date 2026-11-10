@@ -1,19 +1,16 @@
 # Hosts
 
-Where agent hosts differ in ways that change what you do. Everything else in this repository is
-host-neutral. Read this when setting up a workbench, when a probe fails, or the first time you
-delegate on a host.
+Where agent hosts differ in ways that change what you do. Read this only when setting up a
+workbench, when a probe fails, or when you cannot tell how the host behaves.
 
-Each section says what was observed and where, or that it comes from documentation. None of it is a
-guarantee: the probes in [VALIDATION.md](VALIDATION.md) decide what is true in your environment.
-
-One workbench can serve several hosts: they share `AGENTS.md`, and each ignores the other's
-settings. Alternating hosts on the same work is a change of Director, so use the ownership
-transfer in [OPERATING.md](../OPERATING.md).
+Each line says what was observed and on which version, or that it comes from documentation. None
+of it is a guarantee: the probes in [VALIDATION.md](VALIDATION.md) decide what is true in your
+environment. One workbench can serve several hosts: they share `AGENTS.md`, and each ignores the
+other's settings.
 
 ## Instruction loading
 
-Observed on macOS from the command line, without the interactive interface, at default settings.
+Observed on macOS from the command line, at default settings.
 
 | Situation | Claude Code 2.1.305 | Codex 0.160.0 |
 |---|---|---|
@@ -21,311 +18,151 @@ Observed on macOS from the command line, without the interactive interface, at d
 | Hidden by | A `CLAUDE.md`, `.claude/CLAUDE.md`, or `CLAUDE.local.md` in that folder, or a `CLAUDE.md` in a folder above it. `~/.claude/CLAUDE.md` did not hide it | Not observed |
 | Folder that is not a Git repository | Works | Asks to trust the folder; `codex exec` needs `--skip-git-repo-check` |
 | Session started in a repository | Loads that repository's file and the workbench `AGENTS.md`, unless the repository has a `CLAUDE.md`, which hides both `AGENTS.md` files | Loads only that repository's file |
-| Session started in a subfolder without `.git` | Loads the workbench `AGENTS.md` | Loads nothing |
 | Agent reads a file in a subfolder | Loads that subfolder's instructions on demand, also in subagents | Loads nothing |
 | Names to probe | `CLAUDE.md`, `CLAUDE.local.md`, `.claude/CLAUDE.md`, `.claude/rules/*.md`, `AGENTS.md` | `AGENTS.override.md`, `AGENTS.md`, any `project_doc_fallback_filenames` |
 
-Skills and agents can also come from subfolders, and the subfolder probe covers them. Claude Code
-documents `.claude/skills/`, `.claude/agents/`, and `.claude/commands/`, and Codex
-`.agents/skills/`; Copilot is covered in its own section. Probe every folder the installed version
-documents, since the lists grow. Observed with Claude Code 2.1.316 and Codex 0.166.0, after the
-agent read a file in `repos/probe/` or `tools/probe/`:
-
-- Claude Code loaded the skills in that folder's `.claude/skills/` on demand, even with the
-  `claudeMdExcludes` setting below. The transcript showed a `commands_changed` entry, and the agent
-  listed them. It loaded no agent or command from there.
-- Codex loaded nothing.
-
-Setting `instructionFiles` to `claude-md-and-agents-md` in user settings makes Claude Code load
-both `CLAUDE.md` and `AGENTS.md`. Do not rely on it: it belongs to one person, so two people would
-load different instructions. Keep one instruction file per folder instead.
+Skills and agents can also come from subfolders. Claude Code documents `.claude/skills/`,
+`.claude/agents/`, and `.claude/commands/`, and Codex `.agents/skills/`; Copilot is covered below.
+Probe every folder the installed version documents, since the lists grow. After the agent read a
+file in a subfolder, Claude Code 2.1.316 loaded that folder's skills on demand, even with
+`claudeMdExcludes` set for it; Codex 0.166.0 loaded nothing. This is why reference repositories and
+tools stay outside the workbench folder; read them by their path. `--add-dir` is not neutral
+access: Claude Code's documentation says it loads skills, commands, and agents from the added
+folder. Repositories you change are cloned into `work/` on
+purpose: their instructions bind that work. Because Codex does not load them on demand, name them
+when you hand work to a Codex session.
 
 To confirm a load on Claude Code, search the session transcript for the probe word, not for one
-kind of entry. On 2.1.305, `CLAUDE.md` forms appeared as `nested_memory` entries and `AGENTS.md`
-as `hook_additional_context`. On 2.1.316, `AGENTS.md` appeared as an `instructions` attachment.
+kind of entry: on 2.1.316, `AGENTS.md` appeared as an `instructions` attachment.
 
-Each session also takes what the user configured for every session. On Claude Code 2.1.316,
-`claude -p "/context"` lists, without a model call, the tokens that memory files such as
-`~/.claude/CLAUDE.md`, skills, and MCP tools add to every call: about 12,000 beyond the built-in
-ones in one user's setup. `--setting-sources project,local` left out that `CLAUDE.md`, the user's
-skills, and the MCP servers. Codex lists its MCP servers with `codex mcp list`.
+Every session also takes the user's own instruction files, skills, and tool servers. On Claude
+Code 2.1.316, `claude -p "/context"` lists their tokens without a model call. Turn off for workbench
+sessions what the work does not need, where the host allows it.
 
-### Claude Code: references inside the workbench
+## Delegation and review
 
-Because Claude Code loads subfolder instructions on demand, a reference repository's instructions
-reach the Director as soon as it reads one of that repository's files. Without further settings
-the subfolder probe fails. Excluding `repos/` and `tools/` in `.claude/settings.json` at the
-workbench root stops their instruction files, but on 2.1.316 not their skills, so the probe still
-fails: keep both folders outside the workbench root. Keep the setting anyway, as a guard for any
-reference that ends up inside. Moving the folders does not remove skills a session already
-loaded: after the move, continue in a new session through an ownership transfer, and confirm the
-chosen access to the moved references before resuming work. Use the workbench's real absolute path:
+Delegating pays off only for independent work that can run in parallel, or for a bounded read that
+returns a short answer; on coupled work, every delegate reads the repository and the contract again
+and costs more than doing the work in one session. A review session is the usual exception, as
+`OPERATING.md` (Review) describes. A subagent inherits the root instructions on both hosts below,
+so its request must say that it is a reviewer or a delegate and what it may change.
 
-```json
-{
-  "claudeMdExcludes": ["/path/to/wb/repos/**", "/path/to/wb/tools/**"]
-}
-```
-
-If that file already exists, add the key and keep the rest. If it does not, this creates it on
-macOS or Linux, from the workbench folder:
-
-```bash
-mkdir -p .claude
-[ -e .claude/settings.json ] || printf '{\n  "claudeMdExcludes": ["%s/repos/**", "%s/tools/**"]\n}\n' "$(pwd -P)" "$(pwd -P)" > .claude/settings.json
-```
-
-Then run the probe again on each new version. Claude Code asks before an agent writes
-into `.claude/`: approve that step or run the commands yourself.
-
-Keep the path absolute. A relative pattern such as `**/repos/**` also matches the root `AGENTS.md`
-when the workbench path contains a `repos` folder, and the entrypoint disappears without warning.
-Use only letters, digits, `-`, `_`, `.`, and `/` in the workbench path, plus a drive prefix on
-Windows, as in `C:/wb/repos/**`: other characters can break the JSON or the pattern.
-
-`work/` stays out of this setting on purpose: the instructions of a repository you are changing
-bind that work. Because Codex does not load them on demand, name them in every assignment.
-
-The alternative is to keep `repos/` and `tools/` outside the workbench and grant access with
-`--add-dir`. Claude Code then loads no `CLAUDE.md` files from them, unless
-`CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD` is set. Its documentation says that `--add-dir`
-still loads skills, commands, and agents from an added folder, as in Copilot CLI, so this is not
-neutral access either. Prefer reading a reference outside the root by its path, and probe whichever
-access you use before relying on it.
-
-## Compaction
-
-Observed on macOS from the command line, Claude Code 2.1.316 and Codex 0.166.0.
+Observed with Claude Code 2.1.305 and Codex 0.160.0.
 
 | Need | Claude Code | Codex |
 |---|---|---|
-| Compact on request without the interactive interface | `claude -p "/compact" --resume <id>` | Not available: `/compact` through `codex exec resume` was taken as text and the run did not finish in 10 minutes |
-| Signal in the record | A `system` entry with `subtype: compact_boundary`, followed by a user message with `isCompactSummary: true` | A top-level `compacted` line in the rollout; nothing in `--json` output |
-| Files after compaction | Some recently read files return whole, as `file` attachments; others only as `compact_file_reference` | Not observed: the agent read the files again |
-
-To make Codex compact in a probe, lower `model_auto_compact_token_limit` with `-c`. A value low
-enough to trigger it compacted nine times in one turn, so restore the default afterwards.
-
-## Delegation
-
-Observed with the same versions and settings.
-
-| Need | Claude Code 2.1.305 | Codex 0.160.0 |
-|---|---|---|
 | Subagent | Agent tool, with a selectable model | Multi-agent feature, on by default, with a selectable model |
-| Inherited instructions | The root instructions | The root instructions, when it runs in the root |
-| Continue a session from another process | `claude -p --resume <id>` | `codex exec resume <id> -m <model>` |
-| List sessions | `claude agents` | `codex agents` |
+| Continue a session from another process | `claude -p --resume <id>` | `codex exec resume <id> -m <model>`; without `-m` it returned to the default model |
 | Review a commit from a shell | `claude -p` with a review prompt | `codex exec review --commit <SHA> -m <model>`, which takes no prompt, or `codex exec -s read-only -m <model>` with one |
-
-Without `-m`, `codex exec resume` returned to the configured default model. Claude Code kept the
-session's model.
-
-On Claude Code 2.1.316, neither `claude agents` nor the host's agent listing showed sessions
-started with `claude -p` between their turns. A new Director still reached such a session: it found
-the transcript under `~/.claude/projects/`, read it, and sent one message with
-`claude -p --resume <id>`.
 
 In the `workspace-write` sandbox, with no added writable roots or network access, `codex exec
 resume` failed with `Operation not permitted`, and `claude -p` reported that it was not logged in.
-If your probe shows the same, run those commands yourself outside the sandbox and give the Director
-the result.
+If yours does the same, run those commands yourself outside the sandbox and give the session the
+result.
 
-A subagent's inherited instructions include the Director's. It stays a delegate only because its
-assignment says so, as [OPERATING.md](../OPERATING.md) requires.
+When the session cannot start a reviewer with the paired model at all, it commits and hands you the
+review request, the SHA, and your own words for the outcome, to give to a session with that model.
+Until the result is back, it reports the change as not reviewed.
 
-## Model evidence
+Which model ran a session or a review, *reported* by the host:
 
-Observed with the same versions.
-
-| Source | Where to read it | Label |
-|---|---|---|
-| Claude Code session | `message.model` on the turn's messages, in the transcript under `~/.claude/projects/` | *reported* |
-| Claude Code subagent | `subagents/agent-*.jsonl` in the session's folder | *reported* |
-| Codex session | `turn_context.model`, per turn, in the `rollout-*.jsonl` under `~/.codex/sessions/` | *reported* |
-| Codex subagent | Its own rollout, with `parent_thread_id` | *reported* |
-| Review bot on a pull request | What the integration documents or pins for that run. An account name alone proves nothing | *configured*, otherwise pending |
+| Source | Where to read it |
+|---|---|
+| Claude Code session or subagent | `message.model` in the transcript under `~/.claude/projects/`; subagents in `subagents/agent-*.jsonl` |
+| Codex session or subagent | `turn_context.model`, per turn, in the `rollout-*.jsonl` under `~/.codex/sessions/` |
+| Copilot CLI | Each `assistant.message` in the session record names its model |
+| Review bot on a pull request | Only what the integration documents or pins for that run: *configured*. An account name alone proves nothing |
 
 ## GitHub Copilot
 
-The first two subsections record what Copilot CLI showed. The rest comes from documentation read on
-2026-11-02, not exercised: the VS Code pages are dated 2026-10-28, and GitHub's Copilot CLI pages
-carry no date. They are newer than VS Code 1.137.0, so older versions may lack some settings,
-harnesses, or commands. A line that gives its own dates overrides these. Installed behavior takes
-precedence: run the probes before relying on a line, then replace it with what you observed and the
-version.
-
 VS Code runs each session in a harness: Local, Copilot, Claude, or Codex. A Copilot CLI session in
 VS Code uses the Copilot harness, which shares its runtime with Copilot CLI. Instruction loading,
-delegation, and permissions depend on the harness, so probe each harness you use as Director as a
-separate host.
+delegation, and permissions depend on the harness, so probe each harness you use as a separate
+host.
 
-### Copilot CLI: running the probes
+### Copilot CLI: observed
 
-Observed on macOS with Copilot CLI 1.0.84 installed from npm, without the interactive interface, at
-default settings, in a workbench folder that is not a Git repository. Version 1.0.105 gave the same
-results.
+On macOS with Copilot CLI 1.0.84 installed from npm, without the interactive interface, at default
+settings; 1.0.105 gave the same results.
 
-- Pin the version. A CLI installed from npm at 1.0.84 ran 1.0.105 from its package cache, and the
-  choice is made at every launch. Run `export COPILOT_AUTO_UPDATE=false` in the shell before the
-  first command of a probe, or pass `--no-auto-update` to every command, including the listings
-  and compaction below. `copilotVersion` in the `session.start` event of the session record shows
-  the version of the first launch only.
-- Run each step as
-  `copilot -p "<prompt>" --deny-tool shell --deny-tool write --output-format json` from the
-  workbench folder, and continue the same session with `--resume=<sessionId>`; the final `result`
-  line gives the ID. `copilot -p "/compact" --resume=<sessionId>` compacts on request.
-- The JSON stream shows each tool call in order as `tool.execution_start`, and
-  `tool.execution_complete` holds what the tool returned, so it shows whether a read was whole. The
-  session record, `~/.copilot/session-state/<sessionId>/events.jsonl`, also holds what the stream
-  leaves out: compaction, as `session.compaction_start` and `session.compaction_complete` with
-  `trigger: manual`, and on-demand instruction loads.
-- `copilot instruction list` and `copilot skill list` show what a session loads at start, not what
-  it loads later.
-- The root `AGENTS.md` loaded. The read probe passed: the agent read `core/OPERATING.md` and
-  `private/POLICY.md` in full with its `view` tool before the task's first operation, read neither
-  for the second request, and read both again after compaction, before the third.
-- The subfolder probe failed. After the agent viewed a file in `repos/probe/` or `tools/probe/`, the
-  CLI loaded that folder's `AGENTS.md`, `CLAUDE.md`, `.claude/CLAUDE.md`, `GEMINI.md`,
-  `.github/copilot-instructions.md`, and `.github/instructions/*.instructions.md`, also with only
-  `AGENTS.md` there. Each load appears in the session record as a `system.notification` whose
-  `kind.type` is `instruction_discovered`, with `sourcePath` and `triggerFile`. No skill from
-  `.github/skills/`, `.claude/skills/`, `.agents/skills/`, or `.copilot/skills/` and no agent from
-  `.github/agents/` or `.claude/agents/` appeared in the agent's list or the session record.
-- A folder outside the opened root loaded no `AGENTS.md`, on 1.0.84; this was not run on
-  1.0.105. In a workbench where viewing `repos/ctrl/notes.md` loaded `repos/ctrl/AGENTS.md`,
-  viewing `notes.md` in a sibling folder of the workbench with its own `AGENTS.md`, reached with
-  `--add-dir <folder>` in one run and `--allow-all-paths` in another, gave no
-  `instruction_discovered` event and no probe word. Not tested in that folder: other instruction
-  file names, `.github/skills/`, and `.github/agents/`.
-- With the default `auto` model, turns of one session ran on different models. Each
-  `assistant.message` names its model: *reported*. Pass `--model` when a probe needs one model.
-
-### Copilot CLI: usage
-
-Observed with Copilot CLI 1.0.84 on macOS and the Free plan, which offered only `auto`; it chose
-GPT-6 Luna for every workbench request. GitHub's billing pages were read on 2026-11-05.
-
-- Copilot bills AI credits, by model and by input, cached, cache-write, and output tokens. The
-  session record's `totalNanoAiu` divided by 10^9 gives a session's credits at list price: computed
-  again from its token counts and the published rates of two models, it matched exactly.
-  `totalPremiumRequests` accumulates the premium-request cost of legacy plans, each prompt weighted
-  by its model's multiplier; in these runs it rose by one per prompt whatever the number of model
-  calls. Neither shows the remaining allowance, an organization's pool or budget, or discounts.
-- Read usage without a model call: the summary that `copilot -p` prints at exit with text output,
-  `--usage-output-file <file>`, `session.shutdown` in the session record, or per model call the
-  spans written with `COPILOT_OTEL_FILE_EXPORTER_PATH=<file>`. `copilot -p "/usage"` is sent to the
-  model as a prompt and costs a turn.
-- `copilot help limits` says that `--max-ai-credits <credits>`, at least 30, caps a session, and
-  that a response can pass the cap before the CLI sees it.
-- Each new session paid in full for about 12,000 tokens of system prompt, tool definitions, and
-  `AGENTS.md`, written to the prompt cache. A second session in the same folder a minute later did
-  not reuse them. Later calls read the earlier context from the cache at a fraction of the input
-  price, so most of a call's cost came from what it added and from its output: in one first
-  request, the first call cost 0.16 credits and the next eight 0.04 to 0.08 each.
-- At reasoning effort `low` or the default, the first call of each new request wrote the previous
-  request's turns to the cache again, up to about 8,000 tokens after a first `Resume`; at `none` it
-  did not. `--reasoning-effort` with `--model auto` failed in `copilot -p` but applied over
-  `copilot --acp`.
-- The skills in `~/.agents/skills/` were offered in every session, and an agent used one to answer
-  a workbench `Resume`. `copilot skill list` shows them as personal.
-- The built-in GitHub MCP server sent its tools with every call, about 1,100 tokens each.
-  `copilot mcp list` and `copilot skill list` show the MCP servers and skills of the user, the
-  folder, and plugins. `--disable-builtin-mcps` or `--disable-mcp-server <name>` turns a server off
-  for one launch; `copilot mcp disable <name>` and `copilot skill disable <name>` turn one off until
-  it is enabled again.
-- Loading `core/OPERATING.md` through `.github/copilot-instructions.md` as well did not spare its
-  read: in one run the agent read the file anyway, and the same three requests cost a third more.
-- `system.message` in the session record holds the instructions loaded at start, with `AGENTS.md`
-  inside `<custom_instruction>`. Records grow fast, to about 600 KB for three requests and a
-  compaction, so search them rather than opening them:
+- Pin the version: a CLI installed at 1.0.84 ran 1.0.105 from its package cache. Run
+  `export COPILOT_AUTO_UPDATE=false` before the first command, or pass `--no-auto-update` to
+  every command.
+- Run a probe as `copilot -p "<prompt>" --deny-tool shell --deny-tool write --output-format json`
+  from the workbench folder, and continue it with `--resume=<sessionId>`.
+  `copilot -p "/compact" --resume=<sessionId>` compacts on request.
+- The session record, `~/.copilot/session-state/<sessionId>/events.jsonl`, holds every tool call,
+  what it returned, compaction, and on-demand instruction loads, each as a `system.notification`
+  whose `kind.type` is `instruction_discovered`. Records grow to hundreds of kilobytes, so search
+  them:
 
 ```bash
 grep -c '<probe word>' ~/.copilot/session-state/<sessionId>/events.jsonl
 grep -o '"instruction_discovered","sourcePath":"[^"]*"' ~/.copilot/session-state/<sessionId>/events.jsonl
 ```
 
-### Copilot: instruction loading
+- The root `AGENTS.md` loaded, and the agent read `core/OPERATING.md` and `private/POLICY.md` in
+  full before the task's first operation.
+- The subfolder probe failed: after the agent viewed a file in a subfolder, the CLI loaded that
+  folder's `AGENTS.md`, `CLAUDE.md`, `.claude/CLAUDE.md`, `GEMINI.md`,
+  `.github/copilot-instructions.md`, and `.github/instructions/*.instructions.md`. No skill or agent
+  from a subfolder appeared. A folder outside the opened root, reached with `--add-dir` or
+  `--allow-all-paths`, loaded no `AGENTS.md`.
+- With the default `auto` model, turns of one session ran on different models. Pass `--model`
+  when a probe needs one model.
+- Usage: `totalNanoAiu` in the session record divided by 10^9 gives a session's AI credits at list
+  price. Read it without a model call from the summary `copilot -p` prints at exit or from
+  `session.shutdown` in the record; `copilot -p "/usage"` costs a turn. Each new session paid in
+  full for about 12,000 tokens of system prompt, tool definitions, and `AGENTS.md`.
+- The built-in GitHub MCP server added about 1,100 tokens to every call, and personal skills in
+  `~/.agents/skills/` were offered in every session; one answered a workbench request in place of
+  the contract. `copilot mcp disable <name>` and `copilot skill disable <name>` turn one off.
+- Loading `core/OPERATING.md` through `.github/copilot-instructions.md` as well did not spare its
+  read, and cost more.
+
+### Copilot: from documentation
+
+Read between 2026-11-02 and 2026-11-05, not exercised. Installed behavior takes precedence.
 
 - The Copilot harness loads `AGENTS.md`, `.github/copilot-instructions.md`, and
-  `.github/instructions/*.instructions.md`. Copilot CLI also loads `CLAUDE.md` and `GEMINI.md`, and
-  combines all of them with no stated precedence. Keep one instruction file per folder.
-- Both discover `AGENTS.md` in the folders from the repository root to the working directory, and
-  Copilot CLI also in the folders on the path of the file it works on. No documented setting
-  excludes a folder as `claudeMdExcludes` does: in Copilot CLI, `/instructions` turns single files
-  off and `--no-custom-instructions` turns all of them off. Keep `repos/` and `tools/` outside the
-  opened root: the subfolder probe failed on Copilot CLI 1.0.84, and a folder outside the root
-  loaded no `AGENTS.md`.
-- `chat.useNestedAgentsMdFiles` does not control the Copilot harness.
-- Read on 2026-11-05, not exercised: every session also takes what the user configured outside the
-  folder. The Copilot harness and Copilot CLI load `~/.copilot/copilot-instructions.md` and
-  `~/.copilot/instructions/`, skills from `~/.copilot/skills/` and `~/.agents/skills/`, agents from
-  `~/.copilot/agents/`, and MCP servers from `~/.copilot/mcp-config.json`; VS Code also reads
-  `~/.claude/skills/`. VS Code shows them under **Chat: Open Customizations** and on the MCP Servers
-  page, which turns a server off for the user, the workspace, or the session, as the server and
-  harness allow. A personal skill is turned off in its own frontmatter, or in the Local harness all
-  of them with `chat.useAgentSkills`. Copilot CLI shows them with
-  `copilot instruction list`, `copilot skill list`, and `/mcp`.
-- In Copilot CLI, `--add-dir` also loads that folder's `.github/skills` and `.github/agents` as
-  trusted configuration, so it does not give neutral access to a reference. That says nothing about
-  what loads from a subfolder of the opened root: probe `.github/skills/` and `.github/agents/`
-  there too.
-- Evidence of a load: in VS Code, the system prompt in the Chat Debug view or the discovery events
-  in Agent Debug Logs; the customizations editor shows only what was discovered. In Copilot CLI,
-  `/env` and `/instructions`, and the session record described above.
+  `.github/instructions/*.instructions.md`; Copilot CLI also `CLAUDE.md` and `GEMINI.md`, with no
+  stated precedence. Keep one instruction file per folder. No setting excludes a folder.
+- A Local harness subagent inherits the main agent's instructions and tools, unless it runs a
+  custom agent, but not the conversation, and takes no follow-up messages. A Copilot CLI subagent
+  that runs a custom agent loads instruction files only with `include-custom-instructions: true`.
+  Name the instruction paths in every request to a subagent, and say whether it may delegate.
+- A VS Code page dated 2026-11-04 says a Local harness subagent does not run when its model is in a
+  higher cost tier than the main conversation's; it reports the models it can use instead. A
+  reviewer that needs another or a stronger model gets its own session with that model selected.
+- No page describes a notice to another session when a session finishes or waits; the session
+  list shows its state, and in Copilot CLI so does `/tasks`.
 
-### Copilot: delegation and sessions
-
-- A Local subagent inherits the main agent's instructions and tools, unless it runs a custom agent,
-  but not the conversation, and it takes no follow-up messages. It cannot start subagents unless
-  `chat.subagents.allowInvocationsFromSubagents` is on.
-- A Copilot CLI subagent that runs a custom agent loads `AGENTS.md` and other instruction files
-  only with `include-custom-instructions: true`; the default is `false`. Copilot CLI allows nested
-  subagents. Name the instruction paths in every assignment, and say whether the worker may
-  delegate.
-- Read on 2026-11-05, not exercised: a VS Code page dated 2026-11-04 says that a Local harness
-  subagent does not run when its model, named in the request or in a custom agent's `model`, is in
-  a higher cost tier than the main conversation's model; it reports the models it can use instead.
-  Only Auto, through the experimental `chat.subagents.defaultToAuto`, is exempt. GitHub's Copilot
-  CLI pages state no such limit for its subagents. Until the probe of which model ran a delegated
-  task shows otherwise, give a worker or reviewer that needs a stronger model than the Director
-  its own session with that model selected.
-- No page describes a notice to another session when a session finishes or waits for a
-  confirmation. The session list shows its state; in Copilot CLI, so does `/tasks`.
-- In VS Code, Copilot harness sessions in a separate worktree run with Allow all and show no
-  confirmation prompts. There, only technical limits, such as disabled pushing or the sandbox, stop
-  an action.
-
-### Copilot: confirmations
+Confirmations:
 
 - VS Code: `chat.tools.terminal.autoApprove` takes commands or `/regular expressions/`. A `false`
-  rule wins over `true`, but it asks for approval rather than blocking. A compound command is
-  approved only when every subcommand matches, and the parser may miss subcommands. Which settings
-  scope wins is not documented. **Chat: Manage Tool Approval** reviews saved approvals and **Chat:
-  Reset Tool Confirmations** clears them.
+  rule wins over `true` but asks rather than blocks. A compound command is approved only when every
+  subcommand matches, and the parser may miss subcommands. **Chat: Manage Tool Approval** reviews
+  saved approvals.
 - Copilot CLI: `--allow-tool` and `--deny-tool` take patterns such as `shell(git status)`, and deny
-  wins, also over `--allow-all`. `shell(git:*)` also matches `git push`. Approvals for a repository
-  or folder persist in `~/.copilot/permissions-config.json`. `/permissions reset` clears the
-  session's approvals, and `/reset-allowed-tools` also clears those saved for the current location.
-- Hooks are in preview in VS Code. In Copilot CLI, a `preToolUse` hook that times out lets the call
-  through, and the documentation says hooks do not replace permissions or sandboxing: do not use
-  them as a control or to approve.
+  wins, also over `--allow-all`. `shell(git:*)` also matches `git push`. Approvals for a folder
+  persist in `~/.copilot/permissions-config.json`; `/permissions reset` clears the session's.
+- In VS Code, Copilot harness sessions in a separate worktree run with Allow all and show no
+  confirmation prompts: only technical limits, such as disabled pushing or the sandbox, stop an
+  action.
+- Hooks are in preview in VS Code, and in Copilot CLI a `preToolUse` hook that times out lets the
+  call through. Hooks are not a control and do not approve.
 
-### Copilot: model and secrets
+Model and reasoning effort:
 
-- Read on 2026-11-05, not exercised: VS Code sets reasoning effort in the model picker, beside each
-  model that supports it, for Local and Copilot harness sessions, and the picker's label shows it:
-  *configured*. A new chat starts from the last effort chosen for that model. A custom agent's
-  `reasoning-effort` sets it in the Copilot harness. The documentation names no setting for it, and
-  nothing for the Claude and Codex harnesses. Copilot CLI takes `--effort`, `effortLevel` in
-  `~/.copilot/settings.json`, whose default is `medium`, or `/model`, and an agent's
-  `reasoningEffort` sets a subagent's.
-- VS Code shows the model of a response when you hover over it: *reported*. A custom agent's
-  `model` is a preference list, so it is at most *configured*. Copilot CLI `/usage` gives per-model
-  totals for the whole session, which attribute a turn only when one model ran the session.
-- Copilot CLI redacts `GITHUB_TOKEN` and `COPILOT_GITHUB_TOKEN` from its output, and
-  `--secret-env-vars` names more variables to redact. A redacted value in a trace is not evidence
-  of what ran; do not reveal it to check.
+- VS Code sets reasoning effort in the model picker, whose label shows it: *configured*; a new
+  chat starts from the last effort chosen for that model. Hovering over a response shows its
+  model: *reported*. A custom agent's `model` is a preference list, so at most *configured*.
+- Copilot CLI sets the model with `--model` or `/model`, and the effort with `--effort` or
+  `effortLevel` in `~/.copilot/settings.json` (default `medium`); an agent's `reasoningEffort` sets
+  a subagent's. Each `assistant.message` in the session record names its model. `/usage` totals
+  per model for the whole session.
+- Copilot CLI redacts `GITHUB_TOKEN` and `COPILOT_GITHUB_TOKEN` from its output; a redacted value
+  is not evidence of what ran.
 
 ## Other hosts
 

@@ -26,9 +26,9 @@ Example: GPT implementation is reviewed by Opus, and Opus implementation by GPT.
 
 | Use | Model | Reasoning effort |
 |---|---|---|
-| Director | <model; passed the Director probe on YYYY-MM-DD> | <effort> |
-| Bounded, verifiable work | <economical model> | <effort> |
-| Ambiguous analysis and difficult review | <stronger model> | <effort> |
+| Task session | <model> | <effort> |
+| Review session | <model, following the pairing above> | <effort> |
+| Delegated bounded read, optional | <economical model> | <effort> |
 
 ## Preferences
 
@@ -41,6 +41,7 @@ Optional. Each file named here is part of this policy, read in full before its a
 the action stay above.
 
 - Before <action>, read `private/<topic>.md` in full.
+- Before opening, reviewing, or merging a pull request, read `core/docs/PULL-REQUESTS.md` in full.
 
 ## Approval log
 

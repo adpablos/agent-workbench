@@ -35,6 +35,14 @@ jobs:
             }
             if (eof) { close ARGV; $fence = 0 }
             END { exit $bad }'
+      # Every session reads the contract and the entrypoint before acting, so their length is a cost
+      # paid on every task.
+      - name: Contract within its word caps
+        run: |
+          contract=$(wc -w < OPERATING.md)
+          start=$(cat OPERATING.md templates/workbench-entrypoint.md | wc -w)
+          echo "OPERATING.md: $contract words (cap 600); with the entrypoint: $start (cap 700)"
+          [ "$contract" -le 600 ] && [ "$start" -le 700 ]
       - name: Relative links resolve
         run: |
           find . -name '*.md' -not -path './.git/*' -print0 | xargs -0 perl -CSD -ne '
