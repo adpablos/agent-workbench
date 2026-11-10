@@ -12,13 +12,14 @@ None.
 
 ## 0.4.0 - 2026-11-09
 
-- **Breaking: one session does one task, under a 504-word contract.** The Director, worker
+- **Breaking: one session does one task, under a 531-word contract.** The Director, worker
   sessions, roles, ownership transfer, and the routines built on them are gone. The session that
   does a task works with the requester directly. It acts without asking within its task and its own
-  copy, and asks first, showing the exact action, before anything outside them. It gets an
+  copy, and asks first, showing the exact action, before anything outside them, unless the
+  request names that action or the policy approves it in advance. It gets an
   independent review only for a change with several parts or real risk, and waits for it within its
   turn. It is done when what was asked is done and verified, with optional work listed under Found,
-  and keeps a short status note only when the work spans sessions. `OPERATING.md` is 504 words,
+  and keeps a short status note only when the work spans sessions. `OPERATING.md` is 531 words,
   from 2,510 in v0.3.0, and the entrypoint 150, from 284; the `docs` check caps them at 600, and
   700 together.
 
@@ -53,9 +54,10 @@ None.
     each project's clone listed in `private/workspace.json` as `"access": "read, task worktrees"`;
     clones already under `work/` keep working.
 
-  Publishing now always needs approval of the exact branch, head, title, and body: a Publication
-  authorization in a task record or the policy no longer lets an agent push its own text, and
-  `review-rounds` above 2 stops at 2, the contract's limit.
+  Publishing needs approval of the exact branch, head, title, and body by default. A request that
+  names the push or the pull request approves it, and so does a policy line approved in advance for
+  a repository, as `docs/DEFAULTS.md` (Approvals in advance) shows; neither implies merging,
+  releasing, tagging, or a force push. `review-rounds` above 2 stops at 2, the contract's limit.
 
   **Nothing to do for:** settings, which keep their values, including `review`; an `agents` line,
   which no longer applies and can go when you next edit the policy; approvals, the approval log,
@@ -68,18 +70,21 @@ None.
   of a fresh clone under `work/`, and closing a task removes its copy and branch after the After
   merge checks. A session also reads a repository's own agent instructions and skills before
   changing it, since Copilot CLI loads no skill from a subfolder. The README and
-  `templates/POLICY.md` carry this; the contract and the entrypoint did not change.
+  `templates/POLICY.md` carry this; the contract now says "copy" where it said "clone", and
+  `docs/PULL-REQUESTS.md` (After merge) removes a task's own copy and branch on the requester's
+  word that its change is merged or dropped.
 - `evals/` measures the core's way of working on real repositories: a service and the separate
   repository that configures its deployment, with tickets based on recent upstream fixes and
   hidden tests. It compares configurations of the core against a bare session and reports outcome,
   safety, continuity, cost, and friction from the host's records. A candidate core is one more
   configuration file. It is a development tool for the core: a workbench never reads it.
-  `evals/reports/2026-11-candidate.md` measures this release's contract on four scenarios, two
-  runs each, against v0.3.0 in a single session: 36% less cost (US$42.11 against US$66.12) and 4
-  complete runs against 0, with no safety violation and the approved chart change in both runs of
-  the scenario that needs one. It missed its own cost cap against a session with no core,
-  US$31.41: its main sessions cost US$28.43, and its review sessions US$13.67, one in each of the
-  eight runs.
+  `evals/reports/2026-11-candidate.md` measures M, this release's contract without its last two
+  edits, on four scenarios, two runs each, against v0.3.0 in a single session: 36% less cost
+  (US$42.11 against US$66.12) and 4 complete runs against 0, with no safety violation and the
+  approved chart change in both runs of the scenario that needs one. It missed its own cost cap
+  against a session with no core, US$31.41: its main sessions cost US$28.43, and its review
+  sessions US$13.67, one in each of the eight runs. The two edits, one sentence on actions approved
+  in advance and the word "copy" for "clone", were checked with rehearsals, not with the kit.
 - `docs/HOSTS.md` records what Copilot CLI 1.0.84 showed: pin the version at every launch, since an
   npm install ran a newer cached version; find reads, compaction, and on-demand instruction loads in
   the session record; and read usage there without a model call. The entrypoint loaded and was
@@ -99,8 +104,8 @@ None.
   `docs/DEFAULTS.md` (Integration runs) has the detail.
 - `private/POLICY.md` can stay short: a trigger, "Before <action>, read `private/<file>.md` in
   full", makes a topic file part of the policy, read in full before that action; a missing topic
-  blocks the action. The approval log may move to one linked file, and its entries record scope,
-  reason, and where the exact text was approved. Moving content out of the policy is itself a
+  blocks the action. The approval log may move to one linked file, and its entries record the
+  date, the change, and the approver. Moving content out of the policy is itself a
   policy change. Existing policies need no migration.
 - An optional `private/knowledge/`, from `templates/knowledge.md`, holds facts that several tasks
   reuse, such as a glossary, service relationships, and source locators. It is evidence, never

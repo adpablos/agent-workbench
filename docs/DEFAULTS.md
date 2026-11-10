@@ -102,10 +102,24 @@ but changes only with the core.
 - Rules that apply whatever the action, such as safeguards, approval stops, and waivers, and the
   approval status, which covers the topic files, stay in `POLICY.md`.
 - The approval log may live in one linked file, such as `private/approvals.md`, never in both
-  places. Each entry records the change, its scope, the reason, the approver, the date, and where
-  the exact text was approved. A missing entry is a missing approval: ask, never reconstruct one.
+  places. Each entry records the date, the change, and the approver. A missing entry is a missing
+  approval: ask, never reconstruct one.
 - Moving content out of `POLICY.md` is itself a policy change: the proposal says where every rule,
   approval, and waiver goes. Shortening never broadens authority or drops a control.
+
+## Approvals in advance
+
+By default, the requester approves each push and publication with its exact text, as
+`docs/PULL-REQUESTS.md` (Delivery and publication) says. A request that names the action approves
+it, and so does a policy line approved in advance, such as:
+
+```markdown
+- In `<repository>`, when the tests pass and any review the change warrants is done, push the
+  task's branch and open its pull request with your own title and body, without asking.
+```
+
+Such a line covers only what it names: here, that repository, pushing the branch, and opening the
+pull request. Merging, releasing, tagging, and a force push still need the requester's own word.
 
 ## Integration runs
 

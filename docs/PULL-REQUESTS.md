@@ -6,8 +6,7 @@ any repository that uses pull requests, unless the repository is disposable or i
 
 ## Before review
 
-- Keep one cohesive change per pull request. Before parallel work, declare the files each task will
-  touch; if they overlap, sequence the work.
+- Keep one cohesive change per pull request.
 - Re-read the complete base-to-head diff and compare it with the repository's existing patterns.
   Remove needless indirection, duplication, dead code, and tests that only restate the
   implementation or protect nothing the change relies on; keep a new file, abstraction, setting, or
@@ -29,14 +28,15 @@ title and body with the complete diff and remove anything that no longer holds.
 
 ## Delivery and publication
 
-- At assignment, name where delivery ends: for example a reviewed pull request, the requester's
-  merge, activation or release where it applies, and its verification. Checks, review, publication,
-  merge, and acceptance stay separate states; finishing one is not delivery.
+- Checks, review, publication, merge, and acceptance are separate states; the report names the one
+  reached.
 - When the next step needs an approval you do not have, prepare the exact request, with action,
   target, and head, instead of reporting the step you reached as the result.
-- The requester approves the exact branch, head, title, and body before anything is pushed or
-  published, as `OPERATING.md` (Authority) requires; that approval never covers merging, releasing,
-  tagging, or a force push. A person merges.
+- By default, the requester approves the exact branch, head, title, and body before anything is
+  pushed or published. When the request names the action, or the policy approves it in advance for
+  that repository, as `docs/DEFAULTS.md` (Approvals in advance) shows, do it and report it. Neither
+  implies merging, releasing, tagging, or a force push: each needs the requester's own word for that
+  pull request or release.
 
 ## Review request
 
@@ -60,9 +60,8 @@ evidence. Severity and materiality are separate. A style preference is at most a
 ## Verdicts
 
 A verdict counts only when the configured reviewer gives it after the request, for the current head,
-with no blocking finding open. Under `re-review: delta`, a new finding outside the diff is recorded
-as a follow-up and does not block, unless it is P0, P1, or a real security risk. A review tool that
-gives no verdict line counts as clean only through a submitted review of that head with no findings.
+with no blocking finding open. A review tool that gives no verdict line counts as clean only through
+a submitted review of that head with no findings.
 
 These are not verdicts: an acknowledgement, a reaction, a started workflow, a partial review, a
 timeout, silence, passing checks, or approval of an earlier head.
@@ -98,12 +97,9 @@ integration on the new head.
 A merge leaves branches, worktrees, and copies behind. Keeping them can be right, but only as a
 stated decision:
 
-- List them, with local and remote refs, their expected tips, and worktree paths, and present the
-  exact cleanup plan with the merge approval request. Approval to merge never authorizes cleanup,
-  which is destructive. Where the approved policy says so, as the preference in
-  `templates/POLICY.md` does, the requester's word that a task's change is merged or dropped
-  approves removing that task's own copy and branch after the checks below; anything else waits
-  for approval of the exact plan.
+- When the requester says a task's change is merged or dropped, remove that task's own copy and
+  branch after the checks below. Anything else, such as other copies, remote branches, or what the
+  task did not create, waits for approval of the exact plan, with refs, tips, and paths.
 - Before removing anything, verify that the pull request merged and that the branch tip is the head
   it merged; after a squash or rebase merge an ancestry check fails, which is never a reason to
   force a deletion. Check for uncommitted, untracked, or ignored files, stashes, other worktrees,

@@ -85,9 +85,9 @@ git -C <clone> worktree add <workbench>/work/<task>/<repo> -b <branch> origin/<d
 A worktree shares the clone's history, so it takes seconds and little space, and
 `git -C <clone> worktree list` shows every open copy. The clone's own default branch may fall
 behind; that is harmless, since copies start from `origin/<default branch>`.
-[templates/POLICY.md](templates/POLICY.md) carries these rules as preferences. Once approved, the
-requester saying that a task's change is merged or dropped approves removing that task's copy and
-branch, after the After merge checks in [docs/PULL-REQUESTS.md](docs/PULL-REQUESTS.md), so `work/`
+[templates/POLICY.md](templates/POLICY.md) carries these rules as preferences. The requester
+saying that a task's change is merged or dropped approves removing that task's copy and branch,
+after the After merge checks in [docs/PULL-REQUESTS.md](docs/PULL-REQUESTS.md), so `work/`
 holds only open tasks. A dropped change has no merge to verify, and anything the checks would lose,
 such as commits on no other branch, keeps the copy until the requester decides; nothing is forced.
 

@@ -57,6 +57,6 @@ the action stay above.
 
 Here, or in one linked file such as `approvals.md`, never both.
 
-| Date | Change | Scope | Reason | Approved by | Evidence of the approved text |
-|---|---|---|---|---|---|
-| YYYY-MM-DD | Initial policy | This workbench | Setup | <requester> | <where the exact text was approved> |
+| Date | Change | Approved by |
+|---|---|---|
+| YYYY-MM-DD | Initial policy | <requester> |
