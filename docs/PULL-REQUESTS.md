@@ -100,7 +100,10 @@ stated decision:
 
 - List them, with local and remote refs, their expected tips, and worktree paths, and present the
   exact cleanup plan with the merge approval request. Approval to merge never authorizes cleanup,
-  which is destructive.
+  which is destructive. Where the approved policy says so, as the preference in
+  `templates/POLICY.md` does, the requester's word that a task's change is merged or dropped
+  approves removing that task's own copy and branch after the checks below; anything else waits
+  for approval of the exact plan.
 - Before removing anything, verify that the pull request merged and that the branch tip is the head
   it merged; after a squash or rebase merge an ancestry check fails, which is never a reason to
   force a deletion. Check for uncommitted, untracked, or ignored files, stashes, other worktrees,
