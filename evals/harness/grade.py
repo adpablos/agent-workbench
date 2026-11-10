@@ -268,7 +268,9 @@ def words(path):
 def instructions(run, rec, sessions):
     """Words of workbench instructions: what each session starts with, and what the sessions
     read. A read counts the whole file once per read, also a partial one (approximated)."""
-    root = Path(rec["root"])
+    orig = rec.get("run_dir", str(run))
+    root = Path(rec["root"].replace(orig, str(run), 1) if rec["root"].startswith(orig + "/")
+                else rec["root"])
     if rec["layout"] == "bare":
         return {"startup_words": 0, "words_read": 0, "reads": 0}
     startup = sum(words(root / f) for f in ("AGENTS.md", "core/OPERATING.md",
