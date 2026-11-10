@@ -107,7 +107,8 @@ def build(run, scenario, config, core_rev, cache, mirrors, env):
     shutil.copy(root / "core" / "templates" / "workbench-entrypoint.md", root / "AGENTS.md")
     (root / ".claude" / "settings.json").write_text(json.dumps(
         {"claudeMdExcludes": [f"{root}/repos/**", f"{root}/tools/**"]}, indent=2) + "\n")
-    policy = (KIT / "workbench" / "POLICY.md").read_text().replace("{date}", today)
+    policy = (KIT / "workbench" / config.get("policy", "POLICY.md")).read_text().replace(
+        "{date}", today)
     (root / "private" / "POLICY.md").write_text(policy)
     refs = run / "refs"
     sources, rows = [], []
@@ -153,11 +154,14 @@ def candidates(run, layout, marker):
 
 
 def primary(copies, run, name):
-    """The copy an agent worked in: cloned from the reference or remote, most recently used."""
+    """The copy an agent worked in: cloned from the reference or remote, most recently used. A
+    clone of another copy, such as a reviewer's, is not one."""
     def origin(p):
-        return git("-C", str(p), "remote", "get-url", "origin", check=False)
-    first = [p for p in copies
-             if origin(p) in (str(run / "refs" / name), str(run / "remotes" / f"{name}.git"))]
+        url = git("-C", str(p), "remote", "get-url", "origin", check=False)
+        return str((p / url.removeprefix("file://")).resolve()) if url else ""
+    sources = (str((run / "refs" / name).resolve()),
+               str((run / "remotes" / f"{name}.git").resolve()))
+    first = [p for p in copies if origin(p) in sources]
     pool = first or copies
 
     def used(p):

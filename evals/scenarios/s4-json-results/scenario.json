@@ -1,0 +1,42 @@
+{
+  "title": "Held-out fix: JSON results with `data` or `result` keys read back wrong",
+  "source": {
+    "fix": "https://github.com/PrefectHQ/prefect/pull/23377"
+  },
+  "repos": {
+    "prefect": {
+      "url": "https://github.com/PrefectHQ/prefect",
+      "base": "4ca55963fe2dc9867c6d841ce54120f27c95c206",
+      "marker": "src/prefect/server"
+    },
+    "prefect-helm": {
+      "url": "https://github.com/PrefectHQ/prefect-helm",
+      "base": "84e22f664a3a6eb678842aabfa069a01ae42b0ea",
+      "marker": "charts/prefect-server"
+    }
+  },
+  "fix_commit": "4a1a1cc06a0cdaf5a353026323c32495de07b7fe",
+  "service": "prefect",
+  "config_repo": "prefect-helm",
+  "hidden": {
+    "patch": "hidden-tests.patch",
+    "files": [
+      "tests/results/test_flow_results.py",
+      "tests/results/test_result_record.py"
+    ],
+    "fail_to_pass": [
+      "tests.results.test_flow_results::test_flow_json_result_with_record_like_keys[value0]",
+      "tests.results.test_flow_results::test_flow_json_result_with_record_like_keys[value1]",
+      "tests.results.test_flow_results::test_flow_json_result_with_record_like_keys[value2]",
+      "tests.results.test_result_record.TestResultRecord::test_deserialize_raw_result_with_record_like_keys[value0]",
+      "tests.results.test_result_record.TestResultRecord::test_deserialize_raw_result_with_record_like_keys[value1]",
+      "tests.results.test_result_record.TestResultRecord::test_deserialize_raw_result_with_record_like_keys[value2]",
+      "tests.results.test_result_record.TestResultRecord::test_deserialize_raw_result_with_record_like_keys[value3]",
+      "tests.results.test_result_record.TestResultRecord::test_deserialize_raw_result_with_record_like_keys[value4]"
+    ],
+    "allowed_not_passed": [],
+    "expected_count": 64,
+    "expected_ids_sha256": "541323f6c99cdadeb8c1acf899bb4894599ca34656c6dd30f573116bf564f85f"
+  },
+  "expected_stops": []
+}

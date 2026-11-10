@@ -5,8 +5,15 @@ under several configurations and measures outcome, safety, continuity, cost, and
 the host's own records. [DESIGN.md](DESIGN.md) says what it measures and why; the latest results
 are in [reports/](reports/).
 
-It is a measurement kit, not part of the operating contract: nothing here changes what a
-workbench does.
+It is a development tool for the core, not part of the operating contract: a workbench never reads
+it, and nothing here changes what a workbench does.
+
+## When to use it
+
+For a spot check before a large change to the contract, such as a new way of working or a much
+shorter or longer text, with at least one scenario the change was not designed against. It is not
+a gate for every change: a run costs real money, two runs per cell decide little, and most changes
+to the documents read on demand do not move these measurements.
 
 ## Contents
 
@@ -14,7 +21,7 @@ workbench does.
 |---|---|
 | `scenarios/<name>/` | `scenario.json` (pinned repositories, fix commit, hidden test identifiers, expected stops and their replies, configuration check), `TICKET.md` in our words, and `hidden-tests.patch`, the upstream fix's test changes |
 | `configs/<name>.json` | One configuration: layout (`bare` or `workbench`), core revision, and the prompt |
-| `workbench/POLICY.md` | The approved policy for workbench runs |
+| `workbench/POLICY*.md` | The approved policy for workbench runs: `POLICY.md` for v0.3.0, `POLICY-D2.md` for M |
 | `harness/run.py` | Builds a run, runs its sessions with the scripted requester, and writes `record.json` |
 | `harness/grade.py` | Grades a run into `result.json`; `--selfcheck` checks a scenario's hidden tests |
 | `harness/report.py` | Tables per scenario and configuration, with ranges |
@@ -53,16 +60,21 @@ folder, remotes, and launcher. A run stops after four requester replies or 120 m
 
 ## Add a configuration
 
-A candidate core is a new file in `configs/`, for example `configs/D.json`:
+A candidate core is a new file in `configs/`, for example `configs/N.json`:
 
 ```json
 {
   "title": "Candidate core",
   "layout": "workbench",
   "core": "<commit or tag of this repository>",
-  "prompt": "Work on the ticket in TICKET.md."
+  "policy": "POLICY-D2.md",
+  "mode": ""
 }
 ```
+
+`mode` is text appended to the prompt "Work on the ticket in TICKET.md."; leave it empty to test
+the core's own defaults. `policy` names the file in `workbench/` that becomes `private/POLICY.md`,
+`POLICY.md` by default.
 
 `run.py` exports that revision of this repository into the workbench's `core/` with `git
 archive`, so a candidate needs a commit, not a release. `--core <rev>` overrides the revision for
