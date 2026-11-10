@@ -25,12 +25,16 @@ should receive, propose that release. Workbenches pin a release tag together wit
   3. In `private/POLICY.md`, remove the Director row of the models table and any rule about
      Directors or coordinators, roles, delegation, or session ownership: a policy that keeps them
      brings them back. Keep the review pairing and the approved models.
-  4. In each open record in `private/tasks/`, make a person its owner and drop Director and worker
-     session handles.
+  4. In each open record in `private/tasks/` and in `private/INDEX.md`, make a person the owner
+     and drop Director and worker session handles.
 
   **Adopt when convenient:**
 
   - The shorter status note in `templates/task.md`; existing records keep working as they are.
+  - The models table of `templates/POLICY.md`: task session, review session, and an optional
+    delegated bounded read.
+  - A topic trigger that names a core document, such as reading `core/docs/PULL-REQUESTS.md` before
+    opening, reviewing, or merging a pull request: the contract itself does not point to it.
   - Keep reference repositories and tool checkouts outside the workbench folder, listed in
     `private/workspace.json`, and drop `repos` from its `writable` list. The README's layout has no
     `repos/` or `tools/`, since hosts load instruction files and skills from subfolders of the

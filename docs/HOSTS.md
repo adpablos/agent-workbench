@@ -123,12 +123,42 @@ Read between 2026-11-02 and 2026-11-05, not exercised. Installed behavior takes 
 - The Copilot harness loads `AGENTS.md`, `.github/copilot-instructions.md`, and
   `.github/instructions/*.instructions.md`; Copilot CLI also `CLAUDE.md` and `GEMINI.md`, with no
   stated precedence. Keep one instruction file per folder. No setting excludes a folder.
-- A Copilot CLI subagent that runs a custom agent loads instruction files only with
-  `include-custom-instructions: true`. Name the instruction paths in every request to it.
-- Copilot CLI: `--deny-tool` wins over `--allow-tool`, and `shell(git:*)` also matches `git push`.
+- A Local harness subagent inherits the main agent's instructions and tools, not the
+  conversation, and takes no follow-up messages. A Copilot CLI subagent that runs a custom agent
+  loads instruction files only with `include-custom-instructions: true`. Name the instruction paths
+  in every request to a subagent, and say whether it may delegate.
+- A VS Code page dated 2026-11-04 says a Local harness subagent does not run when its model is in a
+  higher cost tier than the main conversation's; it reports the models it can use instead. A
+  reviewer that needs another or a stronger model gets its own session with that model selected.
+- No page describes a notice to another session when a session finishes or waits; the session
+  list shows its state, and in Copilot CLI so does `/tasks`.
+
+Confirmations:
+
+- VS Code: `chat.tools.terminal.autoApprove` takes commands or `/regular expressions/`. A `false`
+  rule wins over `true` but asks rather than blocks. A compound command is approved only when every
+  subcommand matches, and the parser may miss subcommands. **Chat: Manage Tool Approval** reviews
+  saved approvals.
+- Copilot CLI: `--allow-tool` and `--deny-tool` take patterns such as `shell(git status)`, and deny
+  wins, also over `--allow-all`. `shell(git:*)` also matches `git push`. Approvals for a folder
+  persist in `~/.copilot/permissions-config.json`; `/permissions reset` clears the session's.
 - In VS Code, Copilot harness sessions in a separate worktree run with Allow all and show no
   confirmation prompts: only technical limits, such as disabled pushing or the sandbox, stop an
   action.
+- Hooks are in preview in VS Code, and in Copilot CLI a `preToolUse` hook that times out lets the
+  call through. Hooks are not a control and do not approve.
+
+Model and reasoning effort:
+
+- VS Code sets reasoning effort in the model picker, whose label shows it: *configured*; a new
+  chat starts from the last effort chosen for that model. Hovering over a response shows its
+  model: *reported*. A custom agent's `model` is a preference list, so at most *configured*.
+- Copilot CLI sets the model with `--model` or `/model`, and the effort with `--effort` or
+  `effortLevel` in `~/.copilot/settings.json` (default `medium`); an agent's `reasoningEffort` sets
+  a subagent's. Each `assistant.message`
+  in the session record names its model. `/usage` totals per model for the whole session.
+- Copilot CLI redacts `GITHUB_TOKEN` and `COPILOT_GITHUB_TOKEN` from its output; a redacted value
+  is not evidence of what ran.
 
 ## Other hosts
 

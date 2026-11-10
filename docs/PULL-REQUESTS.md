@@ -37,6 +37,8 @@ title and body with the complete diff and remove anything that no longer holds.
 - By default, the requester approves the exact branch, title, and body before anything is published.
   For one task and one named repository, the requester may instead authorize the agent to push
   the reviewed branch and open its pull request with text the agent writes, following Description.
+  Record that authorization, with its date and approver, in the task's status note, or in
+  `private/POLICY.md` when it is a standing rule.
 - That authorization covers only a head that passed the repository's local checks and independent
   review, pushed to a branch other than the default one, and that pull request's title and body. It
   never covers merging, releasing, tagging, a force push, another repository, broader host
@@ -78,7 +80,7 @@ timeout, silence, passing checks, or approval of an earlier head.
 - Fix the neighbourhood, not only the reported line: read the whole file and its siblings, and
   search for the same claim elsewhere. Re-read whatever refers to what you changed.
 - Put all in-scope fixes in one commit and one push, then ask for the next round. Under a
-  Publication authorization, a fixed head is not yet reviewed: commit it, have the next round
+  publishing authorization, a fixed head is not yet reviewed: commit it, have the next round
   review it before pushing, and push only a head that passed.
 - To reject a finding, record concrete evidence in the pull request, where others can check it.
 - If a fix needs work outside the scope, stop: it normally belongs in another pull request.
