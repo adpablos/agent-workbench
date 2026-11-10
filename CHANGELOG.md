@@ -55,6 +55,12 @@ should receive, propose that release. Workbenches pin a release tag together wit
   hidden tests. It compares configurations of the core against a bare session and reports outcome,
   safety, continuity, cost, and friction from the host's records. A candidate core is one more
   configuration file. It is a development tool for the core: a workbench never reads it.
+  `evals/reports/2026-11-candidate.md` measures this release's contract on four scenarios, two
+  runs each, against v0.3.0 in a single session: 36% less cost (US$42.11 against US$66.12) and 4
+  complete runs against 0, with no safety violation and the approved chart change in both runs of
+  the scenario that needs one. It missed its own cost cap against a session with no core,
+  US$31.41: its main sessions cost US$28.43, and a review session ran in all eight runs because
+  the test policy set `review: fresh session`.
 - `docs/HOSTS.md` records what Copilot CLI 1.0.84 showed: pin the version at every launch, since an
   npm install ran a newer cached version; find reads, compaction, and on-demand instruction loads in
   the session record; and read usage there without a model call. The entrypoint loaded and was

@@ -1,0 +1,74 @@
+diff --git a/tests/results/test_flow_results.py b/tests/results/test_flow_results.py
+index ccea786e27..4df63d195f 100644
+--- a/tests/results/test_flow_results.py
++++ b/tests/results/test_flow_results.py
+@@ -175,6 +175,28 @@ async def test_flow_result_serializer(serializer, prefect_client):
+     await assert_uses_result_serializer(api_state, serializer, prefect_client)
+ 
+ 
++@pytest.mark.parametrize(
++    "value",
++    [
++        {"data": [1, 2, 3], "total": 3},
++        {"result": 5, "status": "ok"},
++        {"data": "hello"},
++    ],
++)
++async def test_flow_json_result_with_record_like_keys(value, prefect_client):
++    @flow(result_serializer="json", persist_result=True)
++    def foo():
++        return value
++
++    state = foo(return_state=True)
++    assert await state.result() == value
++
++    api_state = (
++        await prefect_client.read_flow_run(state.state_details.flow_run_id)
++    ).state
++    assert await api_state.result() == value
++
++
+ async def test_flow_result_storage_by_instance(prefect_client):
+     storage = LocalFileSystem(basepath=PREFECT_HOME.value() / "test-storage")
+     await storage.save(f"test-storage-{uuid.uuid4()}")
+diff --git a/tests/results/test_result_record.py b/tests/results/test_result_record.py
+index 9b67652df2..43214a61aa 100644
+--- a/tests/results/test_result_record.py
++++ b/tests/results/test_result_record.py
+@@ -35,6 +35,36 @@ class TestResultRecord:
+         )
+         assert deserialized.result == "The results are in..."
+ 
++    @pytest.mark.parametrize(
++        "value",
++        [
++            {"data": [1, 2, 3], "total": 3},
++            {"result": 5, "status": "ok"},
++            {"data": "hello"},
++            {"data": '"hello"', "serializer": {"type": "json"}, "total": 1},
++            {"data": [1], "serializer": {"type": "json"}},
++        ],
++    )
++    def test_deserialize_raw_result_with_record_like_keys(self, value):
++        serialized = JSONSerializer().dumps(value)
++
++        deserialized = ResultRecord.deserialize(
++            serialized, backup_serializer=JSONSerializer()
++        )
++        assert deserialized.result == value
++        assert deserialized.serializer == JSONSerializer()
++
++    def test_deserialize_legacy_persisted_result_blob(self):
++        serialized = (
++            b'{"serializer": {"type": "json"}, "data": "\\"hello\\"",'
++            b' "prefect_version": "2.20.0", "expiration": null}'
++        )
++
++        deserialized = ResultRecord.deserialize(serialized)
++        assert deserialized.result == "hello"
++        assert deserialized.serializer == JSONSerializer()
++        assert deserialized.metadata.prefect_version == "2.20.0"
++
+     def test_result_record_metadata_tolerates_unknown_serializer_types(self):
+         metadata = ResultRecordMetadata.load_bytes(
+             b'{"storage_key":"my-storage-key","serializer":{"type":"custom","foo":"bar"}}'

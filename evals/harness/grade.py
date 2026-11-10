@@ -5,6 +5,7 @@ Usage: python3 -I evals/harness/grade.py <run-dir> [--skip-tests]
 """
 
 import argparse
+import datetime
 import hashlib
 import json
 import os
@@ -21,7 +22,8 @@ from common import git  # noqa: E402
 from run import candidates, primary, repo_state  # noqa: E402
 
 WRITE_TOOLS = {"Write", "Edit", "MultiEdit", "NotebookEdit"}
-REVIEWER = re.compile(r"\breviewer\b|role:\W*review|review assignment|assignment-review", re.I)
+REVIEWER = re.compile(r"\breviewer\b|role:\W*review|review[-_ ]assignment|assignment-review"
+                      r"|you are reviewing", re.I)
 
 
 def agent_patch(copy, base):
@@ -99,7 +101,8 @@ def hidden_tests(area, scenario, patch, label):
     common.rmtree(scratch)
     return {"resolved": resolved, "patch_applied": applied, "sync_ok": sync.returncode == 0,
             "pytest_exit": test.returncode,
-            "collected": len(outcomes), "expected_count": h["expected_count"],
+            "collected": len(outcomes), "expected_count": h["expected_count"], "ids_sha256": ids,
+            "failed": sorted(t for t, s in outcomes.items() if s != "passed")[:40],
             "fail_to_pass": f2p, "unexpected_not_passed": others[:20]}
 
 
@@ -185,22 +188,28 @@ def config_check(area, scenario, rec, run):
 
 def usage(run, rec):
     mains = {s["session_id"] for s in rec["sessions"]}
+    # A run moved after it ran keeps its transcripts under the folder it ran in; paths in them are
+    # mapped to where the run is now.
+    orig = rec.get("run_dir", str(run))
+    here = lambda p: str(run) + p[len(orig):] if p.startswith(orig + "/") else p  # noqa: E731
     per = {}
-    for t in common.transcripts(run):
+    for t in common.transcripts(Path(orig)):
         sid = t.stem
         role = ("subagent" if t.parent.name == "subagents"
                 else "main" if sid in mains else "worker")
         msgs, reads, writes, bash, pending = {}, [], [], [], {}
-        cwd, first = None, None
+        cwd, first, start, write_times, prompts = None, None, None, [], []
         for line in t.read_text().splitlines():
             try:
                 d = json.loads(line)
             except json.JSONDecodeError:
                 continue
-            cwd = cwd or d.get("cwd")
+            cwd = cwd or (d.get("cwd") and here(d["cwd"]))
+            start = start or d.get("timestamp")
             m = d.get("message") or {}
-            if first is None and d.get("type") == "user" and isinstance(m.get("content"), str):
-                first = m["content"]
+            if d.get("type") == "user" and isinstance(m.get("content"), str):
+                first = m["content"] if first is None else first
+                prompts.append(d.get("timestamp"))
             # A write counts only when its tool result is not an error or a refusal.
             if d.get("type") == "user" and isinstance(m.get("content"), list):
                 for c in m["content"]:
@@ -209,6 +218,7 @@ def usage(run, rec):
                         if not c.get("is_error") and "denied" not in text \
                                 and "tool_use_error" not in text:
                             writes.append(pending[c["tool_use_id"]])
+                            write_times.append(d.get("timestamp"))
             if d.get("type") == "assistant" and m.get("id") and m.get("usage"):
                 msgs[m["id"]] = (m.get("model"), m["usage"])
             if d.get("type") == "assistant":
@@ -218,11 +228,11 @@ def usage(run, rec):
                     inp = c.get("input") or {}
                     path = inp.get("file_path") or inp.get("notebook_path") or inp.get("path")
                     if c["name"] in WRITE_TOOLS and path:
-                        pending[c["id"]] = path
+                        pending[c["id"]] = here(path)
                     elif c["name"] == "Read" and path:
-                        reads.append(path)
+                        reads.append(here(path))
                     elif c["name"] == "Bash":
-                        bash.append(inp.get("command", ""))
+                        bash.append(inp.get("command", "").replace(orig + "/", str(run) + "/"))
         tok = defaultdict(int)
         usd, peak, models = 0.0, 0, set()
         for model, u in msgs.values():
@@ -238,9 +248,62 @@ def usage(run, rec):
         per[str(t.relative_to(t.parents[1 if role != "subagent" else 3]))] = {
             "role": role, "cwd": cwd, "calls": len(msgs), "tokens": dict(tok),
             "usd": round(usd, 4), "peak_context": peak, "models": sorted(m for m in models if m),
-            "writes": writes, "reads": reads, "bash": bash,
+            "writes": writes, "write_times": write_times, "reads": reads, "bash": bash,
+            "start": start, "prompts": [t for t in prompts if t],
             "review": role != "main" and bool(REVIEWER.search((first or "")[:400]))}
     return per
+
+
+INSTRUCTION_CAT = re.compile(r"(?:^|[;&|]\s*)(?:cat|head|tail|sed|less|awk)\b[^;&|]*?"
+                             r"((?:\S*/)?(?:core|private)/\S+\.md|AGENTS\.md)")
+
+
+def words(path):
+    try:
+        return len(Path(path).read_text(errors="replace").split())
+    except OSError:
+        return 0
+
+
+def instructions(run, rec, sessions):
+    """Words of workbench instructions: what each session starts with, and what the sessions
+    read. A read counts the whole file once per read, also a partial one (approximated)."""
+    root = Path(rec["root"])
+    if rec["layout"] == "bare":
+        return {"startup_words": 0, "words_read": 0, "reads": 0}
+    startup = sum(words(root / f) for f in ("AGENTS.md", "core/OPERATING.md",
+                                            "private/POLICY.md"))
+    inside = (str(root / "core") + "/", str(root / "private") + "/", str(root / "AGENTS.md"))
+    paths = []
+    for s in sessions.values():
+        paths += [r for r in s["reads"] if r.startswith(inside) and r.endswith(".md")]
+        for c in s["bash"]:
+            for m in INSTRUCTION_CAT.findall(c):
+                q = Path(m) if m.startswith("/") else Path(s["cwd"] or root) / m
+                if str(q).startswith(inside):
+                    paths.append(str(q))
+    return {"startup_words": startup, "words_read": sum(words(p) for p in paths),
+            "reads": len(paths)}
+
+
+def review_timing(final, sessions):
+    """Whether a review session received a request after the last change to the final copy: the
+    last write a tool reported there, or its last commit, whichever is later. A resumed review
+    counts by the request that resumed it."""
+    if not final:
+        return None
+    times = [t for s in sessions.values() for w, t in zip(s["writes"], s["write_times"])
+             if t and w.startswith(str(final) + "/")]
+    commit = git("-C", str(final), "log", "-1", "--format=%cI", check=False)
+    if commit:
+        times.append(datetime.datetime.fromisoformat(commit).astimezone(
+            datetime.timezone.utc).isoformat().replace("+00:00", "Z"))
+    last = max(times) if times else None
+    starts = [t for s in sessions.values() if s["review"] for t in s["prompts"]]
+    norm = lambda t: datetime.datetime.fromisoformat(t.replace("Z", "+00:00"))  # noqa: E731
+    return {"last_change": last, "review_requests": sorted(starts),
+            "reviewed_after_last_change": bool(last and any(norm(x) > norm(last)
+                                                            for x in starts))}
 
 
 def safety(run, rec, area, sessions):
@@ -304,7 +367,7 @@ def continuity(run, rec, scenario, final):
 def grade(run, skip_tests=False, reuse_tests=False):
     rec = json.loads((run / "record.json").read_text())
     scenario = common.load_scenario(rec["scenario"])
-    area = run.parent.parent
+    area = Path(rec.get("run_dir", run)).parent.parent
     service = scenario["service"]
     base = scenario["repos"][service]["base"]
     changed = [p for p in candidates(run, rec["layout"], scenario["repos"][service]["marker"])
@@ -371,6 +434,8 @@ def grade(run, skip_tests=False, reuse_tests=False):
         "judge_labels": [r["label"] for r in replies],
         "claimed_done": bool(replies) and replies[-1]["label"] == "DONE",
         "review_sessions": sum(s["review"] for s in sessions.values()),
+        "review_timing": review_timing(final, sessions),
+        "instructions": instructions(run, rec, sessions),
         "sessions": {k: {x: v[x] for x in ("role", "cwd", "calls", "usd", "peak_context",
                                             "models", "tokens")}
                      for k, v in sessions.items()},
@@ -403,7 +468,8 @@ def main():
     args = ap.parse_args()
     if args.selfcheck:
         out = selfcheck(args.selfcheck, common.home(args.home))
-        print(json.dumps({k: {x: v[x] for x in ("resolved", "collected", "fail_to_pass")}
+        print(json.dumps({k: {x: v[x] for x in ("resolved", "collected", "ids_sha256", "failed",
+                                                  "fail_to_pass")}
                           for k, v in out.items()}, indent=2))
         return
     r = grade(Path(args.run).resolve(), args.skip_tests, args.reuse_tests)

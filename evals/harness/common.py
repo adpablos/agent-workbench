@@ -148,6 +148,10 @@ def run_env(run_dir, cache):
         "UV_PYTHON": "python3.14",
         "UV_PYTHON_DOWNLOADS": "never",
         "UV_LINK_MODE": "clone",
+        # A session can pass an identity it found in its context to `git -c`; these variables
+        # take precedence, so every commit carries the neutral one.
+        "GIT_AUTHOR_NAME": "Eval Agent", "GIT_AUTHOR_EMAIL": "agent@example.invalid",
+        "GIT_COMMITTER_NAME": "Eval Agent", "GIT_COMMITTER_EMAIL": "agent@example.invalid",
         "GIT_CONFIG_GLOBAL": str(run_dir / "env" / "gitconfig"),
         "GIT_CONFIG_NOSYSTEM": "1",
         "GIT_TERMINAL_PROMPT": "0",

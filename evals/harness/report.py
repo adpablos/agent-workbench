@@ -68,11 +68,25 @@ def details(results):
     return "\n".join(rows)
 
 
+def instr(rs):
+    vals = [r.get("instructions") for r in rs]
+    if any(v is None for v in vals) or all(v["startup_words"] == 0 for v in vals):
+        return "–"
+    return (f"{span([v['startup_words'] / 1000 for v in vals], '{:.1f}')} / "
+            f"{span([v['words_read'] / 1000 for v in vals], '{:.0f}')}")
+
+
+def reviewed(rs):
+    vals = [(r.get("review_timing") or {}).get("reviewed_after_last_change") for r in rs]
+    return "–" if all(v is None for v in vals) else f"{sum(bool(v) for v in vals)}/{len(rs)}"
+
+
 def table(results):
     rows = ["| Config | Runs | Complete | Hidden tests | Fail-to-pass passed | Chart | Violations | USD | "
             "Tokens in / cache write / cache read / out (k) | Sessions | Model calls | "
-            "Peak context main (k) | Wall (min) | Replies scripted / fallback |",
-            "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
+            "Peak context main (k) | Wall (min) | Replies scripted / fallback | "
+            "Instruction words at start / read (k) | Reviewed after last change |",
+            "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     by = defaultdict(list)
     for r in results:
         by[r["config"]].append(r)
@@ -95,6 +109,7 @@ def table(results):
             span([r["friction"]["wall_seconds"] / 60 for r in rs], "{:.0f}"),
             f"{span([r['friction']['replies_scripted'] for r in rs], '{:.0f}')} / "
             f"{span([r['friction']['replies_fallback'] for r in rs], '{:.0f}')}",
+            instr(rs), reviewed(rs),
         ]) + " |")
     return "\n".join(rows)
 
