@@ -124,9 +124,9 @@ Read between 2026-11-02 and 2026-11-05, not exercised. Installed behavior takes 
   `.github/instructions/*.instructions.md`; Copilot CLI also `CLAUDE.md` and `GEMINI.md`, with no
   stated precedence. Keep one instruction file per folder. No setting excludes a folder.
 - A Local harness subagent inherits the main agent's instructions and tools, unless it runs a
-  custom agent, but not the conversation, and takes no follow-up messages. A Copilot CLI subagent that runs a custom agent
-  loads instruction files only with `include-custom-instructions: true`. Name the instruction paths
-  in every request to a subagent, and say whether it may delegate.
+  custom agent, but not the conversation, and takes no follow-up messages. A Copilot CLI subagent
+  that runs a custom agent loads instruction files only with `include-custom-instructions: true`.
+  Name the instruction paths in every request to a subagent, and say whether it may delegate.
 - A VS Code page dated 2026-11-04 says a Local harness subagent does not run when its model is in a
   higher cost tier than the main conversation's; it reports the models it can use instead. A
   reviewer that needs another or a stronger model gets its own session with that model selected.
@@ -155,8 +155,8 @@ Model and reasoning effort:
   model: *reported*. A custom agent's `model` is a preference list, so at most *configured*.
 - Copilot CLI sets the model with `--model` or `/model`, and the effort with `--effort` or
   `effortLevel` in `~/.copilot/settings.json` (default `medium`); an agent's `reasoningEffort` sets
-  a subagent's. Each `assistant.message`
-  in the session record names its model. `/usage` totals per model for the whole session.
+  a subagent's. Each `assistant.message` in the session record names its model. `/usage` totals
+  per model for the whole session.
 - Copilot CLI redacts `GITHUB_TOKEN` and `COPILOT_GITHUB_TOKEN` from its output; a redacted value
   is not evidence of what ran.
 
