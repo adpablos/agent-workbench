@@ -12,7 +12,7 @@
       "name": "example-service",
       "kind": "repository",
       "location": "/path/to/example-service",
-      "access": "read"
+      "access": "read, task worktrees"
     },
     {
       "name": "team-wiki",

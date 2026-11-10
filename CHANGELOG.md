@@ -49,8 +49,9 @@ None.
     `repos/` or `tools/`, since hosts load instruction files and skills from subfolders of the
     folder they open; do this first wherever the subfolder probe failed.
   - Run the entrypoint probe once with the new `AGENTS.md`.
-  - The three preferences on task copies and repository skills in `templates/POLICY.md`; clones
-    already under `work/` keep working.
+  - The three preferences on task copies and repository skills in `templates/POLICY.md`, with
+    each project's clone listed in `private/workspace.json` as `"access": "read, task worktrees"`;
+    clones already under `work/` keep working.
 
   Publishing now always needs approval of the exact branch, head, title, and body: a Publication
   authorization in a task record or the policy no longer lets an agent push its own text, and

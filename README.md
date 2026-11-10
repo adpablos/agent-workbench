@@ -72,8 +72,10 @@ repository; a `.gitignore` is not a substitute for that separation.
 ### Add a repository
 
 Clone the repository once, outside the workbench folder, and list that clone in
-`private/workspace.json` with the requester's approval. The clone stays on its default branch and
-nobody edits it. A task works in a worktree of it, on its own branch:
+`private/workspace.json` with the requester's approval and `"access": "read, task worktrees"`. Its
+files stay read-only and on its default branch; that access lets a session fetch there and add or
+remove a task's worktree and branch, which writes only to the clone's Git metadata. A task works in
+a worktree of it, on its own branch:
 
 ```bash
 git -C <clone> fetch origin
@@ -82,12 +84,16 @@ git -C <clone> worktree add <workbench>/work/<task>/<repo> -b <branch> origin/<d
 
 A worktree shares the clone's history, so it takes seconds and little space, and
 `git -C <clone> worktree list` shows every open copy. The clone's own default branch may fall
-behind; that is harmless, since copies start from `origin/<default branch>`. When the change is
-merged or dropped, the session removes the copy and its branch after the After merge checks in
-[docs/PULL-REQUESTS.md](docs/PULL-REQUESTS.md), so `work/` holds only open tasks.
-[templates/POLICY.md](templates/POLICY.md) carries these rules as preferences. Where there is no
-local clone, or the host cannot write to it, `git clone <repository URL> work/<task>/<repo>` still
-gives a task its copy.
+behind; that is harmless, since copies start from `origin/<default branch>`.
+[templates/POLICY.md](templates/POLICY.md) carries these rules as preferences. Once approved, the
+requester saying that a task's change is merged or dropped approves removing that task's copy and
+branch, after the After merge checks in [docs/PULL-REQUESTS.md](docs/PULL-REQUESTS.md), so `work/`
+holds only open tasks. A dropped change has no merge to verify, and anything the checks would lose,
+such as commits on no other branch, keeps the copy until the requester decides; nothing is forced.
+
+Without a listed clone, `git clone <repository URL> work/<task>/<repo>` still gives a task its copy,
+and copies already made that way keep working. A workbench whose host cannot write to a folder
+outside it lists no clone and leaves those preferences out of its policy.
 
 To review what is open, ask the agent: it lists each clone's worktrees and the folders under
 `work/` with the state of each branch, proposes the exact removals, and removes nothing before
