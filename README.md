@@ -18,6 +18,7 @@ on existing approved tools.
 | [docs/PULL-REQUESTS.md](docs/PULL-REQUESTS.md) | What a pull request contains and how its review ends |
 | [docs/VALIDATION.md](docs/VALIDATION.md) | Probes and how a release is accepted |
 | [templates/](templates/) | Starting points for the workbench's `AGENTS.md` and private files |
+| [skills/](skills/) | Optional task stages as agent skills, from an idea to a merged change |
 | [evals/](evals/) | Development tool for the core: measures a candidate on real repositories. A workbench never reads it |
 
 ## Set up a workbench
@@ -82,7 +83,9 @@ git -C <clone> fetch origin
 git -C <clone> worktree add <workbench>/work/<task>/<repo> -b <branch> origin/<default branch>
 ```
 
-A worktree shares the clone's history, so it takes seconds and little space, and
+Write `<workbench>` out as the folder's full path: a host may refuse a command whose path it
+cannot read in advance, such as one built from a shell variable. A worktree shares the clone's
+history, so it takes seconds and little space, and
 `git -C <clone> worktree list` shows every open copy. The clone's own default branch may fall
 behind; that is harmless, since copies start from `origin/<default branch>`.
 [templates/POLICY.md](templates/POLICY.md) carries these rules as preferences. The requester
@@ -99,6 +102,47 @@ To review what is open, ask the agent: it lists each clone's worktrees and the f
 `work/` with the state of each branch, proposes the exact removals, and removes nothing before
 you approve them.
 
+## Task stages
+
+Optional. `skills/` holds seven agent skills that take a development task through short stages.
+Each stage is small enough to run in its own session, on the model that suits it:
+
+| Skill | What the stage does | Suits |
+|---|---|---|
+| `shape` | Turns an idea into tasks the size of one ticket, by asking the requester | A strong model |
+| `think` | Reads the ticket and the code, and writes a plan of closed steps in the task's note | A strong model |
+| `do` | Carries out the plan, one commit per step, and stops when a step is unclear | An economical model |
+| `review` | Reviews the change once; its findings become new steps of the plan | A strong model of another family |
+| `ship` | Writes the pull request text and pushes once the requester approves it | A model that writes well |
+| `close` | After the merge, removes the copy and branch and archives the note | An economical model |
+| `retro` | Every few tasks, reads what went wrong and what went well, and proposes improvements | A strong model |
+
+The note in `private/tasks/` carries the state from one stage to the next. Use the stages when
+usage is paid per token or your models differ much in price: the plan is the expensive thought,
+and an economical model does the rest. A workbench with one capable model can keep working from
+the contract alone.
+
+To install them, ask the agent: "Install the task stages by following `core/README.md`." It:
+
+1. Copies the folders under `core/skills/` into the folder your host reads skills from:
+   `.github/skills/` for GitHub Copilot, `.claude/skills/` for Claude Code, `.agents/skills/` for
+   Codex. It copies them again after each update of the core, and changes none of them in place.
+2. Defines one agent per model, in the host's own format, from `core/templates/agent.md`: GitHub
+   Copilot reads `.github/agents/<name>.agent.md` and Claude Code `.claude/agents/<name>.md`.
+   Without agents, every stage runs on the session's model.
+3. Adds the Task stages section of `core/templates/POLICY.md` to `private/POLICY.md`, with your
+   agents, shows you the exact text, and waits for your approval.
+4. Runs the task stages probe in [docs/VALIDATION.md](docs/VALIDATION.md).
+
+Then ask in ordinary words, such as "start this ticket", "go on", or "it is merged", or name a
+stage, such as `/think ABC-123`. A session that is not the stage's agent starts that agent, or
+tells you which one to select when the host cannot do that. A reply that ends with `Next:` and
+a stage passes the turn to that stage, so one "go on" can take a planned task through `do`,
+`review`, and the pull request text. The session always stops with the plan, at a question, at
+a step it could not do, at review findings, and before a push. Shape an idea in a session of
+the planning agent itself: it is a conversation. `retro` appends what the core could do better
+to `private/core-feedback.md`, without private names; bring those lines to an issue here.
+
 ## Update the core
 
 Ask the agent: "Update the core by following `core/README.md`." From the workbench folder, it:
@@ -112,7 +156,8 @@ Ask the agent: "Update the core by following `core/README.md`." From the workben
 3. After your approval, runs `git -C core checkout --detach <SHA>` and confirms that
    `git -C core rev-parse HEAD` prints that SHA; `git pull` could add commits you did not see. It
    records the SHA, and its release tag if it has one, in `private/workspace.json`, with the
-   previous revision as the rollback point, and applies the steps the changelog lists.
+   previous revision as the rollback point, applies the steps the changelog lists, and copies
+   `core/skills/` again where the workbench installed the task stages.
 4. If a path that the entrypoint or the private files rely on is gone, it moves the core back to
    the previous revision and restores the pin.
 
@@ -144,6 +189,8 @@ you answer any findings.
 - Note each user-visible change under Unreleased in [CHANGELOG.md](CHANGELOG.md).
 - Add an executable only for a demonstrated, repeated need, using built-in modules, portable
   paths, and tests of real failure modes on each platform it supports.
+- Keep each skill to 600 words at most, with no model, host, or language of its own: those belong
+  to the workbench's policy and agents. Quote its description; the `docs` check enforces both.
 - Keep [docs/HOSTS.md](docs/HOSTS.md) to differences that change what a user does, each with the
   host version where it was observed.
 

@@ -8,7 +8,30 @@ should receive, propose that release. Workbenches pin a release tag together wit
 
 ## Unreleased
 
-None.
+- **Task stages, as optional skills.** `skills/` adds seven agent skills that take a development
+  task through short stages: `shape` turns an idea into tasks the size of one ticket, `think`
+  writes a plan of closed steps in the task's note, `do` carries it out with one commit per step
+  and stops when a step is unclear, `review` reviews once and turns its findings into new steps,
+  `ship` writes the pull request text and pushes after the requester approves it, `close` cleans
+  up after the merge, and `retro` reads what went wrong and what went well every few tasks. The
+  note carries the state between stages, so each can run in its own session on the model that
+  suits it: a strong model plans and reviews, an economical one does the rest. A session asked
+  in ordinary words finds the next stage from the note and starts the stage's agent, or says
+  which agent to select; it goes on from stage to stage until it needs the requester: with the
+  plan, at a question, at a step it could not do, at review findings, and before a push.
+  `retro` collects, without private names, what the core could do better in
+  `private/core-feedback.md`. The contract does not change: a workbench that installs nothing
+  works as before. Rehearsed on Copilot CLI 1.0.105 and in VS Code 1.137.0 with four models,
+  and on Codex CLI 0.166.0 with one; the README (Task stages) says how to install them and
+  [docs/HOSTS.md](docs/HOSTS.md) what was observed.
+
+  **Do to update:** nothing is required. To use the stages, follow the README (Task stages):
+  copy `core/skills/` into your host's skills folder, define your agents from
+  `templates/agent.md`, and add the Task stages section of `templates/POLICY.md` to your policy.
+  `templates/task.md` gained the lines the stages use (Reviewed, Pull request, Plan, Pull
+  request text, Snags, Worked); notes you already keep need no change. A workbench that used
+  prompt files for stages of its own replaces them with these skills, since VS Code runs prompt
+  files only in the harness it is retiring.
 
 ## 0.4.0 - 2026-11-09
 
