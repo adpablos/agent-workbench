@@ -8,6 +8,10 @@ should receive, propose that release. Workbenches pin a release tag together wit
 
 ## Unreleased
 
+None.
+
+## 0.5.0 - 2026-11-16
+
 - **Task stages, as optional skills.** `skills/` adds seven agent skills that take a development
   task through short stages: `shape` turns an idea into tasks the size of one ticket, `think`
   writes a plan of closed steps in the task's note, `do` carries it out with one commit per step
