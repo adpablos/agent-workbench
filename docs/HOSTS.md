@@ -121,10 +121,86 @@ grep -o '"instruction_discovered","sourcePath":"[^"]*"' ~/.copilot/session-state
 - Loading `core/OPERATING.md` through `.github/copilot-instructions.md` as well did not spare its
   read, and cost more.
 
+### Copilot CLI: skills and agents, observed
+
+On macOS with Copilot CLI 1.0.105, on 2026-11-16, with the task stages of the README installed.
+
+- A skill in `.github/skills/<name>/` loaded when a request in ordinary words matched its
+  description, and when the prompt began with `/<name>`; a request unrelated to any description
+  loaded none.
+- A header the YAML parser rejects loses the file: a skill whose description held an unquoted
+  colon was never offered, with no warning, and an agent with the same fault failed with
+  `custom agent markdown frontmatter is malformed`. Quote every description.
+- An agent in `.github/agents/<name>.agent.md` ran on the `model` in its header, both when
+  selected with `--agent` and when a session on a cheaper model started it as a subagent; the
+  session record names each turn's model.
+- `model` took the CLI's identifier (`gpt-6.1-sol`) or the name the editor shows
+  (`GPT-6.1 Sol (copilot)`). Of a list, only the first entry counted. A model the account does
+  not offer did not stop the agent: it ran on the CLI's default model, with a warning on standard
+  error only, so check the model in the session record after changing an agent.
+- A subagent does not know which agent it is unless its file says so: an agent whose skill told
+  it to hand the stage to that same agent started itself until the CLI refused with a subagent
+  depth limit. `templates/agent.md` names the agent and forbids handing on for this reason.
+- A subagent ends with its reply. The requester's next message goes to the session, which starts
+  the agent again; what the stage must keep between the two, such as a text awaiting approval,
+  belongs in the task's note.
+- `--sandbox` took effect only together with `--experimental`. Shell commands then reached the
+  working folder but not a Git remote in a folder beside it, also with `--add-dir`; a version
+  manager's shims failed with `Operation not permitted`.
+- With `-p`, a shell command whose path came from a variable (`"$PWD/work/..."`) was refused
+  with `Permission denied and could not request permission from user`, also under
+  `--allow-all-tools`; the same command with the path written out ran.
+- The CLI keeps a store of past sessions that a session can query. A message that named no
+  task, in a new session, was once matched to a task from a session in another folder; the
+  Task stages section of the policy now says which note such a message is about.
+- One small task through every stage cost 41 to 56 AI credits in three runs. In the last one:
+  planning 12; the change, the review, and the pull request text 28, in one turn; the push 2;
+  cleanup 1.
+- The same ticket in one session without the stages cost 2 credits on the economical model and
+  40 on the planner's model, and all three wrote the same function. On a small, clear ticket the
+  stages buy a plan before the change and a review by another model, not a lower price.
+
+### VS Code: skills and agents, observed
+
+On macOS with VS Code 1.137.0 and its Copilot Chat, in the Local harness, on 2026-11-16, with the
+task stages installed in `.github/skills/` and `.github/agents/`.
+
+- A chat in Agent mode on an economical model loaded the `think` skill from a request in ordinary
+  words and started the planning agent as a subagent on that agent's own, more expensive model.
+  The other stages did the same: four models in one chat. The agents named their `model` as the
+  editor shows it, such as `GPT-6.1 Sol (copilot)`.
+- The log of the Copilot Chat extension, under the editor's `logs/` folder, names the model of
+  every request and the subagent it served, as `[tool/runSubagent-<agent>]`.
+- One "go on" took the planned task through `do`, `review`, and the pull request text, and
+  stopped waiting for the approval. `Approved` then pushed only the task's branch, and after the
+  merge `close` removed the copy and the local branch and archived the note.
+- The chat summarized the planner's reply in the contract's report form instead of relaying it;
+  the plan was in the note.
+- Under the default permissions every shell command asked for confirmation, about 40 in one
+  small task, ten of them in `close`. The editor's list of commands that need none,
+  `chat.tools.terminal.autoApprove`, was not in effect: the menu beside Allow offered to enable
+  it first.
+- A second task ran with a policy rule that asks for the fewest commands: read files with the
+  editor's tools, write each command to run from the workbench folder, and join what a stage
+  needs into one. It asked 11 times: one in `think`, four in `do`, one in `review`, two in
+  `ship`, and three in `close`.
+- The terminal keeps its folder between commands: after a `cd` into the task's copy, a command
+  with a path relative to the workbench failed, and the agent repeated it with the full path.
+  After `close` removed the copy, the next command failed until it ran from the clone.
+
 ### Copilot: from documentation
 
 Read between 2026-11-02 and 2026-11-05, not exercised. Installed behavior takes precedence.
 
+- Read on 2026-11-16: VS Code deprecates the Local harness and removes it by February 2027; the
+  Copilot harness is the default for new sessions since VS Code 1.143. Prompt files
+  (`.github/prompts/`) and an agent's `handoffs` run only in the Local harness, and the pages
+  point to skills for a workflow that must run in both. A skill's header has no model; an
+  agent's `model` takes one identifier or an ordered list, in the form the editor completes for
+  the harness in use.
+- The program files of VS Code 1.137.0, read on 2026-11-16, read skills from `.agents/skills`,
+  `.github/skills`, and `.claude/skills`, with `chat.useAgentSkills` on by default, and agents
+  from `.github/agents` and `.claude/agents`; only the two `.github` folders were exercised.
 - The Copilot harness loads `AGENTS.md`, `.github/copilot-instructions.md`, and
   `.github/instructions/*.instructions.md`; Copilot CLI also `CLAUDE.md` and `GEMINI.md`, with no
   stated precedence. Keep one instruction file per folder. No setting excludes a folder.
@@ -135,6 +211,7 @@ Read between 2026-11-02 and 2026-11-05, not exercised. Installed behavior takes 
 - A VS Code page dated 2026-11-04 says a Local harness subagent does not run when its model is in a
   higher cost tier than the main conversation's; it reports the models it can use instead. A
   reviewer that needs another or a stronger model gets its own session with that model selected.
+  VS Code 1.137.0 did not behave so: see VS Code: skills and agents, observed.
 - No page describes a notice to another session when a session finishes or waits; the session
   list shows its state, and in Copilot CLI so does `/tasks`.
 

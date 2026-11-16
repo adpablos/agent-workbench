@@ -1,0 +1,39 @@
+---
+name: ship
+description: "Write a task's pull request title and description and push its branch once the requester approves. Use when a task's change passed review, or the requester asks to ship, push, or open the pull request of a task. Changes no code."
+---
+Follow the workbench `AGENTS.md` first. If the policy names an agent for the `ship` stage and you
+are not that agent, start that agent with the stage, the task, and the requester's words,
+nothing of your own, and relay its reply unchanged. Only if that reply ends with `Next:` and a
+stage you have not run in this turn, run that stage the same way; at any other ending, end
+your turn. For each later answer to that stage, start the agent again with the stage, the
+task, and the answer. If you cannot start it, say which agent to select and stop.
+
+The task name is the ticket key in lowercase. Read
+`private/tasks/<task>.md`. Change no code.
+
+1. Compare the note's Reviewed line with the HEAD of the task's copy. If the requester's
+   message is `ship without review`, set that line to `<HEAD SHA> skipped by the requester`. If
+   the line does not show that same SHA as passed or skipped, say so, end with
+   `Next: /review <task>`, and stop.
+2. If the note already has a title and a description under `## Pull request text`, they are the
+   text the requester saw. Never edit them on your own:
+   - the requester's message is `Approved`: go to step 5;
+   - the requester asks for a change to the text: make only that change, save it, and go to
+     step 4;
+   - anything else: go to step 4.
+3. Otherwise read in full the style the policy names for commits and pull requests, the Goal in
+   the note, and `git diff origin/<base>...HEAD` in the task's copy. Write the pull request
+   title and description in that style. State only what the note and the diff show; for how it
+   was tested, go by the note's Verified line and the tests in the diff. Save both in the note
+   under `## Pull request text`.
+4. Read that section of the note again and show the requester the branch, the address of
+   `origin` it will be pushed to, the output of `git diff --stat origin/<base>...HEAD`, and the
+   title and description copied from the note, word for word. End with
+   `Waiting for "Approved"` and stop.
+5. `Approved` is the requester's approval of that push: push that branch to `origin` and
+   nothing else. Show the link the push printed for creating the pull request, and the title
+   and description copied from the note, word for word, for the requester to open it. Set the
+   note's Next step to opening the pull request.
+
+After the merge, the task ends with `/close <task>`.

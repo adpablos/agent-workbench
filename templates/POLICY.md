@@ -30,13 +30,36 @@ Example: GPT implementation is reviewed by Opus, and Opus implementation by GPT.
 | Review session | <model, following the pairing above> | <effort> |
 | Delegated bounded read, optional | <economical model> | <effort> |
 
+## Task stages
+
+Optional: keep this section only if the workbench installed the task stages, as `core/README.md`
+(Task stages) describes.
+
+- Development work follows the task skills: `shape` for an idea that is not a ticket yet, then
+  `think`, `do`, `review`, `ship`, and `close` for each ticket. The task's note in
+  `private/tasks/` carries the state between them. Asked for development work without naming a
+  stage, read the note, say which stage comes next, and run that stage's skill. Only when its
+  reply ends with `Next:` and a stage, run that stage too in the same turn; run no stage twice
+  in a turn, and end your turn at any other ending. A message that names no task is about the
+  one note in `private/tasks/` that is not archived; if there are several, ask which. Anything
+  else, answer as usual.
+- Each stage runs on its agent, defined in the host's agents folder with its model:
+
+| Agent | Stages | Model |
+|---|---|---|
+| `planner` | shape, think | <strong model> |
+| `builder` | do, close | <economical model> |
+| `reviewer` | review, retro | <strong model of another family than the builder's> |
+| `writer` | ship | <model that writes well> |
+
 ## Preferences
 
 - Keep private data, such as customer records or personal details, out of repositories, test
   fixtures, and reports.
 - A task's copy is a worktree of the project's clone, the one `private/workspace.json` lists, on
   its own branch: after a fetch there,
-  `git -C <clone> worktree add <workbench>/work/<task>/<repo> -b <branch> origin/<default branch>`.
+  `git -C <clone> worktree add <workbench>/work/<task>/<repo> -b <branch> origin/<default branch>`,
+  with `<workbench>` written out as this folder's full path.
   Never clone a project again, and change nothing else in its clone.
 - When the requester says a task's change is merged or dropped, remove its copy and its branch
   after the checks in `core/docs/PULL-REQUESTS.md` (After merge).

@@ -23,14 +23,14 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      # Tables and fenced code are exempt: their rows cannot be wrapped. A CRLF line ending is not
-      # counted, so a checkout on Windows gives the same result.
+      # Tables, fenced code, and a header's description are exempt: they cannot be wrapped. A CRLF
+      # line ending is not counted, so a checkout on Windows gives the same result.
       - name: Markdown lines within 100 characters
         run: |
           find . -name '*.md' -not -path './.git/*' -print0 | xargs -0 perl -CSD -ne '
             chomp; s/\r\z//;
             if (/^\s*```/) { $fence = !$fence }
-            elsif (!$fence && !/^\s*\|/ && length > 100) {
+            elsif (!$fence && !/^\s*\|/ && !/^description: "/ && length > 100) {
               print "$ARGV:$.: ", length, " characters\n"; $bad = 1;
             }
             if (eof) { close ARGV; $fence = 0 }
@@ -43,6 +43,22 @@ jobs:
           start=$(cat OPERATING.md templates/workbench-entrypoint.md | wc -w)
           echo "OPERATING.md: $contract words (cap 600); with the entrypoint: $start (cap 700)"
           [ "$contract" -le 600 ] && [ "$start" -le 700 ]
+      # A host drops a skill whose header it cannot parse, without a warning, and reads a skill in
+      # full whenever a request matches it.
+      - name: Skills have a loadable header and stay short
+        run: |
+          bad=0
+          for f in skills/*/SKILL.md; do
+            name=$(basename "$(dirname "$f")")
+            [ "$(sed -n 1p "$f")" = "---" ] || { echo "$f: no header"; bad=1; }
+            [ "$(sed -n 2p "$f")" = "name: $name" ] || { echo "$f: name is not $name"; bad=1; }
+            sed -n 3p "$f" | grep -Eq '^description: "[^"]{20,1000}"$' ||
+              { echo "$f: description is not one quoted line"; bad=1; }
+            [ "$(sed -n 4p "$f")" = "---" ] || { echo "$f: header has other lines"; bad=1; }
+            words=$(wc -w < "$f")
+            [ "$words" -le 600 ] || { echo "$f: $words words (cap 600)"; bad=1; }
+          done
+          exit $bad
       - name: Relative links resolve
         run: |
           find . -name '*.md' -not -path './.git/*' -print0 | xargs -0 perl -CSD -ne '
