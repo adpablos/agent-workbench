@@ -8,6 +8,10 @@ should receive, propose that release. Workbenches pin a release tag together wit
 
 ## Unreleased
 
+None.
+
+## 0.6.0 - 2026-11-19
+
 - **A stage for incidents and questions: `investigate`.** A reported failure, or a question
   about how the system behaves, now starts with its own stage. It creates the task's copy, runs
   the code, and names a cause only after it has seen the failure itself; when it cannot
