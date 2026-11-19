@@ -9,7 +9,7 @@ stage you have not run in this turn, run that stage the same way; at any other e
 your turn. For each later answer to that stage, start the agent again with the stage, the
 task, and the answer. If you cannot start it, say which agent to select and stop.
 
-The task name is the ticket key in lowercase. Read
+The task name is the ticket key in lowercase, or its local name. Read
 `private/tasks/<task>.md`. Change no code.
 
 1. Compare the note's Reviewed line with the HEAD of the task's copy. If the requester's
@@ -35,5 +35,8 @@ The task name is the ticket key in lowercase. Read
    nothing else. Show the link the push printed for creating the pull request, and the title
    and description copied from the note, word for word, for the requester to open it. Set the
    note's Next step to opening the pull request.
+6. If the policy says how to read a build's result, set the note's Build line to
+   `<pushed SHA> running` and end your reply with one line: the push starts a build, and the
+   next message about this task will check it.
 
 After the merge, the task ends with `/close <task>`.

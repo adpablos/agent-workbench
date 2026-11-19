@@ -36,18 +36,22 @@ Optional: keep this section only if the workbench installed the task stages, as 
 (Task stages) describes.
 
 - Development work follows the task skills: `shape` for an idea that is not a ticket yet, then
-  `think`, `do`, `review`, `ship`, and `close` for each ticket. The task's note in
+  `think`, `do`, `review`, `ship`, and `close` for each ticket; a reported failure, or a question
+  to investigate, starts with `investigate`. The task's note in
   `private/tasks/` carries the state between them. Asked for development work without naming a
   stage, read the note, say which stage comes next, and run that stage's skill. Only when its
   reply ends with `Next:` and a stage, run that stage too in the same turn; run no stage twice
   in a turn, and end your turn at any other ending. A message that names no task is about the
   one note in `private/tasks/` that is not archived; if there are several, ask which. Anything
   else, answer as usual.
+- Whenever you read a task's note and its Build line says `running`, read that build again
+  first, as this policy says, write the result in the line, and say it in one line. A note whose
+  Next step is `Waiting for the build` is not an open task: run `close` for it.
 - Each stage runs on its agent, defined in the host's agents folder with its model:
 
 | Agent | Stages | Model |
 |---|---|---|
-| `planner` | shape, think | <strong model> |
+| `planner` | shape, think, investigate | <strong model> |
 | `builder` | do, close | <economical model> |
 | `reviewer` | review, retro | <strong model of another family than the builder's> |
 | `writer` | ship | <model that writes well> |
@@ -65,6 +69,12 @@ Optional: keep this section only if the workbench installed the task stages, as 
   after the checks in `core/docs/PULL-REQUESTS.md` (After merge).
 - Before changing a repository, read its own agent instructions and the skills it keeps for
   agents, such as those under `.github/`, and follow them over a general skill.
+- A build's result: <optional; how to read the builds of a commit, which lines of a failed
+  build's log to show, and what a merge sets off, such as a deployment. With it, `ship` and
+  `close` follow the build of every task>
+- Local settings: <optional; the folder of files with secret values that only the requester
+  fills in, to run a component on this machine against a test environment, and how a task's
+  copy gets them without anyone opening them>
 - <approved preference>
 
 ## Topics

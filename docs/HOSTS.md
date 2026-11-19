@@ -188,6 +188,15 @@ task stages installed in `.github/skills/` and `.github/agents/`.
   with a path relative to the workbench failed, and the agent repeated it with the full path.
   After `close` removed the copy, the next command failed until it ran from the clone.
 
+On macOS with VS Code 1.146 on 2026-11-17, in the harness the editor calls Copilot, the one that
+replaces Local:
+
+- An agent started as a subagent received a tool to write files only when its model was of the
+  same family as the chat's model. From a chat on an economical GPT model, the agents on GPT
+  models wrote the note and the code, and the reviewing agent, on a Claude model, had no such
+  tool. A `tools` list in the agent's file did not change that. The same agent selected by hand
+  wrote normally, so where a stage cannot save, select its agent and repeat the request.
+
 ### Copilot: from documentation
 
 Read between 2026-11-02 and 2026-11-05, not exercised. Installed behavior takes precedence.

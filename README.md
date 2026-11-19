@@ -50,7 +50,7 @@ Code must be 2.1.281 or later.
    entrypoint is loaded and followed.
 
 ```text
-wb/                      # not a Git repository
+wb/                      # not a Git repository, or a local one of its own (see below)
   AGENTS.md              # entrypoint, from core/templates/workbench-entrypoint.md
   core/                  # this repository, pinned
   private/
@@ -69,6 +69,14 @@ subfolders of the folder they open, so a reference inside it would add its instr
 session that reads one of its files; the subfolder probe in
 [docs/VALIDATION.md](docs/VALIDATION.md) shows it. Keep `private/` and `work/` out of this
 repository; a `.gitignore` is not a substitute for that separation.
+
+### Keep a history of the workbench
+
+Optional. To see what changed in your rules, agents, and notes, make the workbench folder a
+local Git repository of its own: `git init` there, with a `.gitignore` that leaves out `core/`,
+`work/`, any clone or tool kept inside the folder, and any folder of local settings with secret
+values. Give it no remote: `private/` is never shared. Ask the agent to commit there after it
+changes the policy, an agent, or a skill.
 
 ### Add a repository
 
@@ -104,17 +112,18 @@ you approve them.
 
 ## Task stages
 
-Optional. `skills/` holds seven agent skills that take a development task through short stages.
+Optional. `skills/` holds eight agent skills that take a development task through short stages.
 Each stage is small enough to run in its own session, on the model that suits it:
 
 | Skill | What the stage does | Suits |
 |---|---|---|
 | `shape` | Turns an idea into tasks the size of one ticket, by asking the requester | A strong model |
+| `investigate` | Reproduces a reported failure, or answers a question by running the code, before any fix is planned | A strong model |
 | `think` | Reads the ticket and the code, and writes a plan of closed steps in the task's note | A strong model |
 | `do` | Carries out the plan, one commit per step, and stops when a step is unclear | An economical model |
-| `review` | Reviews the change once; its findings become new steps of the plan | A strong model of another family |
-| `ship` | Writes the pull request text and pushes once the requester approves it | A model that writes well |
-| `close` | After the merge, removes the copy and branch and archives the note | An economical model |
+| `review` | Reviews the change once, comparing each addition with its nearest neighbour; its findings become new steps of the plan | A strong model of another family |
+| `ship` | Writes the pull request text, pushes once the requester approves it, and leaves the build to be checked | A model that writes well |
+| `close` | After the merge, removes the copy and branch, follows the build, and archives the note | An economical model |
 | `retro` | Every few tasks, reads what went wrong and what went well, and proposes improvements | A strong model |
 
 The note in `private/tasks/` carries the state from one stage to the next. Use the stages when
@@ -139,9 +148,13 @@ stage, such as `/think ABC-123`. A session that is not the stage's agent starts 
 tells you which one to select when the host cannot do that. A reply that ends with `Next:` and
 a stage passes the turn to that stage, so one "go on" can take a planned task through `do`,
 `review`, and the pull request text. The session always stops with the plan, at a question, at
-a step it could not do, at review findings, and before a push. Shape an idea in a session of
-the planning agent itself: it is a conversation. `retro` appends what the core could do better
-to `private/core-feedback.md`, without private names; bring those lines to an issue here.
+a step it could not do, at review findings, and before a push. A reported failure starts with
+"investigate this": the stage reproduces it before naming a cause, and `think` plans the fix
+from its finding. When the policy says how to read a build's result, the next message after a
+push checks the build, and `close` keeps the task open until the build of the merge has
+finished. Shape an idea in a session of the planning agent itself: it is a conversation.
+`retro` appends what the core could do better to `private/core-feedback.md`, without private
+names; bring those lines to an issue here.
 
 ## Update the core
 

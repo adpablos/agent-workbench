@@ -9,7 +9,7 @@ stage you have not run in this turn, run that stage the same way; at any other e
 your turn. For each later answer to that stage, start the agent again with the stage, the
 task, and the answer. If you cannot start it, say which agent to select and stop.
 
-The task name is the ticket key in lowercase. Read
+The task name is the ticket key in lowercase, or its local name. Read
 `private/tasks/<task>.md`. If it does not exist or has no Plan, say so, end with
 `Next: /think <task>`, and stop.
 
