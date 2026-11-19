@@ -9,7 +9,7 @@ stage you have not run in this turn, run that stage the same way; at any other e
 your turn. For each later answer to that stage, start the agent again with the stage, the
 task, and the answer. If you cannot start it, say which agent to select and stop.
 
-The task name is the ticket key in lowercase. Read
+The task name is the ticket key in lowercase, or its local name. Read
 `private/tasks/<task>.md`. You did not write this change. Change nothing in the task's copy.
 
 1. Read the repository's own agent instructions. Look for a review skill or review instructions it
@@ -21,7 +21,10 @@ The task name is the ticket key in lowercase. Read
    - **Defects:** where does the change fail the Goal, break existing behavior, or lack a test
      that would fail without it?
    - **Different:** where does it do something another way than this repository already does it?
-     Name the existing file that shows the usual way.
+     Do not answer from memory. List under `## Form` in the note every thing the change adds (a
+     function, a test, a configuration entry, a name), the nearest existing one of its kind with
+     file and line, and `same` or what differs. Each difference the ticket did not ask for is a
+     finding, `P2` or higher.
    - **Extra:** what could be removed and still meet the Goal?
 4. Rate each finding: `P1` must fix, `P2` should fix, `P3` optional.
 5. Write the result in the note:

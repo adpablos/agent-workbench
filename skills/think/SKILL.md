@@ -11,12 +11,12 @@ task, and the answer. If you cannot start it, say which agent to select and stop
 
 Plan one task. Change no code.
 
-The task name is the ticket key in lowercase. It names the folder `work/<task>/` and the note
-`private/tasks/<task>.md`. If the requester gave no ticket key, ask for it and stop.
+The task name is the ticket key in lowercase, or the local name its idea's note gives it. It
+names `work/<task>/` and `private/tasks/<task>.md`. Without either, ask for it and stop.
 
-1. Read the ticket with the tool the policy names. If you cannot, use the ticket text the
-   requester pasted in this session, or else what the task's note already says; if there is
-   neither, ask for it and stop.
+1. Read the ticket with the tool the policy names. If you cannot, use the text the requester
+   pasted in this session, or else what the task's note or its idea's note says; if there is
+   none, ask for it and stop.
 2. Read what the policy's Topics name for the project. Find the repository the change belongs
    to and read its own agent instructions and skills.
 3. Create the task's copy and branch as the policy says. If you cannot, say why and stop; write

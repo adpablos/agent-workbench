@@ -8,7 +8,36 @@ should receive, propose that release. Workbenches pin a release tag together wit
 
 ## Unreleased
 
-None.
+- **A stage for incidents and questions: `investigate`.** A reported failure, or a question
+  about how the system behaves, now starts with its own stage. It creates the task's copy, runs
+  the code, and names a cause only after it has seen the failure itself; when it cannot
+  reproduce it, it says what it ran and what it needs, and stops. It changes no product code
+  and leaves a Finding in the task's note (reported, reproduced, cause, not checked) that
+  `think` plans the fix from. A task without a ticket takes a short local name: `investigate`
+  chooses one, and `shape` writes one for a task the requester says will have no ticket.
+- **The build is followed.** When the policy says how to read a build's result, `ship` marks
+  the pushed commit's build as running, the next message about the task checks it first, and
+  `close` reads the build of the merge and what the merge sets off, such as a deployment. It
+  keeps the note open with `Waiting for the build` until that finishes, and shows the failing
+  lines when it fails. Without that policy line nothing changes.
+- **Review compares form, in writing.** `review` no longer answers from memory whether the
+  change does something another way: it lists in the note, under Form, each thing the change
+  adds, the nearest existing one of its kind, and whether they match. A difference the ticket
+  did not ask for is a finding rated `P2` or higher, so it comes back as a step.
+- **Local settings with secret values.** The contract still forbids writing secrets into files,
+  and now also asking for them. A policy can name local files that only the requester fills in,
+  to run a component on the machine against a test environment; an agent never opens, prints,
+  or commits them.
+- The README says how to keep a local history of the workbench's own files, and
+  [docs/HOSTS.md](docs/HOSTS.md) records when a subagent in VS Code's newer harness cannot
+  write files.
+
+  **Do to update:** copy `core/skills/` again; there is a new folder, `investigate`. In
+  `private/POLICY.md`, with the requester's approval of the exact text: add `investigate` to
+  the planning agent's stages and to the sentence that lists the stages, and add the paragraph
+  about the Build line, both from the Task stages section of `templates/POLICY.md`; optionally
+  add its two new preferences, `A build's result` and `Local settings`. `templates/task.md`
+  gained a Build line and a Form section; notes you already keep need no change.
 
 ## 0.5.0 - 2026-11-16
 

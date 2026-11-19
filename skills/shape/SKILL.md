@@ -20,8 +20,9 @@ Then shape one idea. Change no code and create no ticket.
    sentence, how to tell it is done, and what it depends on. A task you cannot describe that way
    is still an open question.
 6. When no answer would change the tasks any more, show the requester the Tasks. The requester
-   creates the tickets; write each ticket key next to its task when they give it. Each task
-   then starts with `/think <ticket key>`.
+   creates the tickets; write each ticket key next to its task when they give it. For a task
+   the requester says will have no ticket, write a short local name instead. Each task then
+   starts with `/think <ticket key or local name>`.
 
 Reply in the requester's language. End every reply in one of two ways, with nothing after it:
 
