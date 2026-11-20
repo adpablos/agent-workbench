@@ -8,7 +8,28 @@ should receive, propose that release. Workbenches pin a release tag together wit
 
 ## Unreleased
 
-None.
+- **Planning decides by where things belong.** `think` now reads further before it decides:
+  the code the change touches, what calls it, where each thing it uses comes from, and, when
+  the ticket depends on another part or repository, how that part provides what the ticket
+  needs. It names the ways to meet the ticket and judges each by where things belong: each
+  job the change needs done goes to the part of the repository that already does that kind of
+  job, and each thing from another part is taken from the part that produces it. That a part
+  can reach a thing, or that doing a job in place is smaller, is no reason. Only then it
+  picks the smallest way that fits. The note has a new Approach section with the way chosen,
+  the ways left and why, and the part that does each job; the reply names the way chosen. The
+  rules for the shape of a plan's steps moved from the stage to the note's template.
+- **Planning asks less.** `think` stops for the requester only when the ticket can be read in
+  two ways that change what its user gets, or needs something it cannot reach. It also stops
+  when the ticket's author may not know what the code shows: the ticket asks for something the
+  code or its tests forbid on purpose and does not name that rule, or it leaves open what
+  becomes of data already stored, or a new dependency or service. Then it says what it found
+  and asks. Every other choice it makes itself and names in the reply, so the requester can
+  change it before any code is written. A thing with no example in the repository is built
+  from what the repository already uses, and a repository without tests for similar code gets
+  none planned.
+- **Review checks it too.** `review` lists under Form each thing the change takes from another
+  part and the part that produces it. A thing taken through a part that does not produce it is
+  a finding rated `P2` or higher.
 
 ## 0.6.0 - 2026-11-19
 
