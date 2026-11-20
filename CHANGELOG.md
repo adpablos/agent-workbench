@@ -8,6 +8,10 @@ should receive, propose that release. Workbenches pin a release tag together wit
 
 ## Unreleased
 
+None.
+
+## 0.7.0 - 2026-11-20
+
 - **Planning decides by where things belong.** `think` now reads further before it decides:
   the code the change touches, what calls it, where each thing it uses comes from, and, when
   the ticket depends on another part or repository, how that part provides what the ticket
