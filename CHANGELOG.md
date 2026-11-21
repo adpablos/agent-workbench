@@ -12,9 +12,6 @@ should receive, propose that release. Workbenches pin a release tag together wit
   not done now records `open findings, accepted by the requester` in the note and lists each
   open step at the end of the pull request description. Before, the note said the review was
   skipped and the description could leave the findings out.
-- **Each review round is a new session.** The contract says so for the reviews after the first.
-  A reviewer that continued its own session passed changes in which a new one found defects
-  that had to be fixed.
 - **Review steps name every file.** A step that `review` adds names every file its fix touches,
   the test included, so `do` does not stop to ask whether it may change a test.
 - **`shape` shows directions.** For an idea with no chosen way, `shape` first shows two or three
