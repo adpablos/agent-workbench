@@ -34,7 +34,8 @@ The task name is the ticket key in lowercase, or its local name. Read
    - No P1 or P2: set the value of its Reviewed line to `<HEAD SHA> passed`, and its Next step
      to `/ship <task>`.
    - Otherwise: add each P1 and P2 to the Plan as a new step `R1`, `R2`, with the same four
-     lines as the other steps (Change, Like, Check, Commit), and set Next step to
+     lines as the other steps (Change, Like, Check, Commit), its Change naming every file the
+     fix touches, the test that checks it included, and set Next step to
      `/do <task>, to fix R1...`.
    Use only the ratings above, whatever scale another document gives.
 
