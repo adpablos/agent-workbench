@@ -13,9 +13,10 @@ The task name is the ticket key in lowercase, or its local name. Read
 `private/tasks/<task>.md`. Change no code.
 
 1. Compare the note's Reviewed line with the HEAD of the task's copy. If the requester's
-   message is `ship without review`, set that line to `<HEAD SHA> skipped by the requester`. If
-   the line does not show that same SHA as passed or skipped, say so, end with
-   `Next: /review <task>`, and stop.
+   message is `ship without review`, set that line to `<HEAD SHA> skipped by the requester`,
+   or to `<HEAD SHA> open findings, accepted by the requester` when the Plan has review steps
+   not done. If the line does not show that same SHA as passed, skipped or accepted, say so,
+   end with `Next: /review <task>`, and stop.
 2. If the note already has a title and a description under `## Pull request text`, they are the
    text the requester saw. Never edit them on your own:
    - the requester's message is `Approved`: go to step 5;
@@ -25,8 +26,9 @@ The task name is the ticket key in lowercase, or its local name. Read
 3. Otherwise read in full the style the policy names for commits and pull requests, the Goal in
    the note, and `git diff origin/<base>...HEAD` in the task's copy. Write the pull request
    title and description in that style. State only what the note and the diff show; for how it
-   was tested, go by the note's Verified line and the tests in the diff. Save both in the note
-   under `## Pull request text`.
+   was tested, go by the note's Verified line and the tests in the diff. When the Reviewed
+   line says open findings, end the description with each review step not done, one line
+   each. Save both in the note under `## Pull request text`.
 4. Read that section of the note again and show the requester the branch, the address of
    `origin` it will be pushed to, the output of `git diff --stat origin/<base>...HEAD`, and the
    title and description copied from the note, word for word. End with

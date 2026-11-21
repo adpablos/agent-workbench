@@ -40,8 +40,8 @@ security, concurrency, or behavior that others rely on. Then:
    checks the change against those words, writes nothing in your copy, experiments in its own
    copy, and returns findings.
 2. Wait for the result within your turn. Never end your turn just to wait.
-3. Resolve findings with evidence and have the new SHA reviewed, at most twice more. If blockers
-   remain, report them with your recommendation.
+3. Resolve findings with evidence and have the new SHA reviewed by another new session, at most
+   twice more. If blockers remain, report them with your recommendation.
 
 ## Finishing
 
