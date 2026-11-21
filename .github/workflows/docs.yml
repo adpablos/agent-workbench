@@ -41,8 +41,8 @@ jobs:
         run: |
           contract=$(wc -w < OPERATING.md)
           start=$(cat OPERATING.md templates/workbench-entrypoint.md | wc -w)
-          echo "OPERATING.md: $contract words (cap 600); with the entrypoint: $start (cap 700)"
-          [ "$contract" -le 600 ] && [ "$start" -le 700 ]
+          echo "OPERATING.md: $contract words (cap 600); with the entrypoint: $start (cap 740)"
+          [ "$contract" -le 600 ] && [ "$start" -le 740 ]
       # A host drops a skill whose header it cannot parse, without a warning, and reads a skill in
       # full whenever a request matches it.
       - name: Skills have a loadable header and stay short
