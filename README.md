@@ -19,7 +19,6 @@ on existing approved tools.
 | [docs/VALIDATION.md](docs/VALIDATION.md) | Probes and how a release is accepted |
 | [templates/](templates/) | Starting points for the workbench's `AGENTS.md` and private files |
 | [skills/](skills/) | Optional task stages as agent skills, from an idea to a merged change |
-| [evals/](evals/) | Development tool for the core: measures a candidate on real repositories. A workbench never reads it |
 
 ## Set up a workbench
 

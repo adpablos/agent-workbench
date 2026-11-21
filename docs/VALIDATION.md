@@ -36,5 +36,4 @@ A release that changes `skills/` also runs one task through every stage on one h
 requester's words as a real requester would write them.
 
 A change to how hosts load instructions, such as a new host version, reruns the probes it can
-affect. A larger change to the contract can also be measured with the kit in `evals/`, as its
-README describes.
+affect.

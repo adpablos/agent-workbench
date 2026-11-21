@@ -27,6 +27,9 @@ should receive, propose that release. Workbenches pin a release tag together wit
 - **Policy template.** A stage passes the turn only to a stage whose agent the session can
   start; an agent on another host is started from a shell with the command its line gives; a
   task can start from the branch of a task not merged yet.
+- **`evals/` removed.** The kit measured configurations of v0.4.0 and was not kept up with
+  later releases, so it said nothing about the current core. Candidates are now measured
+  outside this repository; the kit stays in the history up to v0.7.0.
 - **Hosts.** `docs/HOSTS.md` says what a session is offered with and without isolation on Claude
   Code and Codex, how to run one stage from the command line, how one Claude Code chat runs
   every stage across both hosts, and what breaks it.
