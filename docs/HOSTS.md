@@ -84,10 +84,18 @@ installed and one process per turn of a stage:
   agent's file; `--resume <session id>` took the requester's answer to that stage. `codex exec -m
   <model> -c model_reasoning_effort=<effort>` did the same for a stage whose agent is a model in
   Codex, and `codex exec resume <session id> -m <model>` took the answer.
-- No session started a stage on the other host from inside its sandbox: a Codex reviewer that
-  the policy told to pass the turn to `do`, whose agent was a Claude Code agent, tried, failed,
-  and ended its reply with the failure instead of `Next: /do`. `templates/POLICY.md` now passes
-  the turn only to a stage whose agent the session can start.
+- By default no session started a stage on the other host from inside its sandbox: a Codex
+  reviewer that the policy told to pass the turn to `do`, whose agent was a Claude Code agent,
+  tried, failed, and ended its reply with the failure instead of `Next: /do`.
+  `templates/POLICY.md` now passes the turn only to a stage whose agent the session can start.
+- A Claude Code session did start a Codex agent once that one command was let out of its
+  sandbox: `sandbox.excludedCommands: ["codex *"]` with `permissions.allow: ["Bash(codex *)"]`.
+  The command has to be plain: with a redirect, a pipe or `cd` in front it stayed inside the
+  sandbox and failed. With that, one chat took a task from plan to a passed review across both
+  hosts: the planner and the builder as subagents, the reviewer through `codex exec`, three
+  review rounds, and "go on" from the requester between rounds.
+- A project file for Codex (`.codex/config.toml` in the workbench) did not switch personal
+  skills off; only the command-line option above did.
 - Claude Code's sandbox (`sandbox.enabled` with `autoAllowBashIfSandboxed`, and
   `allowUnsandboxedCommands: false`) kept every command off the network and writing only in the
   workbench folder. A task's copy is a worktree, so Git also writes in the clone's `.git`: name
