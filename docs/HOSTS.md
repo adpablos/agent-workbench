@@ -90,10 +90,11 @@ installed and one process per turn of a stage:
   `templates/POLICY.md` now passes the turn only to a stage whose agent the session can start.
 - A Claude Code session did start a Codex agent once that one command was let out of its
   sandbox: `sandbox.excludedCommands: ["codex *"]` with `permissions.allow: ["Bash(codex *)"]`.
-  The command has to be plain: with a redirect, a pipe or `cd` in front it stayed inside the
-  sandbox and failed. With that, one chat took a task from plan to a passed review across both
-  hosts: the planner and the builder as subagents, the reviewer through `codex exec`, three
-  review rounds, and "go on" from the requester between rounds.
+  The command has to be plain: with a redirect, a pipe or `cd` in front, or with backticks in
+  the text handed over, it stayed inside the sandbox and failed. With that, one chat took five
+  tasks from plan to a passed review across both hosts: the planner and the builder as
+  subagents, the reviewer through `codex exec`, two or three review rounds each, and "go on"
+  from the requester between rounds.
 - A project file for Codex (`.codex/config.toml` in the workbench) did not switch personal
   skills off; only the command-line option above did.
 - Claude Code's sandbox (`sandbox.enabled` with `autoAllowBashIfSandboxed`, and

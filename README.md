@@ -120,16 +120,19 @@ Each stage is small enough to run in its own session, on the model that suits it
 | `shape` | Turns an idea into tasks the size of one ticket, by asking the requester | A strong model |
 | `investigate` | Reproduces a reported failure, or answers a question by running the code, before any fix is planned | A strong model |
 | `think` | Reads the ticket and the code, and writes a plan of closed steps in the task's note | A strong model |
-| `do` | Carries out the plan, one commit per step, and stops when a step is unclear | An economical model |
+| `do` | Carries out the plan, one commit per step, and stops when a step is unclear | A strong model; an economical one once you have seen it finish plans in your repositories |
 | `review` | Reviews the change once, comparing each addition with its nearest neighbour; its findings become new steps of the plan | A strong model of another family |
 | `ship` | Writes the pull request text, pushes once the requester approves it, and leaves the build to be checked | A model that writes well |
 | `close` | After the merge, removes the copy and branch, follows the build, and archives the note | An economical model |
 | `retro` | Every few tasks, reads what went wrong and what went well, and proposes improvements | A strong model |
 
-The note in `private/tasks/` carries the state from one stage to the next. Use the stages when
-usage is paid per token or your models differ much in price: the plan is the expensive thought,
-and an economical model does the rest. A workbench with one capable model can keep working from
-the contract alone.
+The note in `private/tasks/` carries the state from one stage to the next. The stages are not
+the cheaper way: measured on tickets that touch many files, they used about five times the
+tokens of one session, and one session of a strong model working from the contract alone gave
+the change a blind reviewer preferred in six tickets of eight. With `do` on an economical
+model, four tickets in ten were left half done. Use the stages when someone must see the plan
+before any code is written, or when the work passes between sessions or people. For the rest,
+ask for the ticket directly and have `review` read the change when it carries risk.
 
 To install them, ask the agent: "Install the task stages by following `core/README.md`." It:
 

@@ -27,6 +27,8 @@ instructions.
   read-only references.
 - Understand the problem and the existing code before changing it. Make the smallest change that
   meets the request, with tests that fail without it.
+- Before you report a change, read your own diff once: take out what the request does not need
+  and make the rest read like the code around it, keeping behaviour and tests.
 - Read `docs/DEFAULTS.md` only when you need a setting the project's instructions do not give, and
   `docs/HOSTS.md` only when you cannot tell how the host behaves.
 

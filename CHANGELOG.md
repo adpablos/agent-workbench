@@ -8,7 +8,35 @@ should receive, propose that release. Workbenches pin a release tag together wit
 
 ## Unreleased
 
-None.
+- **A last look at your own change.** Before it reports a change, the agent reads its own diff
+  once, takes out what the request does not need and makes the rest read like the code around
+  it. Measured on eight tickets of many files, one session each way: a blind reviewer
+  preferred the change made with this line in six, things the ticket did not ask for fell from
+  five to three per change, and the session used a quarter fewer tokens.
+- **Shipping with findings open.** `ship without review` on a task whose plan has review steps
+  not done now records `open findings, accepted by the requester` in the note and lists each
+  open step at the end of the pull request description. Before, the note said the review was
+  skipped and the description could leave the findings out.
+- **Each review round is a new session.** The contract says so for the reviews after the first.
+  A reviewer that continued its own session passed changes in which a new one found defects
+  that had to be fixed.
+- **Review steps name every file.** A step that `review` adds names every file its fix touches,
+  the test included, so `do` does not stop to ask whether it may change a test.
+- **`shape` shows directions.** For an idea with no chosen way, `shape` first shows two or three
+  different directions with its recommendation, and asks which. An idea whose way is chosen
+  goes on as before.
+- **What the stages cost.** The README no longer presents the stages as the cheaper way.
+  Measured on the same tickets, they used about five times the tokens of one session, and one
+  session of a strong model working from the contract gave the change a blind reviewer
+  preferred in six of eight. `do` on an economical model left four tickets in ten half done:
+  the README and the policy template now give `do` a strong model. The stages remain for work
+  whose plan someone must see first, or that passes between sessions or people.
+- **Policy template.** A stage passes the turn only to a stage whose agent the session can
+  start; an agent on another host is started from a shell with the command its line gives; a
+  task can start from the branch of a task not merged yet.
+- **Hosts.** `docs/HOSTS.md` says what a session is offered with and without isolation on Claude
+  Code and Codex, how to run one stage from the command line, how one Claude Code chat runs
+  every stage across both hosts, and what breaks it.
 
 ## 0.7.0 - 2026-11-20
 
