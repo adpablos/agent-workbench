@@ -8,11 +8,6 @@ should receive, propose that release. Workbenches pin a release tag together wit
 
 ## Unreleased
 
-- **A last look at your own change.** Before it reports a change, the agent reads its own diff
-  once, takes out what the request does not need and makes the rest read like the code around
-  it. Measured on eight tickets of many files, one session each way: a blind reviewer
-  preferred the change made with this line in six, things the ticket did not ask for fell from
-  five to three per change, and the session used a quarter fewer tokens.
 - **Shipping with findings open.** `ship without review` on a task whose plan has review steps
   not done now records `open findings, accepted by the requester` in the note and lists each
   open step at the end of the pull request description. Before, the note said the review was
@@ -26,9 +21,10 @@ should receive, propose that release. Workbenches pin a release tag together wit
   different directions with its recommendation, and asks which. An idea whose way is chosen
   goes on as before.
 - **What the stages cost.** The README no longer presents the stages as the cheaper way.
-  Measured on the same tickets, they used about five times the tokens of one session, and one
-  session of a strong model working from the contract gave the change a blind reviewer
-  preferred in six of eight. `do` on an economical model left four tickets in ten half done:
+  Measured on eight tickets of many files, they used about five times the tokens of one
+  session, and two blind reviewers, one of each model family, each preferred the change of one
+  session of a strong model working from the contract in six of eight. `do` on an economical
+  model left four tickets in ten half done:
   the README and the policy template now give `do` a strong model. The stages remain for work
   whose plan someone must see first, or that passes between sessions or people.
 - **Policy template.** A stage passes the turn only to a stage whose agent the session can

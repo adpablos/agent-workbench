@@ -128,11 +128,12 @@ Each stage is small enough to run in its own session, on the model that suits it
 
 The note in `private/tasks/` carries the state from one stage to the next. The stages are not
 the cheaper way: measured on tickets that touch many files, they used about five times the
-tokens of one session, and one session of a strong model working from the contract alone gave
-the change a blind reviewer preferred in six tickets of eight. With `do` on an economical
-model, four tickets in ten were left half done. Use the stages when someone must see the plan
-before any code is written, or when the work passes between sessions or people. For the rest,
-ask for the ticket directly and have `review` read the change when it carries risk.
+tokens of one session, and two blind reviewers, one of each model family, each preferred the
+change of one session of a strong model working from the contract alone in six tickets of
+eight. With `do` on an economical model, four tickets in ten were left half done. Use the
+stages when someone must see the plan before any code is written, or when the work passes
+between sessions or people. For the rest, ask for the ticket directly and have `review` read
+the change when it carries risk.
 
 To install them, ask the agent: "Install the task stages by following `core/README.md`." It:
 

@@ -27,8 +27,6 @@ instructions.
   read-only references.
 - Understand the problem and the existing code before changing it. Make the smallest change that
   meets the request, with tests that fail without it.
-- Before you report a change, read your own diff once: take out what the request does not need
-  and make the rest read like the code around it, keeping behaviour and tests.
 - Read `docs/DEFAULTS.md` only when you need a setting the project's instructions do not give, and
   `docs/HOSTS.md` only when you cannot tell how the host behaves.
 
@@ -42,8 +40,8 @@ security, concurrency, or behavior that others rely on. Then:
    checks the change against those words, writes nothing in your copy, experiments in its own
    copy, and returns findings.
 2. Wait for the result within your turn. Never end your turn just to wait.
-3. Resolve findings with evidence and have the new SHA reviewed by another new session, at most
-   twice more. If blockers remain, report them with your recommendation.
+3. Resolve findings with evidence and repeat step 1, at most twice more. If blockers remain,
+   report them with your recommendation.
 
 ## Finishing
 
