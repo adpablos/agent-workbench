@@ -27,6 +27,11 @@ should receive, propose that release. Workbenches pin a release tag together wit
 - **Policy template.** A stage passes the turn only to a stage whose agent the session can
   start; an agent on another host is started from a shell with the command its line gives; a
   task can start from the branch of a task not merged yet.
+- **The entrypoint no longer says the folder is not a Git repository.** The README lets it keep
+  a local history of its own; the entrypoint now says it is not a project's repository.
+- **Forced removal after merge, stated once.** `docs/PULL-REQUESTS.md` said never to force, while
+  `close` forces a removal the requester approved after seeing what would be lost. The document
+  now carries that one case.
 - **`evals/` removed.** The kit measured configurations of v0.4.0 and was not kept up with
   later releases, so it said nothing about the current core. Candidates are now measured
   outside this repository; the kit stays in the history up to v0.7.0.

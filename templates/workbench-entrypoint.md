@@ -1,7 +1,7 @@
 # Workbench
 
-This folder coordinates agent work across repositories and information sources. It is not a Git
-repository.
+This folder coordinates agent work across repositories and information sources. It is not a
+project's repository.
 
 Before acting, read `core/OPERATING.md` and `private/POLICY.md` in full, and finish reading before
 you act. A read counts only when the tool returned the whole file; text of the whole file that the

@@ -106,7 +106,9 @@ stated decision:
   stashes, other worktrees, active writers, files the index marks as unchanged or skip-worktree,
   edits a content filter hides, and commits only that worktree's own refs or reflogs reach. Keep the
   copy when you cannot show that nothing would be lost, and report any surprise.
-- Never force, reset, or clean. Report each removal and each retention with its reason.
+- Never force, reset, or clean on your own. Only when the requester has seen what would be lost
+  and said to remove that copy, remove that copy and its branch by force, nothing else. Report
+  each removal and each retention with its reason.
 
 ## Mixed authorship
 
