@@ -128,7 +128,7 @@ Each stage is small enough to run in its own session, on the model that suits it
 | `shape` | Turns an idea into tasks the size of one ticket, by asking the requester | A strong model |
 | `investigate` | Reproduces a reported failure, or answers a question by running the code, before any fix is planned | A strong model |
 | `think` | Reads the ticket and the code, and writes a plan of closed steps in the task's note | A strong model |
-| `do` | Carries out the plan, one commit per step, and stops when a step is unclear | A strong model; an economical one once you have seen it finish plans in your repositories |
+| `do` | Carries out the plan, one commit per step, and stops only for what the requester must decide | A strong model; an economical one once you have seen it finish plans in your repositories |
 | `review` | Reviews the change once, comparing each addition with its nearest neighbour; its findings become new steps of the plan | A strong model of another family |
 | `ship` | Writes the pull request text, pushes once the requester approves it, and leaves the build to be checked | A model that writes well |
 | `close` | After the merge, removes the copy and branch, follows the build, and archives the note | An economical model |
