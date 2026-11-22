@@ -42,6 +42,12 @@ should receive, propose that release. Workbenches pin a release tag together wit
 - **Forced removal after merge, stated once.** `docs/PULL-REQUESTS.md` said never to force, while
   `close` forces a removal the requester approved after seeing what would be lost. The document
   now carries that one case.
+- **Where a rule of your own goes.** The README now says it: a rule a command can check, in a
+  script with one policy line; a rule that needs reading, in the policy or the project's agent
+  instructions; not in a skill. Measured on two models, a rule written only in a skill was
+  the one place an economical model did not follow.
+- **The workbench's history may have a private remote.** The README said to give it no remote;
+  it now allows a private repository of your own.
 - **`evals/` removed.** The kit measured configurations of v0.4.0 and was not kept up with
   later releases, so it said nothing about the current core. Candidates are now measured
   outside this repository; the kit stays in the history up to v0.7.0.

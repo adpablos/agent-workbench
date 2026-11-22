@@ -69,13 +69,22 @@ session that reads one of its files; the subfolder probe in
 [docs/VALIDATION.md](docs/VALIDATION.md) shows it. Keep `private/` and `work/` out of this
 repository; a `.gitignore` is not a substitute for that separation.
 
+### Where a rule of your own goes
+
+- A rule a command can check goes in a script, with one line in `private/POLICY.md` that says
+  when to run it. The agent runs it and fixes what it lists.
+- A rule that needs reading goes where every session reads: `private/POLICY.md`, or the
+  project's agent instructions when the rule belongs to that project.
+- A skill is for a procedure the agent is sent to. A rule written only in a skill is read only
+  when the agent opens the skill, and an economical model often does not.
+
 ### Keep a history of the workbench
 
 Optional. To see what changed in your rules, agents, and notes, make the workbench folder a
 local Git repository of its own: `git init` there, with a `.gitignore` that leaves out `core/`,
 `work/`, any clone or tool kept inside the folder, and any folder of local settings with secret
-values. Give it no remote: `private/` is never shared. Ask the agent to commit there after it
-changes the policy, an agent, or a skill.
+values. `private/` is never shared: give the folder no remote, or only a private repository of
+your own. Ask the agent to commit there after it changes the policy, an agent, or a skill.
 
 ### Add a repository
 
