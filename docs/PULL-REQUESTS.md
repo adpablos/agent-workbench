@@ -81,7 +81,7 @@ The first review is complete and independent, with every finding at once. After 
 decides what a round covers. Under the default, `delta`, the reviewer gets the earlier findings and
 the diff since the reviewed commit, and checks that the findings are resolved and the fix broke
 nothing; where the host allows it, resume the same reviewer session with the model set explicitly.
-Anything new outside that diff goes to a follow-up unless it is P0, P1, or a real security risk. An
+Anything new outside that diff goes to a follow-up unless it is P1 or a real security risk. An
 earlier finding stays open until it is fixed or rejected with evidence. Save a full review from
 scratch for risk and milestones: security changes, a release, and before a repository goes public.
 

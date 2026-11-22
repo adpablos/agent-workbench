@@ -16,6 +16,12 @@ should receive, propose that release. Workbenches pin a release tag together wit
   repository's task branch in advance, as `docs/DEFAULTS.md` shows, `ship` pushes without
   asking for `Approved`, and opens the pull request if the line covers it. Before, `ship` asked
   every time.
+- **Later review rounds.** `review` now does what `docs/PULL-REQUESTS.md` (Rounds after the
+  first) says. When it finds something it keeps the reviewed commit and the round in the note's
+  Reviewed line; the next round reads the diff since that commit and the review steps; from
+  round 3 it adds no steps and hands the open findings to the requester. Before, every round
+  read the whole change and no round was the last. The document no longer names a `P0` the
+  stage does not use.
 - **Review steps name every file.** A step that `review` adds names every file its fix touches,
   the test included, so `do` does not stop to ask whether it may change a test.
 - **`shape` shows directions.** For an idea with no chosen way, `shape` first shows two or three

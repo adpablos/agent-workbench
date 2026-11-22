@@ -11,7 +11,7 @@ them out otherwise. -->
 - **Verified:** <what passed, and how>
 - **Next step:** <one action>
 - **Open decisions:** <what waits on the requester, or none>
-- **Reviewed:** <SHA and `passed`, or not yet>
+- **Reviewed:** <SHA and `passed` or `findings, round <n>`, or not yet>
 - **Build:** <SHA and `passed`, `failed` or `running`, or none>
 - **Pull request:** <link, or none>
 
