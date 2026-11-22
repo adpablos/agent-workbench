@@ -34,9 +34,10 @@ should receive, propose that release. Workbenches pin a release tag together wit
   different directions with its recommendation, and asks which. An idea whose way is chosen
   goes on as before.
 - **What the stages cost.** The README no longer presents the stages as the cheaper way.
-  Measured on eight tickets of many files, they used about five times the tokens of one
-  session, and two blind reviewers, one of each model family, each preferred the change of one
-  session of a strong model working from the contract in six of eight. `do` on an economical
+  Measured on eight tickets of many files, with every stage on a strong model, a ticket cost
+  about four times what one session of that model cost (about $2 against $0.50 at list
+  prices), and two blind reviewers, one of each model family, each preferred the change of
+  one session working from the contract in six of eight. `do` on an economical
   model left four tickets in ten half done:
   the README and the policy template now give `do` a strong model. The stages remain for work
   whose plan someone must see first, or that passes between sessions or people.
