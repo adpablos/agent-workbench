@@ -31,12 +31,14 @@ The task name is the ticket key in lowercase, or its local name. Read
    each. Save both in the note under `## Pull request text`.
 4. Read that section of the note again and show the requester the branch, the address of
    `origin` it will be pushed to, the output of `git diff --stat origin/<base>...HEAD`, and the
-   title and description copied from the note, word for word. End with
+   title and description copied from the note, word for word. If a line of the policy approves
+   pushing this repository's task branch in advance, go to step 5. Otherwise end with
    `Waiting for "Approved"` and stop.
-5. `Approved` is the requester's approval of that push: push that branch to `origin` and
-   nothing else. Show the link the push printed for creating the pull request, and the title
-   and description copied from the note, word for word, for the requester to open it. Set the
-   note's Next step to opening the pull request.
+5. `Approved`, or that line of the policy, is the approval of that push: push that branch to
+   `origin` and nothing else. If the line also covers opening the pull request, open it with
+   that title and description. Otherwise show the link the push printed for creating it and
+   that title and description, for the requester to open it. Set the note's Next step to
+   opening the pull request, or to the merge once it is open.
 6. If the policy says how to read a build's result, set the note's Build line to
    `<pushed SHA> running` and end your reply with one line: the push starts a build, and the
    next message about this task will check it.
