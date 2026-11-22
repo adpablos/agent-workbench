@@ -22,6 +22,11 @@ should receive, propose that release. Workbenches pin a release tag together wit
   round 3 it adds no steps and hands the open findings to the requester. Before, every round
   read the whole change and no round was the last. The document no longer names a `P0` the
   stage does not use.
+- **Every review round runs the repository's checks.** `review` runs the checks the
+  repository's pipeline runs before it reads, and a failure is a finding; before, it could.
+  In a later round a finding counts as resolved only after reading what else its fix changes.
+  Measured on eight changes: reviewers that did not run the type check missed a build that
+  failed, and two called resolved a fix that broke the case next to it.
 - **Review steps name every file.** A step that `review` adds names every file its fix touches,
   the test included, so `do` does not stop to ask whether it may change a test.
 - **`shape` shows directions.** For an idea with no chosen way, `shape` first shows two or three
