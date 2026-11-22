@@ -12,11 +12,12 @@ task, and the answer. If you cannot start it, say which agent to select and stop
 The task name is the ticket key in lowercase, or its local name. Read
 `private/tasks/<task>.md`. You did not write this change. Change nothing in the task's copy.
 
-1. Read the repository's own agent instructions and any review skill or instructions it keeps
-   (`.github/`, `AGENTS.md`, a skills folder). Follow them as well, and say which.
-2. Run the repository's pipeline checks (types, format, tests): each failure is a finding.
-   Read the change: `git diff origin/<base>...HEAD` in the task's copy, with the base the note
-   names, and the files around it.
+1. Read the repository's own agent instructions and any review skill it keeps (`.github/`,
+   `AGENTS.md`, a skills folder). Follow them and say which.
+2. Run the repository's pipeline checks (types, format, tests): a failure the change causes is
+   a finding; one the machine causes is not: name that check as not verified.
+   Read the change: `git diff origin/<base>...HEAD` in the task's copy, from the note's base,
+   and the files around it.
    If the Reviewed line names a commit with findings and `re-review` is not `full`, read
    instead `git diff <that commit>...HEAD` and the Plan's review steps: check each finding is
    resolved, reading what else its fix changes, and nothing broke. Anything new outside it is
@@ -35,12 +36,10 @@ The task name is the ticket key in lowercase, or its local name. Read
    - **Extra:** what could be removed and still meet the Goal?
 4. Rate each finding: `P1` must fix, `P2` should fix, `P3` optional.
 5. Write the result in the note:
-   - No P1 or P2: set its Reviewed line to `<HEAD SHA> passed`, and Next step to
-     `/ship <task>`.
-   - Otherwise: add each P1 and P2 to the Plan as a new step `R1`, `R2`, with the other steps'
-     four lines (Change, Like, Check, Commit), its Change naming every file the fix
-     touches, its test included. Set the Reviewed line to
-     `<HEAD SHA> findings, round <n>` and Next step to `/do <task>, to fix R1...`. From
+   - No P1 or P2: set Reviewed to `<HEAD SHA> passed`, and Next step to `/ship <task>`.
+   - Otherwise: add each P1 and P2 to the Plan as a step `R1`, `R2`, with the other steps'
+     four lines, its Change naming every file the fix touches, its test included. Set
+     Reviewed to `<HEAD SHA> findings, round <n>` and Next step to `/do <task>, to fix R1...`. From
      round 3 (`review-rounds` plus 1), add no steps: set Next step to the requester's
      decision and end with the open findings, without `Next:`.
    Use only these ratings, whatever scale another document gives.
