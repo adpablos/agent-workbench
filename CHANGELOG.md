@@ -28,6 +28,11 @@ should receive, propose that release. Workbenches pin a release tag together wit
   In a later round a finding counts as resolved only after reading what else its fix changes.
   Measured on eight changes: reviewers that did not run the type check missed a build that
   failed, and two called resolved a fix that broke the case next to it.
+- **The build stops only for a decision.** `do` now repairs what the ticket and the note's Goal
+  already settle (a file a step needs and does not name, an existing test that asserts what
+  the ticket changes, a check that can pass only after a later step) and says so under Snags;
+  a check the machine cannot run is named there as not verified. Before, each of these was a
+  stop and a question to the requester.
 - **Review steps name every file.** A step that `review` adds names every file its fix touches,
   the test included, so `do` does not stop to ask whether it may change a test.
 - **`shape` shows directions.** For an idea with no chosen way, `shape` first shows two or three
