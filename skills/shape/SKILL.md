@@ -11,15 +11,22 @@ Then shape one idea. Change no code and create no ticket.
    `private/ideas/<name>.md`. If it exists, read it and continue from its Open questions.
 2. Read what the policy's Topics name for the project, and only the code you need to judge size
    and risk.
-3. While an answer could still change the tasks, ask the requester for one decision per turn:
+3. If the idea has no chosen way to deliver it yet (a new product, or a problem with several
+   possible answers), first find out alone what is possible and what it costs. Then show two
+   or three clearly different directions, each in a few lines: what its user gets, what makes
+   it worth doing, its main risk, and the rough size of the work. Recommend one and ask the
+   requester to choose.
+4. While an answer could still change the tasks, ask the requester for one decision per turn:
    the one that changes the most. After each answer, update the note.
-4. Keep the note to these sections, one line per item: **Outcome** (who gets what, and why),
-   **Out of scope**, **Decisions** (each with its reason), **Open questions**, **Tasks**.
-5. Under Tasks, list the smallest set of tasks that delivers the Outcome, in the order they build
+5. Keep the note to these sections, one line per item: **Outcome** (who gets what, and why),
+   **Out of scope**, **Decisions** (each with its reason), **Open questions**, **Tasks**; and
+   **Directions** when you compared some: each one, the one chosen, and the sources that
+   decided.
+6. Under Tasks, list the smallest set of tasks that delivers the Outcome, in the order they build
    on each other. Each task is one reviewable change and has a title, the outcome in one
    sentence, how to tell it is done, and what it depends on. A task you cannot describe that way
    is still an open question.
-6. When no answer would change the tasks any more, show the requester the Tasks. The requester
+7. When no answer would change the tasks any more, show the requester the Tasks. The requester
    creates the tickets; write each ticket key next to its task when they give it. For a task
    the requester says will have no ticket, write a short local name instead. Each task then
    starts with `/think <ticket key or local name>`.

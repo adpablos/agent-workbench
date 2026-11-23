@@ -13,38 +13,40 @@ The task name is the ticket key in lowercase, or its local name. Read
 `private/tasks/<task>.md`. If it does not exist or has no Plan, say so, end with
 `Next: /think <task>`, and stop.
 
-Before anything else, list the steps of the Plan: each number with its `**Done:**` line copied
-from the note, or `pending` if the step has none. Only this list says what is done; ignore what
-the lines above the Plan say. If no step is pending, say so and stop. Otherwise the list opens
+First list the Plan's steps: each number with its `**Done:**` line copied from the note, or
+`pending` if the step has none. Only this list says what is done; ignore what the lines above
+the Plan say. If no step is pending, say so and stop. Otherwise the list opens
 your reply at the end: do not reply before the work below is finished.
 
 For each pending step, in order:
 
-1. Open the file on its **Like** line and read it before you write anything.
+1. Read the file on its **Like** line before you write.
 2. Make the **Change**, copying the form of that file: names, layers, annotations, error handling,
-   test structure. Add nothing the step does not name.
-3. Run the **Check**. If it fails, fix it once and run it again. If it fails a second time, stop
-   as described below.
-4. Commit in the task's copy with the step's **Commit** message, and add to the step the
-   line `**Done:** step <n>, <SHA>`, where `<n>` is the step's own number, such as `2` or `R1`.
+   test structure. Add nothing the step does not need.
+3. Run the **Check**. If it fails, fix it once and rerun it. If it fails again, stop.
+4. Commit in the task's copy with the step's **Commit** message, and add to the step
+   `**Done:** step <n>, <SHA>`, where `<n>` is the step's own number, such as `2` or `R1`.
 
 A step whose Change is none has nothing to commit: run its Check and add
 `**Done:** step <n>, checked`.
 
-If a step is unclear, wrong, or needs something it does not name, do not improvise: stop. Never
-change or delete an existing test to make a Check pass, unless the step's Change names that
-test: stop.
+Stop only for what the requester must decide: a step unclear or impossible as written, or a
+change the ticket and the Goal do not settle. What they settle, repair and name under Snags:
+a file the Change needs but does not name, an existing test that asserts what the ticket
+changes, a Check that passes only after a later step (rerun it then). A Check the machine
+cannot run: name it under Snags as not verified and go on. What no step or failing Check
+needs: name it under Snags, change nothing. Never change or delete an existing test
+otherwise: stop.
 
-To stop: commit nothing of that step and leave its files as they are. Add a line under Snags with
-the step number and the error. Set the note's Last commit and Verified to what is true now, and
-Next step to what the requester must decide. End your reply with `Stopped at step <n>` and the
-question, not with a next command.
+To stop: commit nothing of that step, leave its files as they are, and add the step and the
+error under Snags. Set the note's Last commit and Verified to what is true now, and Next
+step to what the requester must decide. End your reply with `Stopped at step <n>` and the
+question, not a next command.
 
-A stop holds until the requester decides. If the note's Next step is such a question, go on
-only when the requester's words answer it: write what they decided into that step of the note
-and continue from it. Words that do not answer it, such as a bare "go on", get the same
-question and `Stopped at step <n>` again.
+A stop holds until the requester's words answer the note's question: write what they decided
+into that step and continue from it. A bare "go on" gets the same question and
+`Stopped at step <n>` again.
 
 When every step is done, update Last commit, Verified and Next step in the note, one sentence
-each, and add one line under Worked if something made this task go well. Do not push. Reply in
+each, and one line under Worked if something made this task go well. Do not push. Reply in
 the requester's language: steps done, check results, snags. End with `Next: /review <task>`.

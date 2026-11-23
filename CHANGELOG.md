@@ -8,7 +8,76 @@ should receive, propose that release. Workbenches pin a release tag together wit
 
 ## Unreleased
 
-None.
+- **The build stops only for a decision.** `do` now stops only for what the requester must
+  decide: a step that is unclear or cannot be done as written, or a change the ticket and the
+  plan's Goal do not settle. What they settle it repairs and names under Snags: a file the
+  step needs but does not name, an existing test that asserts what the ticket changes, a
+  check that passes only after a later step. A check the machine cannot run is named as not
+  verified, and what no step or failing check needs is named, not changed. Before, it
+  stopped at each of these. Measured on eight changes, two sets of runs: 1 and 3 stops per
+  eight tickets against 12 and 15, and every ticket finished against 7 and 5 of eight. On
+  the next model of the same family, two more sets: 2 and 2 stops, every ticket finished.
+  The stops left ask for an exact text the ticket gives and the plan did not quote.
+- **Shipping with findings open.** `ship without review` on a task whose note lists open
+  findings, or whose plan has review steps not done, now records
+  `open findings, accepted by the requester` in the note and lists each of them at the end of
+  the pull request description; a description saved before the findings were accepted is
+  written again. Before, the note said the review was skipped and the description could
+  leave the findings out.
+- **A push the policy approves in advance.** When a line of the policy approves pushing a
+  repository's task branch in advance, as `docs/DEFAULTS.md` shows, `ship` pushes without
+  asking for `Approved`, and opens the pull request if the line covers it. Before, `ship` asked
+  every time.
+- **Later review rounds.** `review` now does what `docs/PULL-REQUESTS.md` (Rounds after the
+  first) says. When it finds something it keeps the reviewed commit and the round in the note's
+  Reviewed line; the next round reads the diff since that commit and the review steps; from
+  round 3 it adds no steps, lists the open findings in the note and hands them to the
+  requester. Before, every round read the whole change and no round was the last. The
+  document no longer names a `P0` the stage does not use.
+- **Every review round runs the repository's checks.** `review` runs the checks the
+  repository's pipeline runs before it reads; before, it could. A failure the change causes
+  is a finding; a check the machine cannot run is named as not verified, not made a step.
+  It stops when the task's copy has changes or files not committed, so the checks run on the commit
+  it reviews. In a later round a finding counts as resolved only after reading what else its
+  fix changes, and the round reads the open findings of the last one too.
+  Measured on eight changes: reviewers that did not run the type check missed a build that
+  failed, and two called resolved a fix that broke the case next to it.
+- **Review steps name every file.** A step that `review` adds names every file its fix touches,
+  the test included, so `do` does not stop to ask whether it may change a test.
+- **`shape` shows directions.** For an idea with no chosen way, `shape` first shows two or three
+  different directions with its recommendation, and asks which. An idea whose way is chosen
+  goes on as before.
+- **What the stages cost and what they add.** The README no longer presents the stages as the
+  cheaper way, and says when they earn their cost. Measured on tickets of many files, with
+  every stage on a strong model, a ticket cost about four times what one session of that
+  model cost (about $3 against $0.90 at list prices, 30 minutes against 10), and two blind
+  reviewers, one of each model family, each preferred the change of one session working from
+  the contract in six of eight. On tickets with a decision left out, the stages asked the
+  requester before any code in half of the runs and one session in none. `do` on an
+  economical model left one build in four unfinished, and one change in four passed a strong
+  model's review: the README and the policy template now give `do` a strong model. Use the
+  stages when a decision is written nowhere, when someone must see the plan first, or when
+  the work passes between sessions or people.
+- **Policy template.** A stage passes the turn only to a stage whose agent the session can
+  start; an agent on another host is started from a shell with the command its line gives; a
+  task can start from the pushed branch of a task not merged yet.
+- **The entrypoint no longer says the folder is not a Git repository.** The README lets it keep
+  a local history of its own; the entrypoint now says it is not a project's repository.
+- **Forced removal after merge, stated once.** `docs/PULL-REQUESTS.md` said never to force, while
+  `close` forces a removal the requester approved after seeing what would be lost. The document
+  now carries that one case.
+- **Where a rule of your own goes.** The README now says it: a rule a command can check, in a
+  script with one policy line; a rule that needs reading, in the policy or the project's agent
+  instructions; not in a skill. Measured on two models, a rule written only in a skill was
+  the one place an economical model did not follow.
+- **The workbench's history may have a private remote.** The README said to give it no remote;
+  it now allows a private repository of your own.
+- **`evals/` removed.** The kit measured configurations of v0.4.0 and was not kept up with
+  later releases, so it said nothing about the current core. Candidates are now measured
+  outside this repository; the kit stays in the history up to v0.7.0.
+- **Hosts.** `docs/HOSTS.md` says what a session is offered with and without isolation on Claude
+  Code and Codex, how to run one stage from the command line, how one Claude Code chat runs
+  every stage across both hosts, and what breaks it.
 
 ## 0.7.0 - 2026-11-20
 

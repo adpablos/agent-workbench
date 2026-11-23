@@ -40,19 +40,22 @@ Optional: keep this section only if the workbench installed the task stages, as 
   to investigate, starts with `investigate`. The task's note in
   `private/tasks/` carries the state between them. Asked for development work without naming a
   stage, read the note, say which stage comes next, and run that stage's skill. Only when its
-  reply ends with `Next:` and a stage, run that stage too in the same turn; run no stage twice
-  in a turn, and end your turn at any other ending. A message that names no task is about the
+  reply ends with `Next:` and a stage whose agent you can start, run that stage too in the same
+  turn; run no stage twice in a turn, and end your turn at any other ending, or with that
+  `Next:` line when you cannot start its agent. A message that names no task is about the
   one note in `private/tasks/` that is not archived; if there are several, ask which. Anything
   else, answer as usual.
 - Whenever you read a task's note and its Build line says `running`, read that build again
   first, as this policy says, write the result in the line, and say it in one line. A note whose
   Next step is `Waiting for the build` is not an open task: run `close` for it.
-- Each stage runs on its agent, defined in the host's agents folder with its model:
+- Each stage runs on its agent, defined in the host's agents folder with its model. An agent
+  on another host than yours is started from a shell with the command its line gives, with the
+  stage, the task, and the requester's words, and its reply relayed unchanged:
 
 | Agent | Stages | Model |
 |---|---|---|
 | `planner` | shape, think, investigate | <strong model> |
-| `builder` | do, close | <economical model> |
+| `builder` | do, close | <strong model, or an economical one whose changes you have seen pass review here> |
 | `reviewer` | review, retro | <strong model of another family than the builder's> |
 | `writer` | ship | <model that writes well> |
 
@@ -63,7 +66,9 @@ Optional: keep this section only if the workbench installed the task stages, as 
 - A task's copy is a worktree of the project's clone, the one `private/workspace.json` lists, on
   its own branch: after a fetch there,
   `git -C <clone> worktree add <workbench>/work/<task>/<repo> -b <branch> origin/<default branch>`,
-  with `<workbench>` written out as this folder's full path.
+  with `<workbench>` written out as this folder's full path. A task that builds on one whose
+  change is pushed and not merged yet starts from `origin/<that task's branch>` instead, and
+  its note names that branch as its base.
   Never clone a project again, and change nothing else in its clone.
 - When the requester says a task's change is merged or dropped, remove its copy and its branch
   after the checks in `core/docs/PULL-REQUESTS.md` (After merge).

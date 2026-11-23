@@ -19,7 +19,6 @@ on existing approved tools.
 | [docs/VALIDATION.md](docs/VALIDATION.md) | Probes and how a release is accepted |
 | [templates/](templates/) | Starting points for the workbench's `AGENTS.md` and private files |
 | [skills/](skills/) | Optional task stages as agent skills, from an idea to a merged change |
-| [evals/](evals/) | Development tool for the core: measures a candidate on real repositories. A workbench never reads it |
 
 ## Set up a workbench
 
@@ -70,13 +69,22 @@ session that reads one of its files; the subfolder probe in
 [docs/VALIDATION.md](docs/VALIDATION.md) shows it. Keep `private/` and `work/` out of this
 repository; a `.gitignore` is not a substitute for that separation.
 
+### Where a rule of your own goes
+
+- A rule a command can check goes in a script, with one line in `private/POLICY.md` that says
+  when to run it. The agent runs it and fixes what it lists.
+- A rule that needs reading goes where every session reads: `private/POLICY.md`, or the
+  project's agent instructions when the rule belongs to that project.
+- A skill is for a procedure the agent is sent to. A rule written only in a skill is read only
+  when the agent opens the skill, and an economical model often does not.
+
 ### Keep a history of the workbench
 
 Optional. To see what changed in your rules, agents, and notes, make the workbench folder a
 local Git repository of its own: `git init` there, with a `.gitignore` that leaves out `core/`,
 `work/`, any clone or tool kept inside the folder, and any folder of local settings with secret
-values. Give it no remote: `private/` is never shared. Ask the agent to commit there after it
-changes the policy, an agent, or a skill.
+values. `private/` is never shared: give the folder no remote, or only a private repository of
+your own. Ask the agent to commit there after it changes the policy, an agent, or a skill.
 
 ### Add a repository
 
@@ -120,16 +128,27 @@ Each stage is small enough to run in its own session, on the model that suits it
 | `shape` | Turns an idea into tasks the size of one ticket, by asking the requester | A strong model |
 | `investigate` | Reproduces a reported failure, or answers a question by running the code, before any fix is planned | A strong model |
 | `think` | Reads the ticket and the code, and writes a plan of closed steps in the task's note | A strong model |
-| `do` | Carries out the plan, one commit per step, and stops when a step is unclear | An economical model |
+| `do` | Carries out the plan, one commit per step, and stops only for what the requester must decide | A strong model; an economical one only once you have seen its changes pass `review` in your repositories |
 | `review` | Reviews the change once, comparing each addition with its nearest neighbour; its findings become new steps of the plan | A strong model of another family |
 | `ship` | Writes the pull request text, pushes once the requester approves it, and leaves the build to be checked | A model that writes well |
 | `close` | After the merge, removes the copy and branch, follows the build, and archives the note | An economical model |
 | `retro` | Every few tasks, reads what went wrong and what went well, and proposes improvements | A strong model |
 
-The note in `private/tasks/` carries the state from one stage to the next. Use the stages when
-usage is paid per token or your models differ much in price: the plan is the expensive thought,
-and an economical model does the rest. A workbench with one capable model can keep working from
-the contract alone.
+The note in `private/tasks/` carries the state from one stage to the next. The stages are not
+the cheaper way: measured on tickets that touch many files, with every stage on a strong
+model, a ticket cost about four times what one session of that model cost (about $3 against
+$0.90 at list prices, and 30 minutes against 10), and two blind reviewers, one of each model
+family, each preferred the change of one session working from the contract alone in six
+tickets of eight. What the stages add is the question before the code. On tickets with a
+decision left out, they asked the requester in half of the runs and one session in none;
+where only the requester had the answer, they asked every time, and one session chose by
+itself and said so afterwards. With `do` on an economical model, one build in four was left
+unfinished and one change in four passed a strong model's review.
+
+Use the stages when the ticket leaves open a decision that neither the code nor a document
+settles, when someone must see the plan before any code is written, or when the work passes
+between sessions or people. For the rest, ask for the ticket directly and have `review` read
+the change when it carries risk.
 
 To install them, ask the agent: "Install the task stages by following `core/README.md`." It:
 

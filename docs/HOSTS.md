@@ -40,6 +40,19 @@ Every session also takes the user's own instruction files, skills, and tool serv
 Code 2.1.316, `claude -p "/context"` lists their tokens without a model call. Turn off for workbench
 sessions what the work does not need, where the host allows it.
 
+Observed on 2026-11-20 with Claude Code 2.1.316 and Codex 0.166.0, in a workbench with the task
+stages installed, for a user with many personal skills and tool servers:
+
+| Session started | Offered |
+|---|---|
+| `claude` at default settings | 93 skills, 18 tool servers, 371 tools |
+| `claude --setting-sources project,local --strict-mcp-config` | The workbench's 8 skills and the built-in ones, no tool server, 29 tools, and the workbench's agents |
+| `codex exec --ignore-user-config` | Still the user's 25 skills |
+| `codex exec -c 'skills.config=[{path="<a personal SKILL.md>",enabled=false}, ...]'`, one entry per personal skill | The workbench's 8 skills and 4 built-in ones |
+
+A repository's instructions may name a personal skill that such a session no longer has. Say in
+the policy, or in the request, which stage does that job instead.
+
 ## Delegation and review
 
 Delegating pays off only for independent work that can run in parallel, or for a bounded read that
@@ -60,6 +73,41 @@ In the `workspace-write` sandbox, with no added writable roots or network access
 resume` failed with `Operation not permitted`, and `claude -p` reported that it was not logged in.
 If yours does the same, run those commands yourself outside the sandbox and give the session the
 result.
+
+### A stage from the command line
+
+Observed on 2026-11-20 with Claude Code 2.1.316 and Codex 0.166.0, on macOS, with the task stages
+installed and one process per turn of a stage:
+
+- `claude -p --agent <agent> --output-format stream-json --verbose`, with `/<stage> <task>` and
+  the requester's words on standard input, ran the stage on the model and the effort of the
+  agent's file; `--resume <session id>` took the requester's answer to that stage. `codex exec -m
+  <model> -c model_reasoning_effort=<effort>` did the same for a stage whose agent is a model in
+  Codex, and `codex exec resume <session id> -m <model>` took the answer.
+- By default no session started a stage on the other host from inside its sandbox: a Codex
+  reviewer that the policy told to pass the turn to `do`, whose agent was a Claude Code agent,
+  tried, failed, and ended its reply with the failure instead of `Next: /do`.
+  `templates/POLICY.md` now passes the turn only to a stage whose agent the session can start.
+- A Claude Code session did start a Codex agent once that one command was let out of its
+  sandbox: `sandbox.excludedCommands: ["codex *"]` with `permissions.allow: ["Bash(codex *)"]`.
+  The command has to be plain: with a redirect, a pipe or `cd` in front, or with backticks in
+  the text handed over, it stayed inside the sandbox and failed. With that, one chat took four
+  tasks from plan to a passed review across both hosts: the planner and the builder as
+  subagents, the reviewer through `codex exec`, two or three review rounds each, and "go on"
+  from the requester between rounds.
+- A project file for Codex (`.codex/config.toml` in the workbench) did not switch personal
+  skills off; only the command-line option above did.
+- Claude Code's sandbox (`sandbox.enabled` with `autoAllowBashIfSandboxed`, and
+  `allowUnsandboxedCommands: false`) kept every command off the network and writing only in the
+  workbench folder. A task's copy is a worktree, so Git also writes in the clone's `.git`: name
+  it in `sandbox.filesystem.allowWrite`. The Read tool refused a source outside the workbench
+  until `permissions.allow` held `Read(//<full path>/**)`.
+- Tests that listen on a local port passed only with `sandbox.network.allowLocalBinding`; tests
+  that open a terminal or an SSH connection failed inside the sandbox whatever the setting, and
+  both the builder and the reviewer stopped to ask for the result. Run the repository's full
+  check yourself outside the sandbox and give its last lines to the stage as your words.
+- With no network, an agent cannot fetch, install a dependency, push, or read a build: whoever
+  starts the stages does those and says so.
 
 When the session cannot start a reviewer with the paired model at all, it commits and hands you the
 review request, the SHA, and your own words for the outcome, to give to a session with that model.
