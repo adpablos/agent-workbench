@@ -18,10 +18,11 @@ should receive, propose that release. Workbenches pin a release tag together wit
   eight tickets against 12 and 15, and every ticket finished against 7 and 5 of eight. On
   the next model of the same family, two more sets: 2 and 2 stops, every ticket finished.
   The stops left ask for an exact text the ticket gives and the plan did not quote.
-- **Shipping with findings open.** `ship without review` on a task whose plan has review steps
-  not done now records `open findings, accepted by the requester` in the note and lists each
-  open step at the end of the pull request description. Before, the note said the review was
-  skipped and the description could leave the findings out.
+- **Shipping with findings open.** `ship without review` on a task whose note lists open
+  findings, or whose plan has review steps not done, now records
+  `open findings, accepted by the requester` in the note and lists each of them at the end of
+  the pull request description. Before, the note said the review was skipped and the
+  description could leave the findings out.
 - **A push the policy approves in advance.** When a line of the policy approves pushing a
   repository's task branch in advance, as `docs/DEFAULTS.md` shows, `ship` pushes without
   asking for `Approved`, and opens the pull request if the line covers it. Before, `ship` asked
@@ -29,9 +30,9 @@ should receive, propose that release. Workbenches pin a release tag together wit
 - **Later review rounds.** `review` now does what `docs/PULL-REQUESTS.md` (Rounds after the
   first) says. When it finds something it keeps the reviewed commit and the round in the note's
   Reviewed line; the next round reads the diff since that commit and the review steps; from
-  round 3 it adds no steps and hands the open findings to the requester. Before, every round
-  read the whole change and no round was the last. The document no longer names a `P0` the
-  stage does not use.
+  round 3 it adds no steps, lists the open findings in the note and hands them to the
+  requester. Before, every round read the whole change and no round was the last. The
+  document no longer names a `P0` the stage does not use.
 - **Every review round runs the repository's checks.** `review` runs the checks the
   repository's pipeline runs before it reads; before, it could. A failure the change causes
   is a finding; a check the machine cannot run is named as not verified, not made a step.
@@ -56,7 +57,7 @@ should receive, propose that release. Workbenches pin a release tag together wit
   the work passes between sessions or people.
 - **Policy template.** A stage passes the turn only to a stage whose agent the session can
   start; an agent on another host is started from a shell with the command its line gives; a
-  task can start from the branch of a task not merged yet.
+  task can start from the pushed branch of a task not merged yet.
 - **The entrypoint no longer says the folder is not a Git repository.** The README lets it keep
   a local history of its own; the entrypoint now says it is not a project's repository.
 - **Forced removal after merge, stated once.** `docs/PULL-REQUESTS.md` said never to force, while

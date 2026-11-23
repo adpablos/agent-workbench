@@ -43,6 +43,11 @@ repository's own full checks (build, tests, lint), with only commands this machi
 <!-- Written by /review: each thing the change adds, the nearest existing one, same or not;
 then each thing it takes from another part, the part that produces it, and how it is taken. -->
 
+## Open findings
+
+<!-- Written by /review when its rounds end: each finding still open, one line each, with its
+rating. Read by /ship. Leave it empty otherwise. -->
+
 ## Pull request text
 
 <!-- Written by /ship: the title on one line, then the description. -->

@@ -67,8 +67,8 @@ Optional: keep this section only if the workbench installed the task stages, as 
   its own branch: after a fetch there,
   `git -C <clone> worktree add <workbench>/work/<task>/<repo> -b <branch> origin/<default branch>`,
   with `<workbench>` written out as this folder's full path. A task that builds on one whose
-  change is not merged yet starts from that task's branch instead, and its note names that
-  branch as its base.
+  change is pushed and not merged yet starts from `origin/<that task's branch>` instead, and
+  its note names that branch as its base.
   Never clone a project again, and change nothing else in its clone.
 - When the requester says a task's change is merged or dropped, remove its copy and its branch
   after the checks in `core/docs/PULL-REQUESTS.md` (After merge).
