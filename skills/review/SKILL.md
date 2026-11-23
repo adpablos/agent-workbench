@@ -10,23 +10,24 @@ your turn. For each later answer to that stage, start the agent again with the s
 task, and the answer. If you cannot start it, say which agent to select and stop.
 
 The task name is the ticket key in lowercase, or its local name. Read
-`private/tasks/<task>.md`. You did not write this change. Change nothing in the task's copy.
+`private/tasks/<task>.md`. You did not write this change. Change nothing in the task's copy;
+stop if `git diff HEAD` shows changes.
 
-1. Read the repository's agent instructions and any review skill it keeps (`.github/`,
-   `AGENTS.md`, a skills folder). Follow them and say which.
+1. Read the repository's agent instructions and any review skill (`.github/`, `AGENTS.md`,
+   a skills folder). Follow them; say which.
 2. Run the repository's pipeline checks (types, format, tests): a failure the change causes is
    a finding; one the machine causes is named as not verified.
-   Read `git diff origin/<base>...HEAD` in the task's copy, from the note's base, and the
-   files around it.
+   Read `git diff origin/<base>...HEAD` in the task's copy (the note's base) and the files
+   around it.
    If the Reviewed line names a commit with findings and `re-review` is not `full`, read
-   instead `git diff <that commit> HEAD` and the Plan's review steps: check each finding is
-   resolved, reading what else its fix changes, and nothing broke. Anything new outside it is
-   `P3` unless `P1` or a security risk.
-3. Answer three questions, each with file and line:
+   instead `git diff <that commit> HEAD`, the Plan's review steps and the open findings: check
+   each is resolved, reading what else its fix changes, and nothing broke. Anything new
+   outside is `P3` unless `P1` or a security risk.
+3. Answer, each with file and line:
    - **Defects:** where does the change fail the Goal, break existing behavior, or lack a test
      that would fail without it?
    - **Different:** where does it do something another way than this repository does?
-     Do not answer from memory. List under `## Form` in the note every thing the change adds (a
+     Do not answer from memory. List under `## Form` in the note everything the change adds (a
      function, a test, a configuration entry, a name), the nearest existing one of its kind with
      file and line, and `same` or what differs. List there too each thing the change takes from
      another part (a value, shared state, a setting, a service), the part that produces it, and
@@ -35,8 +36,9 @@ The task name is the ticket key in lowercase, or its local name. Read
      finding, `P2` or higher.
    - **Extra:** what could be removed and still meet the Goal?
 4. Rate each finding: `P1` must fix, `P2` should fix, `P3` optional.
-5. Write the result in the note:
-   - No P1 or P2: set Reviewed to `<HEAD SHA> passed`, and Next step to `/ship <task>`.
+5. In the note:
+   - No P1 or P2: empty `## Open findings`, set Reviewed to `<HEAD SHA> passed` and Next step
+     to `/ship <task>`.
    - Otherwise: add each P1 and P2 to the Plan as a step `R1`, `R2`, with the other steps'
      four lines, its Change naming every file the fix touches, tests included. Set
      Reviewed to `<HEAD SHA> findings, round <n>` and Next step to `/do <task>, to fix R1...`. From
@@ -45,5 +47,5 @@ The task name is the ticket key in lowercase, or its local name. Read
      without `Next:`.
    Use only these ratings, whatever scale another document gives.
 
-Reply in the requester's language: the verdict, then each finding in one line, P3
-included. End with `Next: /ship <task>` after a pass, or `Next: /do <task>` when you added steps.
+Reply in the requester's language: verdict, then each finding in one line, P3 included.
+End with `Next: /ship <task>` after a pass, `Next: /do <task>` when you added steps.

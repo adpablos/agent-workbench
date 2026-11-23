@@ -21,8 +21,9 @@ should receive, propose that release. Workbenches pin a release tag together wit
 - **Shipping with findings open.** `ship without review` on a task whose note lists open
   findings, or whose plan has review steps not done, now records
   `open findings, accepted by the requester` in the note and lists each of them at the end of
-  the pull request description. Before, the note said the review was skipped and the
-  description could leave the findings out.
+  the pull request description; a description saved before the findings were accepted is
+  written again. Before, the note said the review was skipped and the description could
+  leave the findings out.
 - **A push the policy approves in advance.** When a line of the policy approves pushing a
   repository's task branch in advance, as `docs/DEFAULTS.md` shows, `ship` pushes without
   asking for `Approved`, and opens the pull request if the line covers it. Before, `ship` asked
@@ -36,7 +37,9 @@ should receive, propose that release. Workbenches pin a release tag together wit
 - **Every review round runs the repository's checks.** `review` runs the checks the
   repository's pipeline runs before it reads; before, it could. A failure the change causes
   is a finding; a check the machine cannot run is named as not verified, not made a step.
-  In a later round a finding counts as resolved only after reading what else its fix changes.
+  It stops when the task's copy has changes not committed, so the checks run on the commit
+  it reviews. In a later round a finding counts as resolved only after reading what else its
+  fix changes, and the round reads the open findings of the last one too.
   Measured on eight changes: reviewers that did not run the type check missed a build that
   failed, and two called resolved a fix that broke the case next to it.
 - **Review steps name every file.** A step that `review` adds names every file its fix touches,

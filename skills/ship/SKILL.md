@@ -17,8 +17,9 @@ The task name is the ticket key in lowercase, or its local name. Read
    or to `<HEAD SHA> open findings, accepted by the requester` when the note lists open
    findings or review steps not done. If the line does not show that same SHA as passed,
    skipped or accepted, say so, end with `Next: /review <task>`, and stop.
-2. If the note already has a title and a description under `## Pull request text`, they are the
-   text the requester saw. Never edit them on your own:
+2. If the note already has a title and a description under `## Pull request text`, with no
+   accepted finding missing, they are the text the requester saw. Never edit them on your
+   own:
    - the requester's message is `Approved`: go to step 5;
    - the requester asks for a change to the text: make only that change, save it, and go to
      step 4;
@@ -29,7 +30,7 @@ The task name is the ticket key in lowercase, or its local name. Read
    was tested, go by the note's Verified line and the tests in the diff. When the Reviewed
    line says open findings, end the description with each review step not done and each
    open finding, one line each. Save both in the note under `## Pull request text`.
-4. Read that section of the note again and show the requester the branch, the address of
+4. Read that section again and show the requester the branch, the address of
    `origin` it will be pushed to, the output of `git diff --stat origin/<base>...HEAD`, and the
    title and description copied from the note, word for word. If a line of the policy approves
    pushing this repository's task branch in advance, go to step 5. Otherwise end with
@@ -40,7 +41,7 @@ The task name is the ticket key in lowercase, or its local name. Read
    description, for the requester to open it. Set the note's Next step to
    opening the pull request, or to the merge once it is open.
 6. If the policy says how to read a build's result, set the note's Build line to
-   `<pushed SHA> running` and end your reply with one line: the push starts a build, and the
-   next message about this task will check it.
+   `<pushed SHA> running` and end your reply with one line: the push starts a build that the
+   next message about this task will check.
 
 After the merge, the task ends with `/close <task>`.
