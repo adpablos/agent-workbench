@@ -11,7 +11,7 @@ task, and the answer. If you cannot start it, say which agent to select and stop
 
 The task name is the ticket key in lowercase, or its local name. Read
 `private/tasks/<task>.md`. You did not write this change. Change nothing in the task's copy;
-stop if `git diff HEAD` shows changes.
+stop if `git status --short` shows changes.
 
 1. Read the repository's agent instructions and any review skill (`.github/`, `AGENTS.md`,
    a skills folder). Follow them; say which.
@@ -26,7 +26,7 @@ stop if `git diff HEAD` shows changes.
 3. Answer, each with file and line:
    - **Defects:** where does the change fail the Goal, break existing behavior, or lack a test
      that would fail without it?
-   - **Different:** where does it do something another way than this repository does?
+   - **Different:** where does it do something another way than this repository?
      Do not answer from memory. List under `## Form` in the note everything the change adds (a
      function, a test, a configuration entry, a name), the nearest existing one of its kind with
      file and line, and `same` or what differs. List there too each thing the change takes from
@@ -35,11 +35,11 @@ stop if `git diff HEAD` shows changes.
      ticket did not ask for, and each thing taken through a part that does not produce it, is a
      finding, `P2` or higher.
    - **Extra:** what could be removed and still meet the Goal?
-4. Rate each finding: `P1` must fix, `P2` should fix, `P3` optional.
+4. Rate each: `P1` must fix, `P2` should fix, `P3` optional.
 5. In the note:
-   - No P1 or P2: empty `## Open findings`, set Reviewed to `<HEAD SHA> passed` and Next step
-     to `/ship <task>`.
-   - Otherwise: add each P1 and P2 to the Plan as a step `R1`, `R2`, with the other steps'
+   - No P1 or P2, open findings included: empty `## Open findings`, set Reviewed to
+     `<HEAD SHA> passed` and Next step to `/ship <task>`.
+   - Otherwise: add each P1 and P2 to the Plan as steps `R1`, `R2`, with the other steps'
      four lines, its Change naming every file the fix touches, tests included. Set
      Reviewed to `<HEAD SHA> findings, round <n>` and Next step to `/do <task>, to fix R1...`. From
      round `review-rounds` plus 1 (default 3), add no steps: list the findings under

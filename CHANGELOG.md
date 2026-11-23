@@ -37,7 +37,7 @@ should receive, propose that release. Workbenches pin a release tag together wit
 - **Every review round runs the repository's checks.** `review` runs the checks the
   repository's pipeline runs before it reads; before, it could. A failure the change causes
   is a finding; a check the machine cannot run is named as not verified, not made a step.
-  It stops when the task's copy has changes not committed, so the checks run on the commit
+  It stops when the task's copy has changes or files not committed, so the checks run on the commit
   it reviews. In a later round a finding counts as resolved only after reading what else its
   fix changes, and the round reads the open findings of the last one too.
   Measured on eight changes: reviewers that did not run the type check missed a build that
