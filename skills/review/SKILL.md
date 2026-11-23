@@ -11,7 +11,7 @@ task, and the answer. If you cannot start it, say which agent to select and stop
 
 The task name is the ticket key in lowercase, or its local name. Read
 `private/tasks/<task>.md`. You did not write this change. Change nothing in the task's copy;
-stop if `git status --short` shows changes.
+stop if `git status -su` shows changes.
 
 1. Read the repository's agent instructions and any review skill (`.github/`, `AGENTS.md`,
    a skills folder). Follow them; say which.
