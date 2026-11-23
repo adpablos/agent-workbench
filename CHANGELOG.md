@@ -8,6 +8,10 @@ should receive, propose that release. Workbenches pin a release tag together wit
 
 ## Unreleased
 
+None.
+
+## 0.8.0 - 2026-11-23
+
 - **The build stops only for a decision.** `do` now stops only for what the requester must
   decide: a step that is unclear or cannot be done as written, or a change the ticket and the
   plan's Goal do not settle. What they settle it repairs and names under Snags: a file the
