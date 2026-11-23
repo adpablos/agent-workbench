@@ -15,7 +15,9 @@ should receive, propose that release. Workbenches pin a release tag together wit
   check that passes only after a later step. A check the machine cannot run is named as not
   verified, and what no step or failing check needs is named, not changed. Before, it
   stopped at each of these. Measured on eight changes, two sets of runs: 1 and 3 stops per
-  eight tickets against 12 and 15, and every ticket finished against 7 and 5 of eight.
+  eight tickets against 12 and 15, and every ticket finished against 7 and 5 of eight. On
+  the next model of the same family, two more sets: 2 and 2 stops, every ticket finished.
+  The stops left ask for an exact text the ticket gives and the plan did not quote.
 - **Shipping with findings open.** `ship without review` on a task whose plan has review steps
   not done now records `open findings, accepted by the requester` in the note and lists each
   open step at the end of the pull request description. Before, the note said the review was
