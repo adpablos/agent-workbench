@@ -55,7 +55,7 @@ Optional: keep this section only if the workbench installed the task stages, as 
 | Agent | Stages | Model |
 |---|---|---|
 | `planner` | shape, think, investigate | <strong model> |
-| `builder` | do, close | <strong model, or an economical one you have seen finish plans here> |
+| `builder` | do, close | <strong model, or an economical one whose changes you have seen pass review here> |
 | `reviewer` | review, retro | <strong model of another family than the builder's> |
 | `writer` | ship | <model that writes well> |
 

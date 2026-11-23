@@ -128,7 +128,7 @@ Each stage is small enough to run in its own session, on the model that suits it
 | `shape` | Turns an idea into tasks the size of one ticket, by asking the requester | A strong model |
 | `investigate` | Reproduces a reported failure, or answers a question by running the code, before any fix is planned | A strong model |
 | `think` | Reads the ticket and the code, and writes a plan of closed steps in the task's note | A strong model |
-| `do` | Carries out the plan, one commit per step, and stops only for what the requester must decide | A strong model; an economical one once you have seen it finish plans in your repositories |
+| `do` | Carries out the plan, one commit per step, and stops only for what the requester must decide | A strong model; an economical one only once you have seen its changes pass `review` in your repositories |
 | `review` | Reviews the change once, comparing each addition with its nearest neighbour; its findings become new steps of the plan | A strong model of another family |
 | `ship` | Writes the pull request text, pushes once the requester approves it, and leaves the build to be checked | A model that writes well |
 | `close` | After the merge, removes the copy and branch, follows the build, and archives the note | An economical model |
@@ -136,13 +136,19 @@ Each stage is small enough to run in its own session, on the model that suits it
 
 The note in `private/tasks/` carries the state from one stage to the next. The stages are not
 the cheaper way: measured on tickets that touch many files, with every stage on a strong
-model, a ticket cost about four times what one session of that model cost (about $2 against
-$0.50 at list prices), and two blind reviewers, one of each model family, each preferred the
-change of one session working from the contract alone in six tickets of eight. With `do` on
-an economical model, four tickets in ten were left half done. Use the stages when someone
-must see the plan before any code is written, or when the work passes between sessions or
-people. For the rest, ask for the ticket directly and have `review` read the change when it
-carries risk.
+model, a ticket cost about four times what one session of that model cost (about $3 against
+$0.90 at list prices, and 30 minutes against 10), and two blind reviewers, one of each model
+family, each preferred the change of one session working from the contract alone in six
+tickets of eight. What the stages add is the question before the code. On tickets with a
+decision left out, they asked the requester in half of the runs and one session in none;
+where only the requester had the answer, they asked every time, and one session chose by
+itself and said so afterwards. With `do` on an economical model, one build in four was left
+unfinished and one change in four passed a strong model's review.
+
+Use the stages when the ticket leaves open a decision that neither the code nor a document
+settles, when someone must see the plan before any code is written, or when the work passes
+between sessions or people. For the rest, ask for the ticket directly and have `review` read
+the change when it carries risk.
 
 To install them, ask the agent: "Install the task stages by following `core/README.md`." It:
 

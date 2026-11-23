@@ -36,24 +36,22 @@ should receive, propose that release. Workbenches pin a release tag together wit
   In a later round a finding counts as resolved only after reading what else its fix changes.
   Measured on eight changes: reviewers that did not run the type check missed a build that
   failed, and two called resolved a fix that broke the case next to it.
-- **The build stops only for a decision.** `do` now repairs what the ticket and the note's Goal
-  already settle (a file a step needs and does not name, an existing test that asserts what
-  the ticket changes, a check that can pass only after a later step) and says so under Snags;
-  a check the machine cannot run is named there as not verified. Before, each of these was a
-  stop and a question to the requester.
 - **Review steps name every file.** A step that `review` adds names every file its fix touches,
   the test included, so `do` does not stop to ask whether it may change a test.
 - **`shape` shows directions.** For an idea with no chosen way, `shape` first shows two or three
   different directions with its recommendation, and asks which. An idea whose way is chosen
   goes on as before.
-- **What the stages cost.** The README no longer presents the stages as the cheaper way.
-  Measured on eight tickets of many files, with every stage on a strong model, a ticket cost
-  about four times what one session of that model cost (about $2 against $0.50 at list
-  prices), and two blind reviewers, one of each model family, each preferred the change of
-  one session working from the contract in six of eight. `do` on an economical
-  model left four tickets in ten half done:
-  the README and the policy template now give `do` a strong model. The stages remain for work
-  whose plan someone must see first, or that passes between sessions or people.
+- **What the stages cost and what they add.** The README no longer presents the stages as the
+  cheaper way, and says when they earn their cost. Measured on tickets of many files, with
+  every stage on a strong model, a ticket cost about four times what one session of that
+  model cost (about $3 against $0.90 at list prices, 30 minutes against 10), and two blind
+  reviewers, one of each model family, each preferred the change of one session working from
+  the contract in six of eight. On tickets with a decision left out, the stages asked the
+  requester before any code in half of the runs and one session in none. `do` on an
+  economical model left one build in four unfinished, and one change in four passed a strong
+  model's review: the README and the policy template now give `do` a strong model. Use the
+  stages when a decision is written nowhere, when someone must see the plan first, or when
+  the work passes between sessions or people.
 - **Policy template.** A stage passes the turn only to a stage whose agent the session can
   start; an agent on another host is started from a shell with the command its line gives; a
   task can start from the branch of a task not merged yet.
